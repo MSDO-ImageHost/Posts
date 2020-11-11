@@ -168,5 +168,4 @@ Response
 #### Read image `GET posts/like/crud`
 #### Update image `GET posts/like/crud`
 #### Delete image `GET posts/like/crud`
-#### Read many images `GET posts/like/many`
 ---
