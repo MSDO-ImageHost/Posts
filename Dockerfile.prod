@@ -13,6 +13,8 @@ FROM golang:1.15 as app-stage
 
 COPY --from=build-stage /app/ /app/
 
+EXPOSE 1000
+
 WORKDIR /app
 RUN go build -o app .
 CMD /app/app

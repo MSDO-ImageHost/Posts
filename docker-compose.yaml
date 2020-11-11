@@ -1,0 +1,40 @@
+version: '3'
+
+
+networks:
+  internal:
+
+
+volumes:
+  db-storage-v1:
+
+
+services:
+
+  mongodb:
+    image: mongo:latest
+    networks: 
+      - internal
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: toor
+    ports:
+      - 27017:27017
+    volumes:
+      - db-storage-v1:/data/db
+    restart: unless-stopped
+
+  posts:
+    build: 
+      context: .
+      dockerfile: ./Dockerfile.prod
+    networks:
+      - internal
+    ports:
+      - 7000:1000
+    environment:
+      MONGODB_USER: root
+      MONGODB_PASS: toor
+    depends_on:
+      - mongodb
+    restart: unless-stopped
