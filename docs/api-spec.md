@@ -21,11 +21,6 @@ Every response contain metadata about the request. The requested data is stored 
 }
 ```
 
-
-
-
-
-
 ---
 ## Posts
 
@@ -149,7 +144,7 @@ Response
 Request
 ```json
 {
-    "tags": ["<TagID>", "<TagID>", ...],                                  // optional
+    "tags": ["<TagID>", "<TagID>", ...],                                        // optional
     "pagning": {                                                                // optional
         "start": "<Number|ISO8601 timestamp: start of the current page>",       // default=0
         "end": "<Number|ISO8601 timestamp: end of the current page>",           // default=9
