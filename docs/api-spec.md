@@ -87,7 +87,7 @@ Request
 ```
 
 
-#### Get many posts `GET posts.get.many`
+#### Get many posts `posts.get.many`
 Request
 ```json
 {
@@ -116,7 +116,7 @@ Response
 ]
 ```
 
-#### Get posts for tag `GET posts.get.by_tag`
+#### Get posts for tag `posts.get.by_tag`
 Request
 ```json
 {
@@ -145,7 +145,7 @@ Response
 ]
 ```
 
-#### Get posts for tag `GET posts.get.by_tag`
+#### Get posts for tag `posts.get.by_tag`
 Request
 ```json
 {
@@ -178,8 +178,31 @@ Response
 ## Examples of usage
 
 
-**Example of getting a post:**
-Request to `posts.get`
+**Creating a new post**
+Request/produce to `posts.create`
+```json
+{
+    "post": {
+        "header": "Hello, World! 🌎",
+        "body": "This is my first post.."
+    },
+    "tags": [123, 124]
+}
+```
+Response
+```json
+{
+    "data": null,
+    "status_code": 200,
+    "message": "<String>",
+    "processing_time": 420,
+    "node_respondant": "node-123"
+}
+```
+
+---
+**Getting a post:**
+Request/produce to `posts.get`
 ```json
 {
     "post_id": 123
@@ -200,7 +223,7 @@ Response
     },
     "status_code": 200,
     "message": "OK",
-    "processing_time": 205,
-    "respondent_node": "node-123"
+    "processing_time": 42,
+    "respondent_node": "node-456"
 }
 ```
