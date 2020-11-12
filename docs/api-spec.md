@@ -5,7 +5,7 @@
 Any request must contain a valid session token
 ```json
 {
-    "session_token": "<SessionTokenID: valid and active token>", // Usually carried out by HTTP cookies
+    "session_token": "<SessionTokenID: valid and active JWT>", // Usually carried out by HTTP cookies
     ... // rest of request
 }
 ```
@@ -61,11 +61,6 @@ Response
     "post": {
         "header": "<title of the post>",
         "body": "<String: post body>"
-    },
-    "tags": ["<TagID", "<TagID", ...],
-    },
-    "image": {
-        "image_id": "<ImageId: ID of the image>"
     }
 }
 ```
@@ -75,6 +70,7 @@ Response
 Request
 ```json
 {
+    "post_id": "<PostID: ID of the post>",
     "post": {
         "header": "<title of the post>",
         "body": "<post body>",
@@ -84,8 +80,7 @@ Request
 Response
 ```json
 {
-    "post_created": "<boolean>",
-    "created_at": "<ISO8601 timestamp>",
+    "updated_at": "<ISO8601 timestamp>",
     "post_id": "<PostID: ID of the post>",
     
 }
@@ -110,7 +105,6 @@ Response
 ```
 
 #### Read many posts `GET posts/post/many`
-
 Request
 ```json
 {
@@ -131,41 +125,8 @@ Response
         "post": {
             "header": "<title of the post>",
             "body": "<String: post body>"
-        },
-        "tags": ["<TagID", "<TagID", ...],
-        },
-        "image": {
-            "image_id": "<ImageId: ID of the image>"
         }
     },
     ...
 ]
 ```
-
-## Comments
-#### Read comment `GET posts/comment/crud`
-#### Update comment `GET posts/comment/crud`
-#### Delete comment `GET posts/comment/crud`
-#### Read many comments `GET posts/comment/many`
-
----
-
-## Likes
-#### Read like `GET posts/like/crud`
-#### Update like `GET posts/like/crud`
-#### Delete like `GET posts/like/crud`
----
-
-## Tags
-#### Read tag `GET posts/tag/crud`
-#### Update tag `GET posts/tag/crud`
-#### Delete tag `GET posts/tag/crud`
-#### Read many tags `GET posts/tag/many`
----
-
-
-## Images
-#### Read image `GET posts/like/crud`
-#### Update image `GET posts/like/crud`
-#### Delete image `GET posts/like/crud`
----

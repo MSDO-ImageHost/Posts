@@ -8,9 +8,9 @@
     "object_id": "ObjectId",
     "creator_id": "<UserI: ID of the user>",
     "recent_change": "<ISO8601 timestamp: (post or latest revision) created_at>",
-    "image": "<ImageID>",
-    "comments": ["<CommentID>", "<CommentID>", ...],
-    "likes": ["<UserID>", "<UserID>", ...],
+//    "image": "<ImageID>",
+//    "comments": ["<CommentID>", "<CommentID>", ...],
+//    "likes": ["<UserID>", "<UserID>", ...],
     "header_history": [
         {
             "rev": "<Number: revision index>", // probably not needed as date can infer revision
