@@ -31,7 +31,7 @@ Request
 ```json
 {
     "post": {
-        "header": "<title of the post>",
+        "header": "<String: title of the post>",
         "body": "<String: post body>"
     },
     "tags": ["<TagID", "<TagID", ...],
@@ -65,8 +65,8 @@ Request
 {
     "post_id": "<PostID: ID of the post>",
     "post": {
-        "header": "<title of the post>",    // optional
-        "body": "<post body>",              // optional
+        "header": "<String: title of the post>",    // optional
+        "body": "<String: post body>",              // optional
     },
     "tags": ["<TagID>", "<TagID>", ...]     // optional
 }
@@ -102,7 +102,7 @@ Response
         "created_at": "<ISO8601 timestamp>",
         "creator": "<UserID: ID of the author>",
         "post": {
-            "header": "<title of the post>",
+            "header": "<String: title of the post>",
             "body": "<String: post body>"
         },
         "tags": ["<TagID>", "<TagID>", ...]
@@ -131,7 +131,7 @@ Response
         "created_at": "<ISO8601 timestamp>",
         "creator": "<UserID: ID of the author>",
         "post": {
-            "header": "<title of the post>",
+            "header": "<String: title of the post>",
             "body": "<String: post body>"
         },
         "tags": ["<TagID>", "<TagID>", ...]
@@ -160,7 +160,7 @@ Response
         "created_at": "<ISO8601 timestamp>",
         "creator": "<UserID: ID of the author>",
         "post": {
-            "header": "<title of the post>",
+            "header": "<String: title of the post>",
             "body": "<String: post body>"
         },
         "tags": ["<TagID>", "<TagID>", ...]
