@@ -25,11 +25,17 @@ jobs:
           password: ${{ secrets.DOCKER_TOKEN }}
           logout: true
 
-      - name: Push to Docker Hub
+      - name: Push to Docker Hub as latest
         uses: docker/build-push-action@v2
         with:
           push: true
           tags: imagehostmad/posts:latest
+
+      - name: Push to Docker Hub with tag
+        uses: docker/build-push-action@v2
+        with:
+          push: true
+          tags: imagehostmad/posts:{tag}
 
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
