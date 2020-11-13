@@ -34,7 +34,7 @@ Request
         "header": "<String: title of the post>",
         "body": "<String: post body>"
     },
-    "tags": ["<TagID", "<TagID", ...],
+    //"tags": ["<TagID", "<TagID", ...],
 }
 ```
 
@@ -55,7 +55,7 @@ Response
         "header": "<title of the post>",
         "body": "<String: post body>"
     },
-    "tags": ["<TagID>", "<TagID>", ...]
+    //"tags": ["<TagID>", "<TagID>", ...]
 }
 ```
 
@@ -68,7 +68,7 @@ Request
         "header": "<String: title of the post>",    // optional
         "body": "<String: post body>",              // optional
     },
-    "tags": ["<TagID>", "<TagID>", ...]     // optional
+    //"tags": ["<TagID>", "<TagID>", ...]     // optional
 }
 ```
 
@@ -105,13 +105,41 @@ Response
             "header": "<String: title of the post>",
             "body": "<String: post body>"
         },
-        "tags": ["<TagID>", "<TagID>", ...]
+        //"tags": ["<TagID>", "<TagID>", ...]
     },
     ...
 ]
 ```
+#### Get history for post `posts.get.history`
+Request
+```json
+{
+    "post_id": "<PostID: ID of the post>",
+    "pagning": {                                                                // optional
+        "start": "<Number|ISO8601 timestamp: start of the current page>",       // default=0
+        "end": "<Number|ISO8601 timestamp: end of the current page>",           // default=9
+        "limit": "<Number: max number of posts in current page (-1 for all)>"   // optional
+    }
+}
+```
+Response
+```json
+{
+    "post_id": "<PostID: ID of the post>",
+    "creator": "<UserID: ID of the author>",
+    "history": [
+        {
+            "created_at": "<ISO8601 timestamp>",
+            "header": "<String: title of the post>",
+            "body": "<String: post body>",
+        },
+        ...
+    ],
+    //""tags": ["<TagID>", "<TagID>", ...]
+}
+```
 
-#### Get posts for tag `posts.get.by_tag`
+#### Get posts for tag `posts.get.by_tag` (to be deleted ?)
 Request
 ```json
 {
@@ -138,35 +166,6 @@ Response
     },
     ...
 ]
-```
-
-#### Get history for post `posts.get.history`
-Request
-```json
-{
-    "post_id": "<PostID: ID of the post>",
-    "pagning": {                                                                // optional
-        "start": "<Number|ISO8601 timestamp: start of the current page>",       // default=0
-        "end": "<Number|ISO8601 timestamp: end of the current page>",           // default=9
-        "limit": "<Number: max number of posts in current page (-1 for all)>"   // optional
-    }
-}
-```
-Response
-```json
-{
-    "post_id": "<PostID: ID of the post>",
-    "creator": "<UserID: ID of the author>",
-    "history": [
-        {
-            "created_at": "<ISO8601 timestamp>",
-            "header": "<String: title of the post>",
-            "body": "<String: post body>",
-        },
-        ...
-    ],
-    "tags": ["<TagID>", "<TagID>", ...]
-}
 ```
 
 ---
