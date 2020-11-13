@@ -1,20 +1,10 @@
-FROM golang:1.15 as build-stage
-
+FROM golang:1.15 as builder
 WORKDIR /app
 COPY src/ .
-
-RUN go mod tidy
-RUN go mod download
+RUN CGO_ENABLED=0 GOOS=linux go install ./cmd/*
 
 
-
-
-FROM golang:1.15 as app-stage
-
-COPY --from=build-stage /app/ /app/
-
+FROM scratch
+COPY --from=builder /go/bin/app /usr/local/bin/
 EXPOSE 1000
-
-WORKDIR /app
-RUN go build -o app .
-CMD /app/app
+CMD ["app"]
