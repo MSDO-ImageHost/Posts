@@ -140,11 +140,11 @@ Response
 ]
 ```
 
-#### Get posts for tag `posts.get.by_tag`
+#### Get history for post `posts.get.history`
 Request
 ```json
 {
-    "tags": ["<TagID>", "<TagID>", ...],                                        // optional
+    "post_id": "<PostID: ID of the post>",
     "pagning": {                                                                // optional
         "start": "<Number|ISO8601 timestamp: start of the current page>",       // default=0
         "end": "<Number|ISO8601 timestamp: end of the current page>",           // default=9
@@ -154,19 +154,19 @@ Request
 ```
 Response
 ```json
-[
-    {
-        "post_id": "<PostID: ID of the post>",
-        "created_at": "<ISO8601 timestamp>",
-        "creator": "<UserID: ID of the author>",
-        "post": {
+{
+    "post_id": "<PostID: ID of the post>",
+    "creator": "<UserID: ID of the author>",
+    "history": [
+        {
+            "created_at": "<ISO8601 timestamp>",
             "header": "<String: title of the post>",
-            "body": "<String: post body>"
+            "body": "<String: post body>",
         },
-        "tags": ["<TagID>", "<TagID>", ...]
-    },
-    ...
-]
+        ...
+    ],
+    "tags": ["<TagID>", "<TagID>", ...]
+}
 ```
 
 ---
