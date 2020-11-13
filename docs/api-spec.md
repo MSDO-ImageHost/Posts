@@ -5,7 +5,7 @@
 Any request must contain a valid session token
 ```json
 {
-    "session_token": "<SessionTokenID: valid and active JWT>", // Usually carried out by HTTP Header from cookies
+    "session_token": "<SessionTokenID: valid and active JWT>", // Usually carried out by HTTP title from cookies
     ... // rest of request
 }
 ```
@@ -31,7 +31,7 @@ Request
 ```json
 {
     "post": {
-        "header": "<String: title of the post>",
+        "title": "<String: title of the post>",
         "body": "<String: post body>"
     },
     //"tags": ["<TagID", "<TagID", ...],
@@ -50,9 +50,9 @@ Response
 {
     "post_id": "<PostID: ID of the post>",
     "created_at": "<ISO8601 timestamp>",
-    "creator": "<UserID: ID of the author>",
+    "author_id": "<UserID: ID of the author>",
     "post": {
-        "header": "<title of the post>",
+        "title": "<title of the post>",
         "body": "<String: post body>"
     },
     //"tags": ["<TagID>", "<TagID>", ...]
@@ -65,7 +65,7 @@ Request
 {
     "post_id": "<PostID: ID of the post>",
     "post": {
-        "header": "<String: title of the post>",    // optional
+        "title": "<String: title of the post>",    // optional
         "body": "<String: post body>",              // optional
     },
     //"tags": ["<TagID>", "<TagID>", ...]     // optional
@@ -100,9 +100,9 @@ Response
     {
         "post_id": "<PostID: ID of the post>",
         "created_at": "<ISO8601 timestamp>",
-        "creator": "<UserID: ID of the author>",
+        "author_id": "<UserID: ID of the author>",
         "post": {
-            "header": "<String: title of the post>",
+            "title": "<String: title of the post>",
             "body": "<String: post body>"
         },
         //"tags": ["<TagID>", "<TagID>", ...]
@@ -126,11 +126,11 @@ Response
 ```json
 {
     "post_id": "<PostID: ID of the post>",
-    "creator": "<UserID: ID of the author>",
+    "author_id": "<UserID: ID of the author>",
     "history": [
         {
             "created_at": "<ISO8601 timestamp>",
-            "header": "<String: title of the post>",
+            "title": "<String: title of the post>",
             "body": "<String: post body>",
         },
         ...
@@ -157,9 +157,9 @@ Response
     {
         "post_id": "<PostID: ID of the post>",
         "created_at": "<ISO8601 timestamp>",
-        "creator": "<UserID: ID of the author>",
+        "author_id": "<UserID: ID of the author>",
         "post": {
-            "header": "<String: title of the post>",
+            "title": "<String: title of the post>",
             "body": "<String: post body>"
         },
         "tags": ["<TagID>", "<TagID>", ...]
@@ -177,7 +177,7 @@ Request/produce to `posts.create`
 ```json
 {
     "post": {
-        "header": "Hello, World! 🌎",
+        "title": "Hello, World! 🌎",
         "body": "This is my first post.."
     },
     "tags": [123, 124]
@@ -208,9 +208,9 @@ Response
     "data": {
         "post_id": 123,
         "created_at": "2020-11-12T14:29:59+01:00",
-        "creator": 123,
+        "author_id": 123,
         "post": {
-            "header": "Hello, World! 🌎",
+            "title": "Hello, World! 🌎",
             "body": "This is my first post.."
         },
         "tags": [123, 124]
