@@ -1,6 +1,6 @@
 FROM golang:1.15 as builder
 WORKDIR /app
-COPY . .
+COPY src/ .
 RUN CGO_ENABLED=0 GOOS=linux go install ./cmd/*
 
 

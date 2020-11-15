@@ -1,10 +1,10 @@
-kind: Service 
-apiVersion: v1 
+kind: Service
+apiVersion: v1
 metadata:
-  name: posts-v1-service 
+  name: posts-v1-service
 spec:
   # Expose the service on a static port on each node
-  # so that we can access the service from outside the cluster 
+  # so that we can access the service from outside the cluster
   type: NodePort
 
   # When the node receives a request on the static port (30163)
@@ -19,5 +19,5 @@ spec:
     # port - port exposed internally in the cluster
     # targetPort - the container port to send requests to
     - nodePort: 30163
-      port: 8080 
+      port: 8080
       targetPort: 80

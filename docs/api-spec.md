@@ -10,7 +10,7 @@ Any request must contain a valid session token
 }
 ```
 #### Meta wrapper
-Every response contain metadata about the request. The requested data is stored in the `data` property. Any request may get rejected whereof `data` will be `null`.
+Every response contain metadata about the request. The requested data is stored in the `data` property. Any request may get rejected or the response contains no data whereof `data` will be `null`.
 ```json
 {
     "data": "<Object: requested data>",

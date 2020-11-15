@@ -4,6 +4,10 @@
 
 ![Publish Docker image](https://github.com/MSDO-ImageHost/Posts/workflows/Publish%20Docker%20image/badge.svg)
 
+---
+## Documentation
+[API](docs/api-spec.md)
+[DB models](docs/db-models.md)
 
 ---
 ## Resources
