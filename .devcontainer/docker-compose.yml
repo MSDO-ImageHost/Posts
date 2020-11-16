@@ -1,14 +1,14 @@
 version: "3.7"
 
+
 volumes:
+  db-storage:
   rabbitmq-data:
-  db-storage-v1:
+
 
 services:
   vscode:
     image: qmcgaw/godevcontainer
-    # image: qmcgaw/godevcontainer:alpine
-    # image: qmcgaw/godevcontainer:debian
     volumes:
       - ../:/workspace
       - ~/.ssh:/home/vscode/.ssh
@@ -16,8 +16,6 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
       - TZ=Europe/Copenhagen
-      - MONGO_INITDB_ROOT_USERNAME=root
-      - MONGO_INITDB_ROOT_PASSWORD=example
       - RABBITMQ_USERNAME=guest
       - RABBITMQ_PASSWORD=guest
     cap_add:
@@ -37,13 +35,20 @@ services:
       - RABBITMQ_PASSWORD=guest
     restart: unless-stopped
 
-  mongodb:
+  mongo:
     image: mongo:latest
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=root
-      - MONGO_INITDB_ROOT_PASSWORD=example
     ports:
       - 27017:27017
     volumes:
-      - db-storage-v1:/data/db
+      - db-storage:/data/db
+      - ../.mongo:/docker-entrypoint-initdb.d
+    environment:
+      - MONGO_INITDB_DATABASE=posts
     restart: unless-stopped
+
+
+  mongo-express:
+    image: mongo-express
+    ports:
+      - 8081:8081
+    restart: always
