@@ -2,4 +2,7 @@ module github.com/ImageHost/Posts
 
 go 1.15
 
-require go.mongodb.org/mongo-driver v1.4.3
+require (
+	github.com/streadway/amqp v1.0.0
+	go.mongodb.org/mongo-driver v1.4.3
+)

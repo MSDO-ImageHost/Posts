@@ -33,8 +33,7 @@ Request
     "post": {
         "title": "<String: title of the post>",
         "body": "<String: post body>"
-    },
-    //"tags": ["<TagID", "<TagID", ...],
+    }
 }
 ```
 
@@ -54,8 +53,7 @@ Response
     "post": {
         "title": "<title of the post>",
         "body": "<String: post body>"
-    },
-    //"tags": ["<TagID>", "<TagID>", ...]
+    }
 }
 ```
 
@@ -67,8 +65,7 @@ Request
     "post": {
         "title": "<String: title of the post>",    // optional
         "body": "<String: post body>",              // optional
-    },
-    //"tags": ["<TagID>", "<TagID>", ...]     // optional
+    }
 }
 ```
 
@@ -104,8 +101,7 @@ Response
         "post": {
             "title": "<String: title of the post>",
             "body": "<String: post body>"
-        },
-        //"tags": ["<TagID>", "<TagID>", ...]
+        }
     },
     ...
 ]
@@ -134,38 +130,8 @@ Response
             "body": "<String: post body>",
         },
         ...
-    ],
-    //""tags": ["<TagID>", "<TagID>", ...]
+    ]
 }
-```
-
-#### Get posts for tag `posts.get.by_tag` (to be deleted ?)
-Request
-```json
-{
-    "tags": ["<TagID>", "<TagID>", ...],                                        // optional
-    "pagning": {                                                                // optional
-        "start": "<Number|ISO8601 timestamp: start of the current page>",       // default=0
-        "end": "<Number|ISO8601 timestamp: end of the current page>",           // default=9
-        "limit": "<Number: max number of posts in current page (-1 for all)>"   // optional
-    }
-}
-```
-Response
-```json
-[
-    {
-        "post_id": "<PostID: ID of the post>",
-        "created_at": "<ISO8601 timestamp>",
-        "author_id": "<UserID: ID of the author>",
-        "post": {
-            "title": "<String: title of the post>",
-            "body": "<String: post body>"
-        },
-        "tags": ["<TagID>", "<TagID>", ...]
-    },
-    ...
-]
 ```
 
 ---
@@ -179,8 +145,7 @@ Request/produce to `posts.create`
     "post": {
         "title": "Hello, World! 🌎",
         "body": "This is my first post.."
-    },
-    "tags": [123, 124]
+    }
 }
 ```
 Response
@@ -212,8 +177,7 @@ Response
         "post": {
             "title": "Hello, World! 🌎",
             "body": "This is my first post.."
-        },
-        "tags": [123, 124]
+        }
     },
     "status_code": 200,
     "message": "OK",

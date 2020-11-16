@@ -7,7 +7,8 @@
     "runServices": [
         "vscode",
         "rabbitmq",
-        "mongodb"
+        "mongo",
+        "mongo-express"
     ],
     "shutdownAction": "stopCompose",
     "postCreateCommand": "go mod download",

@@ -1,42 +1,118 @@
 package main
 
 import (
-	"context"
-	"fmt"
 	"log"
-	"time"
 
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
-	"go.mongodb.org/mongo-driver/mongo/readpref"
+	"github.com/streadway/amqp"
 )
 
 func main() {
 
-	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://mongodb:27017/?readPreference=primary&ssl=false"))
-	if err != nil {
-		log.Fatal(err)
-	}
-	ctx, _ := context.WithTimeout(context.Background(), time.Second)
-	err = client.Connect(ctx)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer client.Disconnect(ctx)
+	conn, err := amqp.Dial("amqp://guest:guest@rabbitmq:5672/")
+	failOnError(err, "Failed to connect to RabbitMQ")
+	defer conn.Close()
 
-	err = client.Ping(ctx, readpref.Primary())
-	if err != nil {
-		log.Fatal(err)
-	}
-	databases, err := client.ListDatabaseNames(ctx, bson.M{})
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println(databases)
+	ch, err := conn.Channel()
+	failOnError(err, "Failed to open a channel")
+	defer ch.Close()
 
-	database := client.Database("posts")
+	createQueue, err := ch.QueueDeclare(
+		"posts.create", // name
+		false,          // durable
+		false,          // delete when unused
+		false,          // exclusive
+		false,          // no-wait
+		nil,            // arguments
+	)
+	failOnError(err, "Failed to declare a queue")
 
-	postsCollection := database.Collection("posts")
-	fmt.Println(postsCollection.Name())
+	getQueue, err := ch.QueueDeclare(
+		"posts.get", // name
+		false,       // durable
+		false,       // delete when unused
+		false,       // exclusive
+		false,       // no-wait
+		nil,         // arguments
+	)
+	failOnError(err, "Failed to declare a queue")
+
+	updateQueue, err := ch.QueueDeclare(
+		"posts.update", // name
+		false,          // durable
+		false,          // delete when unused
+		false,          // exclusive
+		false,          // no-wait
+		nil,            // arguments
+	)
+	failOnError(err, "Failed to declare a queue")
+
+	deleteQueue, err := ch.QueueDeclare(
+		"posts.delete", // name
+		false,          // durable
+		false,          // delete when unused
+		false,          // exclusive
+		false,          // no-wait
+		nil,            // arguments
+	)
+	failOnError(err, "Failed to declare a queue")
+
+	createMsgs, err := ch.Consume(
+		createQueue.Name, // queue
+		"",               // consumer
+		true,             // auto-ack
+		false,            // exclusive
+		false,            // no-local
+		false,            // no-wait
+		nil,              // args
+	)
+	failOnError(err, "Failed to register a consumer")
+
+	updateMsgs, err := ch.Consume(
+		updateQueue.Name, // queue
+		"",               // consumer
+		true,             // auto-ack
+		false,            // exclusive
+		false,            // no-local
+		false,            // no-wait
+		nil,              // args
+	)
+	failOnError(err, "Failed to register a consumer")
+
+	getMsgs, err := ch.Consume(
+		getQueue.Name, // queue
+		"",            // consumer
+		true,          // auto-ack
+		false,         // exclusive
+		false,         // no-local
+		false,         // no-wait
+		nil,           // args
+	)
+	failOnError(err, "Failed to register a consumer")
+
+	deleteMsgs, err := ch.Consume(
+		deleteQueue.Name, // queue
+		"",               // consumer
+		true,             // auto-ack
+		false,            // exclusive
+		false,            // no-local
+		false,            // no-wait
+		nil,              // args
+	)
+	failOnError(err, "Failed to register a consumer")
+
+	_ = createMsgs
+	_ = updateMsgs
+	_ = getMsgs
+	_ = deleteMsgs
+
+	forever := make(chan bool)
+
+	log.Printf(" [*] Waiting for messages. To exit press CTRL+C")
+	<-forever
+}
+
+func failOnError(err error, msg string) {
+	if err != nil {
+		log.Fatalf("%s: %s", msg, err)
+	}
 }
