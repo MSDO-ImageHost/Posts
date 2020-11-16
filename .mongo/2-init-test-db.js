@@ -1,6 +1,6 @@
 // https://docs.mongodb.com/manual/reference/operator/query/jsonSchema/#op._S_jsonSchema
 
-db = db.getSiblingDB('posts-db');
+db = db.getSiblingDB('posts-test-db');
 
 creator_id_policy = {
    bsonType: 'string',
@@ -38,3 +38,6 @@ content_policy = {
 db.createCollection('posts', post_policy)
 db.createCollection('postbodies', content_policy)
 db.createCollection('postheaders', content_policy)
+
+
+db.posts.insert

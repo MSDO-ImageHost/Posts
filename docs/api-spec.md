@@ -63,7 +63,7 @@ Request
 {
     "post_id": "<PostID: ID of the post>",
     "post": {
-        "title": "<String: title of the post>",    // optional
+        "title": "<String: title of the post>",     // optional
         "body": "<String: post body>",              // optional
     }
 }
