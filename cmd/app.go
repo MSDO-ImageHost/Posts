@@ -13,11 +13,12 @@ import (
 )
 
 func main() {
-	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://root:toor@mongodb:27017"))
+
+	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://mongodb:27017/?readPreference=primary&ssl=false"))
 	if err != nil {
 		log.Fatal(err)
 	}
-	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, _ := context.WithTimeout(context.Background(), time.Second)
 	err = client.Connect(ctx)
 	if err != nil {
 		log.Fatal(err)
@@ -33,4 +34,9 @@ func main() {
 		log.Fatal(err)
 	}
 	fmt.Println(databases)
+
+	database := client.Database("posts")
+
+	postsCollection := database.Collection("posts")
+	fmt.Println(postsCollection.Name())
 }
