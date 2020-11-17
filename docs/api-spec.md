@@ -84,7 +84,7 @@ Request
 ```json
 {
     "post_ids": ["<PostID>", "<PostID>", ...],                                  // optional
-    "pagning": {                                                                // optional
+    "paging": {                                                                 // optional
         "start": "<Number|ISO8601 timestamp: start of the current page>",       // default=0
         "end": "<Number|ISO8601 timestamp: end of the current page>",           // default=9
         "limit": "<Number: max number of posts in current page (-1 for all)>"   // optional
@@ -111,7 +111,7 @@ Request
 ```json
 {
     "post_id": "<PostID: ID of the post>",
-    "pagning": {                                                                // optional
+    "paging": {                                                                 // optional
         "start": "<Number|ISO8601 timestamp: start of the current page>",       // default=0
         "end": "<Number|ISO8601 timestamp: end of the current page>",           // default=9
         "limit": "<Number: max number of posts in current page (-1 for all)>"   // optional
@@ -153,7 +153,7 @@ Response
 {
     "data": null,
     "status_code": 200,
-    "message": "<String>",
+    "message": "OK",
     "processing_time": 420,
     "node_respondant": "node-123"
 }
