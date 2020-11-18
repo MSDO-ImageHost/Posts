@@ -1,0 +1,33 @@
+{
+	"folders": [
+		{
+			"name": "Source",
+			"path": "../src"
+		},
+		{
+			"name": "DevContainer",
+			"path": "../.devcontainer"
+		},
+		{
+			"name": "Kubernetes",
+			"path": "../.kubernetes"
+		},
+		{
+			"name": "MongoDB",
+			"path": "../.mongo"
+		},
+		{
+			"name": "GitHub",
+			"path": "../.github"
+		},
+		{
+			"name": "Root",
+			"path": "../"
+		},
+		{
+			"name": "Docs",
+			"path": "../docs"
+		}
+	],
+	"settings": {}
+}

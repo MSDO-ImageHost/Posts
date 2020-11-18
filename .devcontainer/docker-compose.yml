@@ -8,12 +8,14 @@ services:
   vscode:
     image: qmcgaw/godevcontainer
     volumes:
-      - ../:/workspace
+      - ../src:/workspace
       - ~/.ssh:/home/vscode/.ssh
       - ~/.ssh:/root/.ssh
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
       - TZ=Europe/Copenhagen
+      - MONGO_CONN_STRING=mongodb://mongo:27017/?readPreference=primary&ssl=false
+      - MONGO_SERVICE_DB=posts-db
       - RABBITMQ_USERNAME=guest
       - RABBITMQ_PASSWORD=guest
     cap_add:
