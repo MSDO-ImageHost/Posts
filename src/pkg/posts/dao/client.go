@@ -1,29 +1,60 @@
 package dao
 
 import (
+	"context"
 	"os"
+
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-// Setup configures the db connection credentials and initializes the database collections
-func Setup() error {
-	mongo := MongoDBHost{
-		URI:  os.Getenv("MONGO_CONN_STRING"),
-		Name: os.Getenv("MONGO_SERVICE_DB"),
-	}
+// Init configures the db connection credentials and initializes the database collections
+func Init() error {
 
+	// Database handle
+	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(os.Getenv("MONGO_CONN_STRING")))
+	if err != nil {
+		return err
+	}
+	postsDb := client.Database(os.Getenv("MONGO_SERVICE_DB"))
+
+	// Collection handles
+	scaffoldColl := postsDb.Collection("scaffolds")
+	headerColl := postsDb.Collection("headers")
+	bodyColl := postsDb.Collection("bodies")
+
+	// Configure collections and their respective handles
 	Posts = &ScaffoldStorage{
-		Host:       mongo,
-		Collection: "posts",
+		Host:               postsDb,
+		ScaffoldCollection: scaffoldColl,
+		HeaderCollection:   headerColl,
+		BodyCollection:     bodyColl,
 	}
 
-	Titles = &HeaderStorage{
-		Host:       mongo,
-		Collection: "postheaders",
+	Headers = &HeaderStorage{
+		Host:               postsDb,
+		ScaffoldCollection: scaffoldColl,
+		HeaderCollection:   headerColl,
+		BodyCollection:     bodyColl,
 	}
 
 	Bodies = &BodyStorage{
-		Host:       mongo,
-		Collection: "postbodies",
+		Host:               postsDb,
+		ScaffoldCollection: scaffoldColl,
+		HeaderCollection:   headerColl,
+		BodyCollection:     bodyColl,
 	}
+
+	return nil
+}
+
+func Deinit() error {
+	/*
+		defer func() {
+			if err = client.Disconnect(ctx); err != nil {
+				panic(err)
+			}
+		}()
+	*/
 	return nil
 }

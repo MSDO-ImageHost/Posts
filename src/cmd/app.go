@@ -7,20 +7,17 @@ import (
 
 func main() {
 
-	err := storage.Setup()
+	err := storage.Init()
 	if err != nil {
 		panic(err)
 	}
 
 	newPost := models.Post{
-		Author: "123-christian-id",
-		Title: models.Content{
-			Author: "123-christian-id",
-			Data:   "Hello title!",
-		},
-		Body: models.Content{
-			Author: "123-christian-id",
-			Data:   "This is my first post..!",
+		AuthorID: "123-christian-id",
+		Header:   "Hello title!",
+		Body:     "This is my first post..!",
+		Meta: models.Meta{
+			TZ: "Europe/Copenhagen",
 		},
 	}
 
