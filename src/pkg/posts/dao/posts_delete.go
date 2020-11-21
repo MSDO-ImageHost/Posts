@@ -22,14 +22,14 @@ func (db *ScaffoldStorage) Delete(postID string) (deletedPostID string, err erro
 		return "", err
 	}
 
-	// Delete all belogning post headers
+	// Delete all belonging post headers
 	headerFilter := bson.M{"_id": bson.M{"$in": scaffold.Header.(primitive.A)}}
 	_, err = db.HeaderCollection.DeleteMany(context.TODO(), headerFilter)
 	if err != nil {
 		return "", err
 	}
 
-	// Delete all belogning post bodies
+	// Delete all belonging post bodies
 	bodyFilter := bson.M{"_id": bson.M{"$in": scaffold.Body.(primitive.A)}}
 	_, err = db.BodyCollection.DeleteMany(context.TODO(), bodyFilter)
 	if err != nil {

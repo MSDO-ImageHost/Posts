@@ -31,7 +31,7 @@ func main() {
 	fetchedPost, _ := storage.Posts.Find(storedPostID)
 	fmt.Printf("FETCHING: %s \t -> \t %+v \n", storedPostID, fetchedPost)
 
-	deletedPostID, _ := storage.Posts.Delete(storedPostID)
-	fmt.Printf("REMOVING: %s\n", deletedPostID)
+	//deletedPostID, _ := storage.Posts.Delete(storedPostID)
+	//fmt.Printf("REMOVING: %s\n", deletedPostID)
 
 }
