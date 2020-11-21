@@ -8,16 +8,19 @@ import (
 
 type PostQueryID string
 
-// Post is the main frame for storing references to content in the post
+// Scaffold is the main frame for storing references to content in the post
 type Post struct {
-	PostId    primitive.ObjectID `json:"post_id"`
-	CreatedAt time.Time          `json:"created_at"`
-	AuthorID  string             `json:"author_id"`
-	Header    string             `json:"title"`
-	Body      string             `json:"body"`
-	Meta      Meta               `json:"-"`
+	ID        interface{} `bson:"_id" json:"post_id"`
+	CreatedAt time.Time   `bson:"created_at" json:"created_at"`
+	AuthorID  string      `bson:"author_id" json:"author_id"`
+	Header    interface{} `bson:"header_id" json:"title"`
+	Body      interface{} `bson:"body_id" json:"body"`
 }
 
-type Meta struct {
-	TZ string
+type Content struct {
+	ID        primitive.ObjectID `bson:"_id"`
+	AuthorID  string             `bson:"author_id"`
+	CreatedAt time.Time          `bson:"created_at"`
+	Data      string             `bson:"data"`
+	Replacing primitive.ObjectID `bson:"replacing,omitempty"`
 }

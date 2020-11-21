@@ -2,6 +2,7 @@ package dao
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	models "github.com/MSDO-ImageHost/Posts/pkg/posts"
@@ -10,26 +11,24 @@ import (
 
 // Adds a new post scaffold
 func (db *ScaffoldStorage) Add(post models.Post) (string, error) {
-
-	loc, _ := time.LoadLocation(post.Meta.TZ)
-	now := time.Now().In(loc)
+	now := time.Now()
 
 	// Construct post components
-	header := Content{
+	header := models.Content{
 		ID:        primitive.NewObjectID(),
 		AuthorID:  post.AuthorID,
-		Data:      post.Header,
+		Data:      fmt.Sprintf("%v", post.Header),
 		CreatedAt: now,
 	}
 
-	body := Content{
+	body := models.Content{
 		ID:        primitive.NewObjectID(),
 		AuthorID:  post.AuthorID,
-		Data:      post.Body,
+		Data:      fmt.Sprintf("%v", post.Body),
 		CreatedAt: now,
 	}
 
-	scaffold := Scaffold{
+	scaffold := models.Post{
 		ID:        primitive.NewObjectID(),
 		AuthorID:  post.AuthorID,
 		Header:    header.ID,
@@ -57,8 +56,7 @@ func (db *ScaffoldStorage) Add(post models.Post) (string, error) {
 }
 
 // Adds a new post header
-func (db *HeaderStorage) Add(content Content) (string, error) {
-
+func (db *HeaderStorage) Add(content models.Content) (string, error) {
 	res, err := db.HeaderCollection.InsertOne(context.TODO(), content)
 	if err != nil {
 		return "check error", err
@@ -67,8 +65,7 @@ func (db *HeaderStorage) Add(content Content) (string, error) {
 }
 
 // Adds a new post body
-func (db *BodyStorage) Add(content Content) (string, error) {
-
+func (db *BodyStorage) Add(content models.Content) (string, error) {
 	res, err := db.BodyCollection.InsertOne(context.TODO(), content)
 	if err != nil {
 		return "check error", err

@@ -5,6 +5,6 @@ import (
 )
 
 // Delete
-func (db *MongoStorage) Delete(PostQueryID) (models.Post, error) {
+func (db *ScaffoldStorage) Delete(postID string) (models.Post, error) {
 	return models.Post{}, nil
 }
