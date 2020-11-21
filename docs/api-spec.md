@@ -6,6 +6,7 @@ Any request must contain a valid session token
 ```json
 {
     "session_token": "<SessionTokenID: valid and active JWT>", // Usually carried out by HTTP title from cookies
+    "producer_tag": "<ID for the service to respond back to>",
     ... // rest of request
 }
 ```
@@ -17,7 +18,9 @@ Every response contain metadata about the request. The requested data is stored 
     "status_code": "<Number: HTTP status code",
     "message": "<String>",
     "processing_time": "<Number: Processing time of the request in ms>",
-    "node_respondant": "<NodeID: ID of the node handling the request>"
+    "node_respondant": "<NodeID: ID of the node handling the request>",
+    "consumer_tag": "<ID for this service>"
+
 }
 ```
 
