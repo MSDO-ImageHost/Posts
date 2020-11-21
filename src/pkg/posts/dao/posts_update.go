@@ -11,7 +11,7 @@ import (
 )
 
 // Update
-func (db *ScaffoldStorage) Update(postID string, post models.Post) (string, error) {
+func (db *ScaffoldStorage) Update(postID string, post models.Post) (updatedPostID string, err error) {
 	now := time.Now()
 
 	// Construct post components
@@ -36,7 +36,7 @@ func (db *ScaffoldStorage) Update(postID string, post models.Post) (string, erro
 
 	// Update scaffold
 	filter := bson.M{"_id": id}
-	update := bson.D{{"$set", bson.D{{"header", header.ID}, {"body", body.ID}}}}
+	update := bson.M{"$push": bson.M{"header_ids": header.ID, "body_ids": body.ID}}
 	_, err = db.ScaffoldCollection.UpdateOne(context.TODO(), filter, update)
 	if err != nil {
 		return "", err
@@ -52,5 +52,5 @@ func (db *ScaffoldStorage) Update(postID string, post models.Post) (string, erro
 	if err != nil {
 		return "", err
 	}
-	return "", nil
+	return updatedPostID, nil
 }

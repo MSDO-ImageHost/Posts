@@ -10,7 +10,7 @@ import (
 )
 
 // Adds a new post scaffold
-func (db *ScaffoldStorage) Add(post models.Post) (string, error) {
+func (db *ScaffoldStorage) Add(post models.Post) (createdPostID string, err error) {
 	now := time.Now()
 
 	// Construct post components
@@ -31,13 +31,13 @@ func (db *ScaffoldStorage) Add(post models.Post) (string, error) {
 	scaffold := models.Post{
 		ID:        primitive.NewObjectID(),
 		AuthorID:  post.AuthorID,
-		Header:    header.ID,
-		Body:      body.ID,
+		Header:    []primitive.ObjectID{header.ID},
+		Body:      []primitive.ObjectID{body.ID},
 		CreatedAt: now,
 	}
 
 	// Insert components into their respective collections
-	_, err := Headers.Add(header)
+	_, err = Headers.Add(header)
 	if err != nil {
 		return "", err
 	}
@@ -56,7 +56,7 @@ func (db *ScaffoldStorage) Add(post models.Post) (string, error) {
 }
 
 // Adds a new post header
-func (db *HeaderStorage) Add(content models.Content) (string, error) {
+func (db *HeaderStorage) Add(content models.Content) (contentID string, err error) {
 	res, err := db.HeaderCollection.InsertOne(context.TODO(), content)
 	if err != nil {
 		return "check error", err
@@ -65,7 +65,7 @@ func (db *HeaderStorage) Add(content models.Content) (string, error) {
 }
 
 // Adds a new post body
-func (db *BodyStorage) Add(content models.Content) (string, error) {
+func (db *BodyStorage) Add(content models.Content) (contentID string, err error) {
 	res, err := db.BodyCollection.InsertOne(context.TODO(), content)
 	if err != nil {
 		return "check error", err

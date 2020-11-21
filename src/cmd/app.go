@@ -20,14 +20,18 @@ func main() {
 		Body:     "This is my first post..!",
 	}
 
-	fmt.Printf("Created post:\n%+v\n", newPost)
 	storedPostID, _ := storage.Posts.Add(newPost)
-	fmt.Printf("Inserted it and received id %s\n\n", storedPostID)
+	fmt.Printf("INSERTING: %+v \t->\t%s\n", newPost, storedPostID)
 
-	fmt.Printf("Fetching it again %s\n", storedPostID)
-	fetchedPost, err := storage.Posts.Find(storedPostID)
-	if err != nil {
-		fmt.Println(err)
-	}
-	fmt.Printf("Fetched:\n%+v\n", fetchedPost)
+	updatedPostID, _ := storage.Posts.Update(storedPostID, models.Post{
+		Header: "Updated title",
+	})
+	fmt.Printf("UPDATING: %+v \t->\t%s\n", newPost, updatedPostID)
+
+	fetchedPost, _ := storage.Posts.Find(storedPostID)
+	fmt.Printf("FETCHING: %s \t -> \t %+v \n", storedPostID, fetchedPost)
+
+	deletedPostID, _ := storage.Posts.Delete(storedPostID)
+	fmt.Printf("REMOVING: %s\n", deletedPostID)
+
 }

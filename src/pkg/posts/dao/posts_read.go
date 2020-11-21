@@ -8,38 +8,45 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-// Find
-func (db *ScaffoldStorage) Find(postID string) (models.Post, error) {
-
+// Find a post in the database with id
+func (db *ScaffoldStorage) Find(postID string) (fetchedPost models.Post, err error) {
 	// Fetch post scaffold
 	scaffoldID, err := primitive.ObjectIDFromHex(postID)
 	if err != nil {
 		return models.Post{}, err
 	}
 	var scaffold models.Post
-	filter := bson.M{"_id": scaffoldID}
-	err = db.ScaffoldCollection.FindOne(context.TODO(), filter).Decode(&scaffold)
+	scaffoldFilter := bson.M{"_id": scaffoldID}
+	err = db.ScaffoldCollection.FindOne(context.TODO(), scaffoldFilter).Decode(&scaffold)
 	if err != nil {
 		return models.Post{}, err
 	}
 
-	// Fetch post header
+	// Fetch latest post header scaffold.Header.([]primitive.ObjectID)
 	var header models.Content
-	filter = bson.M{"_id": scaffold.Header}
-	err = db.HeaderCollection.FindOne(context.TODO(), filter).Decode(&header)
+	headerFilter := bson.D{
+		{"_id", bson.M{"$in": scaffold.Header.(primitive.A)}},
+		//{"$orderby", bson.M{"created_at": -1}}, // TODO: sort by latest
+	}
+	err = db.HeaderCollection.FindOne(context.TODO(), headerFilter).Decode(&header)
 	if err != nil {
 		return models.Post{}, err
 	}
 
-	// Fetch post body
+	// Fetch latest post body
 	var body models.Content
-	filter = bson.M{"_id": scaffold.Body}
-	err = db.BodyCollection.FindOne(context.TODO(), filter).Decode(&body)
+	bodyFilter := bson.D{
+		{"_id", bson.M{"$in": scaffold.Body.(primitive.A)}},
+		//{"$orderby", bson.M{"created_at": -1}}, // TODO: sort by latest
+	}
+
+	err = db.BodyCollection.FindOne(context.TODO(), bodyFilter).Decode(&body)
 	if err != nil {
 		return models.Post{}, err
 	}
 
-	fetchedPost := models.Post{
+	// Compose fetched data
+	fetchedPost = models.Post{
 		ID:        scaffold.ID.(primitive.ObjectID).Hex(),
 		AuthorID:  scaffold.AuthorID,
 		CreatedAt: scaffold.CreatedAt,
@@ -48,5 +55,4 @@ func (db *ScaffoldStorage) Find(postID string) (models.Post, error) {
 	}
 
 	return fetchedPost, nil
-
 }

@@ -13,8 +13,8 @@ type Post struct {
 	ID        interface{} `bson:"_id" json:"post_id"`
 	CreatedAt time.Time   `bson:"created_at" json:"created_at"`
 	AuthorID  string      `bson:"author_id" json:"author_id"`
-	Header    interface{} `bson:"header_id" json:"title"`
-	Body      interface{} `bson:"body_id" json:"body"`
+	Header    interface{} `bson:"header_ids" json:"title"`
+	Body      interface{} `bson:"body_ids" json:"body"`
 }
 
 type Content struct {
