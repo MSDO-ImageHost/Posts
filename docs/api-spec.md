@@ -5,8 +5,7 @@
 Any request must contain a valid session token
 ```json
 {
-    "session_token": "<SessionTokenID: valid and active JWT>", // Usually carried out by HTTP title from cookies
-    "producer_tag": "<ID for the service to respond back to>",
+    "auth_token": "<JWT>",
     ... // rest of request
 }
 ```
@@ -33,13 +32,16 @@ Every response contain metadata about the request. The requested data is stored 
 Request
 ```json
 {
-    "post": {
-        "title": "<String: title of the post>",
-        "body": "<String: post body>"
-    }
+    "header": "<String: title of the post>",
+    "body": "<String: body text of the post>"
 }
 ```
-
+Response
+```json
+{
+    "post_id": "<PostID: ID of the created post>"
+}
+```
 #### Get post `posts.get`
 Request
 ```json
@@ -53,10 +55,8 @@ Response
     "post_id": "<PostID: ID of the post>",
     "created_at": "<ISO8601 timestamp>",
     "author_id": "<UserID: ID of the author>",
-    "post": {
-        "title": "<title of the post>",
-        "body": "<String: post body>"
-    }
+    "header": "<String: title of the post>",
+    "body": "<String: post body>"
 }
 ```
 
@@ -64,11 +64,9 @@ Response
 Request
 ```json
 {
-    "post_id": "<PostID: ID of the post>",
-    "post": {
-        "title": "<String: title of the post>",     // optional
-        "body": "<String: post body>",              // optional
-    }
+    "post_id": "<PostID: ID of the post to update>",
+    "header": "<String: updated title of the post>",     // optional
+    "body": "<String: updated text of the post>",              // optional
 }
 ```
 
@@ -77,7 +75,7 @@ Request
 Request
 ```json
 {
-    "post_id": "<PostID: ID of the post>"
+    "post_id": "<PostID: ID of the updated post>"
 }
 ```
 
@@ -101,10 +99,9 @@ Response
         "post_id": "<PostID: ID of the post>",
         "created_at": "<ISO8601 timestamp>",
         "author_id": "<UserID: ID of the author>",
-        "post": {
-            "title": "<String: title of the post>",
-            "body": "<String: post body>"
-        }
+        "header": "<String: title of the post>",
+        "body": "<String: post body>"
+
     },
     ...
 ]
@@ -129,8 +126,8 @@ Response
     "history": [
         {
             "created_at": "<ISO8601 timestamp>",
-            "title": "<String: title of the post>",
-            "body": "<String: post body>",
+            "header": "<String: title of the post>",
+            "body": "<String: body text of the post>",
         },
         ...
     ]
@@ -145,16 +142,17 @@ Response
 Request/produce to `posts.create`
 ```json
 {
-    "post": {
-        "title": "Hello, World! 🌎",
-        "body": "This is my first post.."
-    }
+
+    "title": "Hello, World! 🌎",
+    "body": "This is my first post.."
 }
 ```
 Response
 ```json
 {
-    "data": null,
+    "data": {
+        "post_id": "post-id-123"
+    },
     "status_code": 200,
     "message": "OK",
     "processing_time": 420,
@@ -167,16 +165,16 @@ Response
 Request/produce to `posts.get`
 ```json
 {
-    "post_id": 123
+    "post_id": "post-id-123"
 }
 ```
 Response
 ```json
 {
     "data": {
-        "post_id": 123,
+        "post_id": "post-id-123",
         "created_at": "2020-11-12T14:29:59+01:00",
-        "author_id": 123,
+        "author_id": "post-id-123",
         "post": {
             "title": "Hello, World! 🌎",
             "body": "This is my first post.."
