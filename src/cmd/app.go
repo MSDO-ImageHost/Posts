@@ -1,37 +1,36 @@
 package main
 
 import (
-	"fmt"
+	"log"
 
-	models "github.com/MSDO-ImageHost/Posts/pkg/posts"
-	storage "github.com/MSDO-ImageHost/Posts/pkg/posts/dao"
+	broker "github.com/MSDO-ImageHost/Posts/pkg/broker"
+	storage "github.com/MSDO-ImageHost/Posts/pkg/database"
 )
 
 func main() {
 
-	err := storage.Init()
-	if err != nil {
-		panic(err)
+	// Initialize storage and deinitialize on exit
+	if err := storage.Init(); err != nil {
+		log.Panicln(err)
 	}
+	defer func() {
+		if err := storage.Deinit(); err != nil {
+			log.Fatal(err)
+		}
+	}()
 
-	newPost := models.Post{
-		AuthorID: "123-christian-id",
-		Header:   "Hello title!",
-		Body:     "This is my first post..!",
+	// Initialize message broker
+	if err := broker.Init(); err != nil {
+		log.Panicln(err)
 	}
+	// Deinitialize on exit
+	defer func() {
+		if err := broker.Deinit(); err != nil {
+			log.Fatal(err)
+		}
+	}()
 
-	storedPostID, _ := storage.Posts.Add(newPost)
-	fmt.Printf("INSERTING: %+v \t->\t%s\n", newPost, storedPostID)
-
-	updatedPostID, _ := storage.Posts.Update(storedPostID, models.Post{
-		Header: "Updated title",
-	})
-	fmt.Printf("UPDATING: %+v \t->\t%s\n", newPost, updatedPostID)
-
-	fetchedPost, _ := storage.Posts.Find(storedPostID)
-	fmt.Printf("FETCHING: %s \t -> \t %+v \n", storedPostID, fetchedPost)
-
-	//deletedPostID, _ := storage.Posts.Delete(storedPostID)
-	//fmt.Printf("REMOVING: %s\n", deletedPostID)
-
+	go newPostHandler("posts.create")
+	forever := make(chan bool)
+	<-forever
 }

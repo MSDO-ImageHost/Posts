@@ -1,15 +1,15 @@
-package dao
+package database
 
-import (
-	"context"
+/*
+// Find a post in the database with id
+func (storage *MongoStorage) FindOne(postID string) (ReadPost, error) {
 
-	models "github.com/MSDO-ImageHost/Posts/pkg/posts"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
-)
+	return fetchedPost, nil
+}
+
 
 // Find a post in the database with id
-func (db *ScaffoldStorage) Find(postID string) (fetchedPost models.Post, err error) {
+func (storage *MongoStorage) FindMany(postID string) (fetchedPost models.Post, err error) {
 	// Fetch post scaffold
 	scaffoldID, err := primitive.ObjectIDFromHex(postID)
 	if err != nil {
@@ -17,7 +17,7 @@ func (db *ScaffoldStorage) Find(postID string) (fetchedPost models.Post, err err
 	}
 	var scaffold models.Post
 	scaffoldFilter := bson.M{"_id": scaffoldID}
-	err = db.ScaffoldCollection.FindOne(context.TODO(), scaffoldFilter).Decode(&scaffold)
+	err = coll.Handle.FindOne(context.TODO(), scaffoldFilter).Decode(&scaffold)
 	if err != nil {
 		return models.Post{}, err
 	}
@@ -28,7 +28,7 @@ func (db *ScaffoldStorage) Find(postID string) (fetchedPost models.Post, err err
 		{"_id", bson.M{"$in": scaffold.Header.(primitive.A)}},
 		//{"$orderby", bson.M{"created_at": -1}}, // TODO: sort by latest
 	}
-	err = db.HeaderCollection.FindOne(context.TODO(), headerFilter).Decode(&header)
+	err = coll.Handle.FindOne(context.TODO(), headerFilter).Decode(&header)
 	if err != nil {
 		return models.Post{}, err
 	}
@@ -40,7 +40,7 @@ func (db *ScaffoldStorage) Find(postID string) (fetchedPost models.Post, err err
 		//{"$orderby", bson.M{"created_at": -1}}, // TODO: sort by latest
 	}
 
-	err = db.BodyCollection.FindOne(context.TODO(), bodyFilter).Decode(&body)
+	err = coll.Handle.FindOne(context.TODO(), bodyFilter).Decode(&body)
 	if err != nil {
 		return models.Post{}, err
 	}
@@ -56,3 +56,4 @@ func (db *ScaffoldStorage) Find(postID string) (fetchedPost models.Post, err err
 
 	return fetchedPost, nil
 }
+*/

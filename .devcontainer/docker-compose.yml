@@ -14,10 +14,9 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
       - TZ=Europe/Copenhagen
-      - MONGO_CONN_STRING=mongodb://mongo:27017/?readPreference=primary&ssl=false
+      - MONGO_CONN_URI=mongodb://mongo:27017/?readPreference=primary&ssl=false
       - MONGO_SERVICE_DB=posts-db
-      - RABBITMQ_USERNAME=guest
-      - RABBITMQ_PASSWORD=guest
+      - RABBITMQ_CONN_URI=amqp://guest:guest@rabbitmq:5672/
     cap_add:
       - SYS_PTRACE
     security_opt:
