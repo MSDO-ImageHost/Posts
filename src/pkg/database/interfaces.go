@@ -2,7 +2,7 @@ package database
 
 type Interface interface {
 	Add(post PostScaffold) (string, error)
-	//FindOne(postID string) (PostScaffold, error)
+	FindOne(postID string) (PostScaffold, error)
 	//UpdateOne() (string, error)
 	//UpdateMany() ([]string, error)
 	//DeleteOne() (string[], error)
