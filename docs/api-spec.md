@@ -17,9 +17,7 @@ Every response contain metadata about the request. The requested data is stored 
     "status_code": "<Number: HTTP status code",
     "message": "<String>",
     "processing_time": "<Number: Processing time of the request in ms>",
-    "node_respondant": "<NodeID: ID of the node handling the request>",
-    "consumer_tag": "<ID for this service>"
-
+    "node_respondant": "<NodeID: ID of the node handling the request>"
 }
 ```
 
