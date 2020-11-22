@@ -8,31 +8,22 @@ import (
 	"github.com/streadway/amqp"
 )
 
-func getManyPostsHandler(consumer <-chan amqp.Delivery) {
-	for msg := range consumer {
-		if msg.Body == nil {
-			log.Fatal("No data in message")
-		}
+func getManyPostsHandler(msg amqp.Delivery) bool {
 
-		// Parse the received JSON into Post struct
-		postReq := api.GetManyRequest{}
-		if err := json.Unmarshal(msg.Body, &postReq); err != nil {
-			log.Println(err)
-			return
-		}
-
-		// Find in database
-		/*_, err := storage.Posts.FindMany(postReq.PostID)
-
-		// Acknowledge message processed
-		removeFromQueue := true
-		if err != nil {
-			log.Println(err)
-			removeFromQueue = false
-		}
-		if err := msg.Ack(removeFromQueue); err != nil {
-			log.Fatal(err)
-		}*/
+	// Parse the received JSON into Post struct
+	postReq := api.GetManyRequest{}
+	if err := json.Unmarshal(msg.Body, &postReq); err != nil {
+		log.Println(err)
+		return false
 	}
+
+	// Find in database
+	//_, err := storage.Posts.FindMany(postReq.PostID)
+
+	// Acknowledge message was processed
+	//if _ != nil {
+	//	return false
+	//}
+	return true
 
 }

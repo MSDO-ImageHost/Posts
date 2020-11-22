@@ -8,6 +8,8 @@ import (
 	"github.com/streadway/amqp"
 )
 
+var forever chan bool = make(chan bool)
+
 func main() {
 
 	// Initialize storage and deinitialize on exit
@@ -39,11 +41,10 @@ func main() {
 	newEventHandler("posts.get.history", getPostHistoryHandler)
 
 	// Run application 'forever'
-	forever := make(chan bool)
 	<-forever
 }
 
-func newEventHandler(queueName string, handler func(<-chan amqp.Delivery)) {
+func newEventHandler(queueName string, handler func(amqp.Delivery) bool) {
 	queue, err := broker.GetBroker().Channel.QueueDeclare(queueName, true, false, false, false, nil)
 	if err != nil {
 		log.Fatal(err)
@@ -54,10 +55,12 @@ func newEventHandler(queueName string, handler func(<-chan amqp.Delivery)) {
 	}
 
 	go func() {
-		handler(consumer)
+		for msg := range consumer {
+			if msg.Body == nil {
+				log.Println("No data in message")
+			}
+			// Acknowledge message processed
+			msg.Ack(handler(msg))
+		}
 	}()
-}
-
-func testHandler(consumer <-chan amqp.Delivery) {
-
 }

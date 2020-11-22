@@ -9,38 +9,29 @@ import (
 	"github.com/streadway/amqp"
 )
 
-func newPostHandler(consumer <-chan amqp.Delivery) {
-	for msg := range consumer {
-		if msg.Body == nil {
-			log.Fatal("No data in message")
-		}
+func newPostHandler(msg amqp.Delivery) bool {
 
-		// Parse the received JSON into Post struct
-		postReq := api.CreateRequest{}
-		if err := json.Unmarshal(msg.Body, &postReq); err != nil {
-			log.Println(err)
-			return
-		}
-
-		newPost := storage.PostScaffold{
-			AuthorID:      postReq.AuthToken,
-			HeaderContent: postReq.Header,
-			BodyContent:   postReq.Body,
-		}
-
-		log.Println(newPost)
-
-		// Save in database
-		_, err := storage.Posts.Add(newPost)
-
-		// Acknowledge message processed
-		removeFromQueue := true
-		if err != nil {
-			log.Println(err)
-			removeFromQueue = false
-		}
-		if err := msg.Ack(removeFromQueue); err != nil {
-			log.Fatal(err)
-		}
+	// Parse the received JSON into Post struct
+	postReq := api.CreateRequest{}
+	if err := json.Unmarshal(msg.Body, &postReq); err != nil {
+		log.Println(err)
+		return false
 	}
+
+	newPost := storage.PostScaffold{
+		AuthorID:      postReq.AuthToken,
+		HeaderContent: postReq.Header,
+		BodyContent:   postReq.Body,
+	}
+
+	log.Println(newPost)
+
+	// Save in database
+	_, err := storage.Posts.Add(newPost)
+
+	// Acknowledge message was processed
+	if err != nil {
+		return false
+	}
+	return true
 }
