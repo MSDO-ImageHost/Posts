@@ -1,48 +1,57 @@
 package database
 
-/*
+import (
+	"context"
+	"time"
+
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+)
+
 // Update
-func (coll *ScaffoldStorage) Update(postID string, post PostScaffold) (updatedPostID string, err error) {
+func (storage *MongoStorage) Update(postID string, post PostScaffold) (string, error) {
 	now := time.Now()
+
+	updatedPostID := ""
 
 	// Construct post components
 	header := Content{
 		ID:        primitive.NewObjectID(),
 		AuthorID:  post.AuthorID,
-		Data:      fmt.Sprintf("%v", post.Header),
+		Data:      post.HeaderContent,
 		CreatedAt: now,
 	}
 
 	body := Content{
 		ID:        primitive.NewObjectID(),
 		AuthorID:  post.AuthorID,
-		Data:      fmt.Sprintf("%v", post.Body),
+		Data:      post.BodyContent,
 		CreatedAt: now,
 	}
 
 	id, err := primitive.ObjectIDFromHex(postID)
 	if err != nil {
-		return "", err
+		return updatedPostID, err
 	}
 
 	// Update scaffold
 	filter := bson.M{"_id": id}
 	update := bson.M{"$push": bson.M{"header_ids": header.ID, "body_ids": body.ID}}
-	_, err = coll.Handle.UpdateOne(context.TODO(), filter, update)
+	_, err = storage.ScaffoldStorage.UpdateOne(context.TODO(), filter, update)
 	if err != nil {
-		return "", err
+		return updatedPostID, err
 	}
 
 	// Insert components into their respective collections
-	_, err = Headers.Add(header)
+	_, err = storage.HeaderStorage.InsertOne(context.TODO(), header)
 	if err != nil {
-		return "", err
+		return updatedPostID, err
 	}
 
-	_, err = Bodies.Add(body)
+	_, err = storage.BodyStorage.InsertOne(context.TODO(), body)
 	if err != nil {
-		return "", err
+		return updatedPostID, err
 	}
+
 	return updatedPostID, nil
 }
-*/

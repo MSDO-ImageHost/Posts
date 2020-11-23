@@ -1,34 +1,42 @@
 package database
 
-/*
+import (
+	"context"
+
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
+)
+
 // Delete
-func (coll *ScaffoldStorage) Delete(postID string) (deletedPostID string, err error) {
+func (storage *MongoStorage) DeleteOne(postID string) (string, error) {
+
+	deletedID := ""
+
 	// Fetch and delete the post scaffold
 	scaffoldID, err := primitive.ObjectIDFromHex(postID)
 	if err != nil {
-		return "", err
+		return deletedID, err
 	}
-	var scaffold models.Post
+	var scaffold PostScaffold
 	scaffoldFilter := bson.M{"_id": scaffoldID}
-	err = coll.Handle.FindOneAndDelete(context.TODO(), scaffoldFilter).Decode(&scaffold)
+	err = storage.ScaffoldStorage.FindOneAndDelete(context.TODO(), scaffoldFilter).Decode(&scaffold)
 	if err != nil {
-		return "", err
+		return deletedID, err
 	}
 
 	// Delete all belonging post headers
-	headerFilter := bson.M{"_id": bson.M{"$in": scaffold.Header.(primitive.A)}}
-	_, err = coll.Handle.DeleteMany(context.TODO(), headerFilter)
+	headerFilter := bson.M{"_id": bson.M{"$in": scaffold.Header}}
+	_, err = storage.HeaderStorage.DeleteMany(context.TODO(), headerFilter)
 	if err != nil {
-		return "", err
+		return deletedID, err
 	}
 
 	// Delete all belonging post bodies
-	bodyFilter := bson.M{"_id": bson.M{"$in": scaffold.Body.(primitive.A)}}
-	_, err = coll.Handle.DeleteMany(context.TODO(), bodyFilter)
+	bodyFilter := bson.M{"_id": bson.M{"$in": scaffold.Body}}
+	_, err = storage.BodyStorage.DeleteMany(context.TODO(), bodyFilter)
 	if err != nil {
-		return "", err
+		return deletedID, err
 	}
 
-	return deletedPostID, nil
+	return deletedID, nil
 }
-*/
