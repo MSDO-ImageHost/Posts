@@ -16,6 +16,7 @@ type MongoStorage struct {
 	ScaffoldStorage *mongo.Collection
 	HeaderStorage   *mongo.Collection
 	BodyStorage     *mongo.Collection
+	ConsumerStorage *mongo.Collection
 }
 
 type PostQueryID string
@@ -23,6 +24,7 @@ type PostQueryID string
 // Scaffold is the main frame for storing references to content in the post
 type PostScaffold struct {
 	ID            primitive.ObjectID   `bson:"_id"`
+	IDHex         string               `bson:"-"`
 	CreatedAt     time.Time            `bson:"created_at"`
 	AuthorID      string               `bson:"author_id"`
 	HeaderContent string               `bson:"-"`

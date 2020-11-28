@@ -16,13 +16,15 @@ var (
 
 // Init configures the db connection credentials and initializes the database collections.
 func Init() error {
-	log.Println("Opening database connection")
+	log.Println("Database: Setting up")
 
 	// Database handle
+	log.Println("Database: Opening connection")
 	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(os.Getenv("MONGO_CONN_URI")))
 	if err != nil {
 		return err
 	}
+	log.Println("Database: Connection opened")
 
 	shell = MongoShell{
 		Client: client,
@@ -30,23 +32,25 @@ func Init() error {
 	}
 
 	// Configure collections and their respective handles
+	log.Println("Database: Configuring collections")
 	Posts = &MongoStorage{
 		ScaffoldStorage: shell.DB.Collection("scaffolds"),
 		HeaderStorage:   shell.DB.Collection("headers"),
 		BodyStorage:     shell.DB.Collection("bodies"),
+		ConsumerStorage: shell.DB.Collection("consumer-meta"),
 	}
+	log.Println("Database: Collections ready")
 
-	log.Println("Opened database connection")
-
+	log.Println("Database: Setup finished")
 	return nil
 }
 
 func Deinit() error {
-	log.Println("Closing database connection")
+	log.Println("Database: Closing connection")
 
 	if err := shell.Client.Disconnect(context.TODO()); err != nil {
 		return err
 	}
-	log.Println("Closed database connection")
+	log.Println("Database: Closed connection")
 	return nil
 }

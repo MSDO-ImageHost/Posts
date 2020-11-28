@@ -1,5 +1,7 @@
 package broker
 
+import "github.com/streadway/amqp"
+
 type BrokerInterface interface {
-	//NewPosts(handler func(post models.NewPost, d amqp.Delivery))
+	NewAsyncHandler(queueName string, reqHandler func(amqp.Delivery) (interface{}, bool, error))
 }

@@ -140,7 +140,7 @@ Response
 Request/produce to `posts.create`
 ```json
 {
-
+    "auth_token": "123.123.123",
     "title": "Hello, World! 🌎",
     "body": "This is my first post.."
 }

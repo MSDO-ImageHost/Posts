@@ -9,21 +9,29 @@ import (
 	"github.com/streadway/amqp"
 )
 
-func getPostHandler(msg amqp.Delivery) bool {
+func getHistoryRequest(msg amqp.Delivery) (interface{}, bool, error) {
 
 	// Parse the received JSON into Post struct
-	postReq := api.GetRequest{}
+	postReq := api.GetHistoryRequest{}
 	if err := json.Unmarshal(msg.Body, &postReq); err != nil {
 		log.Println(err)
-		return false
+		return nil, false, err
 	}
 
 	// Find in database
-	_, err := storage.Posts.FindOne(postReq.PostID)
+	result, err := storage.Posts.FindOneHistory(postReq.PostID)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	postRes := api.UpdateResponse{
+		PostID: result.IDHex,
+	}
 
 	// Acknowledge message was processed
 	if err != nil {
-		return false
+		return nil, false, err
 	}
-	return true
+	return (interface{})(postRes), true, nil
+
 }

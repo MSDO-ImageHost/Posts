@@ -1,10 +1,14 @@
 package main
 
 import (
+	"fmt"
 	"log"
 
+	"github.com/MSDO-ImageHost/Posts/pkg/broker"
 	"github.com/streadway/amqp"
 )
+
+var forever chan bool = make(chan bool)
 
 func main() {
 
@@ -20,34 +24,54 @@ func main() {
 	}
 	defer ch.Close()
 
-	q, err := ch.QueueDeclare(
-		"posts.create", // name
-		true,           // durable
-		false,          // delete when unused
-		false,          // exclusive
-		false,          // no-wait
-		nil,            // arguments
+	// Declare queue
+	queue, err := ch.QueueDeclare(
+		"gateway.replies",
+		broker.QConfig.Durable,
+		broker.QConfig.AutoDelete,
+		broker.QConfig.Exclusive,
+		broker.QConfig.NoWait,
+		broker.QConfig.Args,
 	)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	postJSON := []byte(`{
-		"auth_token": "<JWT>",
-		"header": "<String: title of the post>",
-		"body": "<String: body text of the post>"
-	}`)
-	err = ch.Publish(
-		"",     // exchange
-		q.Name, // routing key
-		false,  // mandatory
-		false,  // immediate
-		amqp.Publishing{
-			ContentType: "application/json",
-			Body:        postJSON,
-		})
+	/** Listen for responses **/
+	consume, err := ch.Consume(
+		queue.Name,
+		broker.CConfig.Consumer,
+		broker.CConfig.AutoAck,
+		broker.CConfig.Exclusive,
+		broker.CConfig.NoLocal,
+		broker.CConfig.NoWait,
+		broker.CConfig.Args,
+	)
 	if err != nil {
 		log.Fatal(err)
 	}
+	go func() {
+		for msg := range consume {
+			fmt.Println(string(msg.Body))
+		}
+	}()
+	/** **/
 
+	/** Publish payload **/
+	postPayload := amqp.Publishing{
+		ContentType: "application/json",
+		Body: []byte(`{
+			"auth_token": "<JWT>",
+			"header": "<String: title of the post>",
+			"body": "<String: body text of the post>"
+		}`),
+		ReplyTo: "gateway.replies",
+	}
+
+	if err := ch.Publish("", "posts.create", false, false, postPayload); err != nil {
+		log.Fatal(err)
+	}
+	/** **/
+
+	<-forever
 }

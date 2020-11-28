@@ -54,6 +54,14 @@ func (storage *MongoStorage) FindOne(postID string) (PostScaffold, error) {
 	return scaffold, nil
 }
 
+func (storage *MongoStorage) FindOneHistory(postIDHex string) (PostScaffold, error) {
+	return PostScaffold{}, nil
+}
+
+func (storage *MongoStorage) FindUserPosts(userId string) ([]PostScaffold, error) {
+	return []PostScaffold{}, nil
+}
+
 /*
 // Find a post in the database with id
 func (storage *MongoStorage) FindMany(postID string) (fetchedPost models.Post, err error) {

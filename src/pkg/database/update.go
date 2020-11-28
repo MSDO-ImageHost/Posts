@@ -9,10 +9,8 @@ import (
 )
 
 // Update
-func (storage *MongoStorage) Update(postID string, post PostScaffold) (string, error) {
+func (storage *MongoStorage) UpdateOne(post PostScaffold) (updatedPostID string, err error) {
 	now := time.Now()
-
-	updatedPostID := ""
 
 	// Construct post components
 	header := Content{
@@ -29,7 +27,7 @@ func (storage *MongoStorage) Update(postID string, post PostScaffold) (string, e
 		CreatedAt: now,
 	}
 
-	id, err := primitive.ObjectIDFromHex(postID)
+	id, err := primitive.ObjectIDFromHex(post.IDHex)
 	if err != nil {
 		return updatedPostID, err
 	}

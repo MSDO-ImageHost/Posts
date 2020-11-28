@@ -5,25 +5,6 @@ volumes:
   rabbitmq-data:
 
 services:
-  vscode:
-    image: qmcgaw/godevcontainer
-    volumes:
-      - ../src:/workspace
-      - ~/.ssh:/home/vscode/.ssh
-      - ~/.ssh:/root/.ssh
-      - /var/run/docker.sock:/var/run/docker.sock
-    environment:
-      - TZ=Europe/Copenhagen
-      - MONGO_CONN_URI=mongodb://mongo:27017/?readPreference=primary&ssl=false
-      - MONGO_SERVICE_DB=posts-db
-      - RABBITMQ_CONN_URI=amqp://guest:guest@rabbitmq:5672/
-      - JWT_HMAC_SECRET=ImageHostJWTSecret
-    cap_add:
-      - SYS_PTRACE
-    security_opt:
-      - seccomp:unconfined
-    entrypoint: zsh -c "while sleep 1000; do :; done"
-
   rabbitmq:
     image: rabbitmq:3-management
     volumes:
@@ -44,12 +25,6 @@ services:
       - MONGO_INITDB_DATABASE=posts
     restart: unless-stopped
 
-  mongo-express:
-    image: mongo-express
-    ports:
-      - 8081:8081
-    restart: always
-
   posts:
     build: .
     environment:
@@ -58,5 +33,3 @@ services:
       - MONGO_SERVICE_DB=posts-db
       - RABBITMQ_CONN_URI=amqp://guest:guest@rabbitmq:5672/
     restart: unless-stopped
-
-    

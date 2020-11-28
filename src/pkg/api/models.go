@@ -54,6 +54,8 @@ type GetManyResponse struct {
 	Posts []GetResponse
 }
 
+type GetUserPostsResponse GetManyResponse
+
 type GetHistoryRequest struct {
 	AuthToken string `json:"auth_token"`
 	PostID    string `json:"post_id"`

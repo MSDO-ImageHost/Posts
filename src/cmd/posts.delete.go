@@ -9,29 +9,28 @@ import (
 	"github.com/streadway/amqp"
 )
 
-func newPostHandler(msg amqp.Delivery) bool {
+func deleteRequest(msg amqp.Delivery) (interface{}, bool, error) {
 
 	// Parse the received JSON into Post struct
-	postReq := api.CreateRequest{}
+	postReq := api.DeleteRequest{}
 	if err := json.Unmarshal(msg.Body, &postReq); err != nil {
 		log.Println(err)
-		return false
+		return nil, false, err
 	}
 
-	newPost := storage.PostScaffold{
-		AuthorID:      postReq.AuthToken,
-		HeaderContent: postReq.Header,
-		BodyContent:   postReq.Body,
+	// Find in database and delete
+	result, err := storage.Posts.DeleteOne(postReq.PostID)
+	if err != nil {
+		log.Fatal(err)
 	}
 
-	log.Println(newPost)
-
-	// Save in database
-	_, err := storage.Posts.Add(newPost)
+	postRes := api.DeleteResponse{
+		PostID: result,
+	}
 
 	// Acknowledge message was processed
 	if err != nil {
-		return false
+		return nil, false, err
 	}
-	return true
+	return (interface{})(postRes), true, nil
 }

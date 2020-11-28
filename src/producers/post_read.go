@@ -32,7 +32,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	postJSON := []byte(`{"post_id": "5fbaf096c4bfee1ea792cda7"}`)
+	postJSON := []byte(`{"post_id": "5fc2765774dc86cf6e7912d0"}`)
 	err = ch.Publish(
 		"",     // exchange
 		q.Name, // routing key
