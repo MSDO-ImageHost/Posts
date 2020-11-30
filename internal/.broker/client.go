@@ -36,11 +36,11 @@ func Init() error {
 	}
 	log.Println("Broker: Channel opened")
 
-	//log.Println("Broker: Registering exchange")
-	//if err := channel.ExchangeDeclare(EConfig.Name, EConfig.Kind, EConfig.Durable, EConfig.AutoDelete, EConfig.Internal, EConfig.NoWait, EConfig.Args); err != nil {
-	//	log.Fatal(err)
-	//}
-	//log.Println("Broker: Exchange configured")
+	log.Println("Broker: Registering exchange")
+	if err := channel.ExchangeDeclare(EConfig.Name, EConfig.Kind, EConfig.Durable, EConfig.AutoDelete, EConfig.Internal, EConfig.NoWait, EConfig.Args); err != nil {
+		log.Fatal(err)
+	}
+	log.Println("Broker: Exchange configured")
 
 	// Store reference in memory
 	broker = RabbitBroker{

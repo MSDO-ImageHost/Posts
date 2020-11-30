@@ -1,12 +1,8 @@
 package broker
 
-const (
-	Consumer = ""
-)
-
 var (
 	EConfig = ExchangeConfig{
-		Name:       "imagehost.posts",
+		Name:       "posts",
 		Kind:       "direct",
 		Durable:    false,
 		AutoDelete: true,
@@ -26,11 +22,19 @@ var (
 
 	CConfig = ConsumeConfig{
 		Queue:     QConfig.Name,
-		Consumer:  Consumer,
+		Consumer:  "",
 		AutoAck:   false,
 		Exclusive: false,
 		NoLocal:   false,
 		NoWait:    false,
 		Args:      nil,
+	}
+
+	QBConfig = QueueBindingConfig{
+		Name:     QConfig.Name,
+		Key:      "",
+		Exchange: EConfig.Name,
+		NoWait:   false,
+		Args:     nil,
 	}
 )

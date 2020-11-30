@@ -77,9 +77,9 @@ type Paging struct {
 }
 
 type ResponseWrapper struct {
-	Data           interface{} `json:"data"`
-	StatusCode     uint        `json:"status_code"`
-	Message        string      `json:"message"`
-	ProcessingTime int         `json:"processing_time"`
-	NodeRespondant interface{} `json:"node_respondant"`
+	Data             interface{} `json:"data"`
+	ProcessingTimeNs int64       `json:"processing_time_ns"`
+	StatusCode       uint        `json:"-"`
+	Message          string      `json:"-"`
+	NodeRespondant   interface{} `json:"-"`
 }

@@ -7,7 +7,7 @@ creator_id_policy = {
    description: 'must be a string and is required'
 }
 
-post_policy = {
+scaffold_policy = {
    validator: {
       $jsonSchema: {
          bsonType: 'object',
@@ -35,6 +35,6 @@ content_policy = {
    }
 }
 
-db.createCollection('posts', post_policy)
-db.createCollection('postbodies', content_policy)
-db.createCollection('postheaders', content_policy)
+db.createCollection('scaffolds', scaffold_policy)
+db.createCollection('bodies', content_policy)
+db.createCollection('headers', content_policy)

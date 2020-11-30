@@ -1,0 +1,16 @@
+.devcontainer/
+.github/
+.mongo
+.old.src
+.vscode
+deploy
+docs
+
+
+.git*
+
+docker-compose*
+Dockerfile*
+
+
+*.md

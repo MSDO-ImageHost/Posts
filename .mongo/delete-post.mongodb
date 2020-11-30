@@ -1,0 +1,9 @@
+
+use('posts-db');
+
+
+post_id = 1;
+
+scaffold = db.scaffolds.findOneAndDelete({'_id': post_id});
+db.header.deleteMany(scaffold.header_ids);
+db.bodeis.deleteMany(scaffold.body_ids);

@@ -8,7 +8,7 @@ services:
   vscode:
     image: qmcgaw/godevcontainer
     volumes:
-      - ../src:/workspace
+      - ../:/workspace
       - ~/.ssh:/home/vscode/.ssh
       - ~/.ssh:/root/.ssh
       - /var/run/docker.sock:/var/run/docker.sock
@@ -16,7 +16,7 @@ services:
       - TZ=Europe/Copenhagen
       - MONGO_CONN_URI=mongodb://mongo:27017/?readPreference=primary&ssl=false
       - MONGO_SERVICE_DB=posts-db
-      - RABBITMQ_CONN_URI=amqp://guest:guest@rabbitmq:5672/
+      - RABBITMQ_CONN_URI=amqp://ImageHostPosts:DM8742020@rabbitmq:5672/
       - JWT_HMAC_SECRET=ImageHostJWTSecret
     cap_add:
       - SYS_PTRACE
@@ -31,15 +31,15 @@ services:
     ports:
       - 15672:15672
     environment:
-      - RABBITMQ_USERNAME=guest
-      - RABBITMQ_PASSWORD=guest
+      - RABBITMQ_DEFAULT_USER=ImageHostPosts
+      - RABBITMQ_DEFAULT_PASS=DM8742020
     restart: unless-stopped
 
   mongo:
     image: mongo:latest
     volumes:
       - db-storage:/data/db
-      - ../.mongo:/docker-entrypoint-initdb.d
+      - ../.mongo/db-init:/docker-entrypoint-initdb.d
     environment:
       - MONGO_INITDB_DATABASE=posts
     restart: unless-stopped
@@ -56,7 +56,7 @@ services:
       - TZ=Europe/Copenhagen
       - MONGO_CONN_URI=mongodb://mongo:27017/?readPreference=primary&ssl=false
       - MONGO_SERVICE_DB=posts-db
-      - RABBITMQ_CONN_URI=amqp://guest:guest@rabbitmq:5672/
+      - RABBITMQ_CONN_URI=amqp://ImageHostPosts:DM8742020@rabbitmq:5672/
     restart: unless-stopped
 
     

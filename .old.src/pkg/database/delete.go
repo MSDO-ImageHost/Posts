@@ -8,9 +8,7 @@ import (
 )
 
 // Delete
-func (storage *MongoStorage) DeleteOne(postID string) (string, error) {
-
-	deletedID := ""
+func (storage *MongoStorage) DeleteOne(postID string) (deletedID string, err error) {
 
 	// Fetch and delete the post scaffold
 	scaffoldID, err := primitive.ObjectIDFromHex(postID)

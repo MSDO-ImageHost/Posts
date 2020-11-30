@@ -37,3 +37,11 @@ type ExchangeConfig struct {
 	NoWait     bool
 	Args       amqp.Table
 }
+
+type QueueBindingConfig struct {
+	Name     string
+	Key      string
+	Exchange string
+	NoWait   bool
+	Args     amqp.Table
+}

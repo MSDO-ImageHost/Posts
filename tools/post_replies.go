@@ -12,7 +12,7 @@ var forever chan bool = make(chan bool)
 
 func main() {
 
-	conn, err := amqp.Dial("amqp://guest:guest@rabbitmq:5672/")
+	conn, err := amqp.Dial("amqp://ImageHostPosts:DM8742020@rabbitmq:5672/")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -26,7 +26,7 @@ func main() {
 
 	// Declare queue
 	queue, err := ch.QueueDeclare(
-		"gateway.replies",
+		"posts.test-replies",
 		broker.QConfig.Durable,
 		broker.QConfig.AutoDelete,
 		broker.QConfig.Exclusive,
@@ -55,23 +55,6 @@ func main() {
 			fmt.Println(string(msg.Body))
 		}
 	}()
-	/** **/
-
-	/** Publish payload **/
-	postPayload := amqp.Publishing{
-		ContentType: "application/json",
-		Body: []byte(`{
-			"auth_token": "<JWT>",
-			"header": "<String: title of the post>",
-			"body": "<String: body text of the post>"
-		}`),
-		ReplyTo: "gateway.replies",
-	}
-
-	if err := ch.Publish("", "posts.create", false, false, postPayload); err != nil {
-		log.Fatal(err)
-	}
-	/** **/
 
 	<-forever
 }

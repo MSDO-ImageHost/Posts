@@ -1,0 +1,34 @@
+
+use('posts-db');
+
+
+
+
+post_id = '000000000001';
+
+const aggregation = [
+  { $match: {_id: post_id} },
+  { $lookup: {
+      from: 'headers',
+      as: 'headers',
+      let: { 'header_ids': '$header_ids' },
+      pipeline: [
+        { '$match': { '$expr': { '$in': [ '$_id', '$$header_ids' ] } } },
+        { '$sort': { 'created_at': -1 } }
+      ]
+    }
+  },
+  { $lookup: {
+      from: 'bodies',
+      as: 'bodies',
+      let: { 'body_ids': '$body_ids' },
+      pipeline: [
+        { '$match': { '$expr': { '$in': [ '$_id', '$$body_ids' ] } } },
+        { '$sort': { 'created_at': -1 } }
+      ]
+    }
+  }
+];
+
+
+db.scaffolds.aggregate(aggregation);

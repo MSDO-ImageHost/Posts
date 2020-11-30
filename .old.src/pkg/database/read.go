@@ -2,15 +2,16 @@ package database
 
 import (
 	"context"
+	"log"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 // Find a post in the database with id
-func (storage *MongoStorage) FindOne(postID string) (PostScaffold, error) {
+func (storage *MongoStorage) FindOne(postID string) (scaffold PostScaffold, err error) {
 
-	var scaffold PostScaffold
+	log.Println(postID)
 
 	// Convert hex string into bson object id
 	scaffoldID, err := primitive.ObjectIDFromHex(postID)
@@ -18,38 +19,15 @@ func (storage *MongoStorage) FindOne(postID string) (PostScaffold, error) {
 		return scaffold, err
 	}
 
-	scaffoldFilter := bson.M{"_id": scaffoldID}
-	err = storage.ScaffoldStorage.FindOne(context.TODO(), scaffoldFilter).Decode(&scaffold)
+	findPostAggregation := bson.D{
+		bson.M{ ''}
+		bson.M{'$match': bson.M{'$expr': bson.M{'$in': ['$_id', '$$header_ids']}}},
+	}
+
+	_, err := storage.ScaffoldStorage.Aggregate(context.TODO(), findPostAggregation)
 	if err != nil {
 		return scaffold, err
 	}
-
-	// Fetch latest post header scaffold.Header.([]primitive.ObjectID)
-	var header Content
-	headerFilter := bson.D{
-		{"_id", bson.M{"$in": scaffold.Header}},
-		//{"$orderby", bson.M{"created_at": -1}}, // TODO: sort by latest
-	}
-	err = storage.HeaderStorage.FindOne(context.TODO(), headerFilter).Decode(&header)
-	if err != nil {
-		return scaffold, err
-	}
-
-	// Fetch latest post body
-	var body Content
-	bodyFilter := bson.D{
-		{"_id", bson.M{"$in": scaffold.Body}},
-		//{"$orderby", bson.M{"created_at": -1}}, // TODO: sort by latest
-	}
-
-	err = storage.BodyStorage.FindOne(context.TODO(), bodyFilter).Decode(&body)
-	if err != nil {
-		return scaffold, err
-	}
-
-	// Compose fetched data
-	scaffold.HeaderContent = header.Data
-	scaffold.BodyContent = body.Data
 
 	return scaffold, nil
 }
@@ -58,8 +36,30 @@ func (storage *MongoStorage) FindOneHistory(postIDHex string) (PostScaffold, err
 	return PostScaffold{}, nil
 }
 
-func (storage *MongoStorage) FindUserPosts(userId string) ([]PostScaffold, error) {
-	return []PostScaffold{}, nil
+func (storage *MongoStorage) FindUserPosts(userId string) (posts []PostScaffold, err error) {
+
+	//scaffoldFilter := bson.M{"author_id": userId}
+	//
+	//cur, err := storage.ScaffoldStorage.Find(context.TODO(), scaffoldFilter)
+	//if err != nil {
+	//	log.Fatal(err)
+	//}
+	//
+	//for cur.Next(context.TODO()) {
+	//	var result bson.M
+	//	err := cur.Decode(&result)
+	//	if err != nil {
+	//		log.Fatal(err)
+	//	}
+	//	posts = append(posts, PostScaffold{
+	//		ID: result.,
+	//	})
+	//}
+	//if err := cur.Err(); err != nil {
+	//	log.Fatal(err)
+	//}
+
+	return posts, nil
 }
 
 /*

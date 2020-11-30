@@ -39,15 +39,16 @@ func main() {
 	log.Println("App: Broker initialized")
 
 	// Create event handlers
-	broker.Broker.NewAsyncHandler("posts.create", createRequest)
-	broker.Broker.NewAsyncHandler("posts.get", getRequest)
-	broker.Broker.NewAsyncHandler("posts.update", updateRequest)
-	broker.Broker.NewAsyncHandler("posts.delete", deleteRequest)
-	broker.Broker.NewAsyncHandler("posts.get.many", getManyRequest)
-	broker.Broker.NewAsyncHandler("posts.get.history", getHistoryRequest)
-	broker.Broker.NewAsyncHandler("posts.get.userposts", getUserPostsRequest)
+	broker.Broker.NewAsyncHandler("create", createRequest)
+	broker.Broker.NewAsyncHandler("get", getRequest)
+	broker.Broker.NewAsyncHandler("update", updateRequest)
+	broker.Broker.NewAsyncHandler("delete", deleteRequest)
+	broker.Broker.NewAsyncHandler("get-many", getManyRequest)
+	broker.Broker.NewAsyncHandler("get-history", getHistoryRequest)
+	broker.Broker.NewAsyncHandler("get-userposts", getUserPostsRequest)
 
 	// Run application 'forever'
+	log.Printf("App: Awaiting work to do")
 	<-forever
 	os.Exit(0)
 }

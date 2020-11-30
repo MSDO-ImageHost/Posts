@@ -1,0 +1,39 @@
+
+
+use('posts-db');
+
+db.scaffolds.drop();
+db.headers.drop();
+db.bodies.drop();
+
+
+db.headers.insertMany([
+  { '_id' : 1, 'created_at': new Date('2020-03-07T08:00:00Z'), 'author_id' : 'abc', 'data' : 'This is the header title from abc'},
+  { '_id' : 2, 'created_at': new Date('2020-03-07T09:00:00Z'), 'author_id' : 'abc', 'data' : 'This is the header title from abc'},
+  { '_id' : 3, 'created_at': new Date('2020-03-07T10:00:00Z'), 'author_id' : 'abc', 'data' : 'This is the header title from abc'},
+  { '_id' : 4, 'created_at': new Date('2020-03-07T11:00:00Z'), 'author_id' : 'jkl', 'data' : 'This is the header title from jkl'},
+  { '_id' : 5, 'created_at': new Date('2020-03-07T12:00:00Z'), 'author_id' : 'xyz', 'data' : 'This is the header title from xyz'},
+  { '_id' : 6, 'created_at': new Date('2020-03-07T13:00:00Z'), 'author_id' : 'xyz', 'data' : 'This is the header title from xyz'},
+  { '_id' : 7, 'created_at': new Date('2020-03-07T14:00:00Z'), 'author_id' : 'def', 'data' : 'This is the header title from def'},
+  { '_id' : 8, 'created_at': new Date('2020-03-07T15:00:00Z'), 'author_id' : 'def', 'data' : 'This is the header title from def'},
+]);
+
+db.bodies.insertMany([
+  { '_id' : 1, 'created_at': new Date('2020-03-07T08:00:00Z'), 'author_id' : 'abc', 'data' : 'This is the body content from abc'},
+  { '_id' : 2, 'created_at': new Date('2020-03-07T09:00:00Z'), 'author_id' : 'abc', 'data' : 'This is the body content from abc'},
+  { '_id' : 3, 'created_at': new Date('2020-03-07T10:00:00Z'), 'author_id' : 'abc', 'data' : 'This is the body content from abc'},
+  { '_id' : 4, 'created_at': new Date('2020-03-07T11:00:00Z'), 'author_id' : 'jkl', 'data' : 'This is the body content from jkl'},
+  { '_id' : 5, 'created_at': new Date('2020-03-07T12:00:00Z'), 'author_id' : 'xyz', 'data' : 'This is the body content from xyz'},
+  { '_id' : 6, 'created_at': new Date('2020-03-07T13:00:00Z'), 'author_id' : 'xyz', 'data' : 'This is the body content from xyz'},
+  { '_id' : 7, 'created_at': new Date('2020-03-07T14:00:00Z'), 'author_id' : 'def', 'data' : 'This is the body content from def'},
+  { '_id' : 8, 'created_at': new Date('2020-03-07T15:00:00Z'), 'author_id' : 'def', 'data' : 'This is the body content from def'},
+]);
+
+db.scaffolds.insertMany([
+  { '_id' : 1, 'created_at': new Date('2020-03-07T08:00:00Z'), 'updated_on': new Date('2020-07-03T08:00:00Z'), 'author_id': 'abc', 'header_ids': [1,2,3], 'body_ids': [1,2,3]},
+  { '_id' : 2, 'created_at': new Date('2020-03-07T09:00:00Z'), 'updated_on': new Date('2020-07-03T08:00:00Z'), 'author_id': 'xyx', 'header_ids': [5,6], 'body_ids': [5,6]},
+  { '_id' : 3, 'created_at': new Date('2020-03-07T10:00:00Z'), 'updated_on': new Date('2020-07-03T08:00:00Z'), 'author_id': 'def', 'header_ids': [7,8], 'body_ids': [7,8]},
+  { '_id' : 4, 'created_at': new Date('2020-03-07T11:00:00Z'), 'updated_on': new Date('2020-07-03T08:00:00Z'), 'author_id': 'jkl', 'header_ids': [4], 'body_ids': [4]},
+]);
+
+

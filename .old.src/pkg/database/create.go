@@ -29,7 +29,7 @@ func (storage *MongoStorage) Add(post PostScaffold) (string, error) {
 	// Update post object with reference and missing data
 	post.ID = primitive.NewObjectID()
 	post.Header = []primitive.ObjectID{header.ID}
-	post.Body = []primitive.ObjectID{header.ID}
+	post.Body = []primitive.ObjectID{body.ID}
 	post.CreatedAt = now
 
 	// Insert components into their respective collections
@@ -49,5 +49,4 @@ func (storage *MongoStorage) Add(post PostScaffold) (string, error) {
 	}
 
 	return res.InsertedID.(primitive.ObjectID).Hex(), nil
-
 }
