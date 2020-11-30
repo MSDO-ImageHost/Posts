@@ -27,7 +27,7 @@ Requires:
 ## Kubernetes deployment
 
 ```shell
-$ kubectl apply -f https://raw.githubusercontent.com/MSDO-ImageHost/Posts/main/.kubernetes/posts-deployment.yaml
-$ kubectl apply -f https://raw.githubusercontent.com/MSDO-ImageHost/Posts/main/.kubernetes/posts-service.yaml
+$ kubectl apply -f https://raw.githubusercontent.com/MSDO-ImageHost/Posts/main/deploy/posts-deployment.yaml
+$ kubectl apply -f https://raw.githubusercontent.com/MSDO-ImageHost/Posts/main/deploy/posts-service.yaml
 
 ```
