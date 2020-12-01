@@ -1,9 +1,10 @@
 package main
 
 import (
-	"encoding/json"
+	"fmt"
 	"log"
 
+	"github.com/MSDO-ImageHost/Posts/internal/database"
 	storage "github.com/MSDO-ImageHost/Posts/internal/database"
 )
 
@@ -22,12 +23,17 @@ func main() {
 		}
 	}()
 
-}
-
-func PrettyFormatMap(d interface{}) string {
-	b, err := json.MarshalIndent(d, "", "    ")
-	if err != nil {
-		log.Fatal(err)
+	post := database.PostData{
+		Author: "123-christian-id",
+		Header: database.PostContent{Data: "Hello from header!"},
+		Body:   database.PostContent{Data: "Hello from body!"},
 	}
-	return string(b)
+	newPost, err := storage.AddOnePost(post)
+	if err != nil {
+		log.Println(err)
+	}
+
+	fmt.Printf("Inserted document")
+	fmt.Println(PrettyFormatMap(newPost))
+
 }

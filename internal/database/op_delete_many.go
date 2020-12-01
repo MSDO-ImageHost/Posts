@@ -9,11 +9,10 @@ import (
 )
 
 func DeleteManyPosts(postIdHexes []string) (results []string, err error) {
-	results, err = storage.DeleteMany(postIdHexes)
-	if err != nil {
-		// TODO: catch timeout errors
+	if err := AssertClientInstance(); err != nil {
+		return results, err
 	}
-	return results, err
+	return storage.DeleteMany(postIdHexes)
 }
 
 func (s *mongoStorage) DeleteMany(postIdHexes []string) (results []string, err error) {

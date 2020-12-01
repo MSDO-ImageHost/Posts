@@ -10,11 +10,10 @@ import (
 )
 
 func FindOnePost(postIdHex string) (result PostData, err error) {
-	result, err = storage.FindOne(postIdHex)
-	if err != nil {
-		// TODO: catch timeout errors
+	if err := AssertClientInstance(); err != nil {
+		return result, err
 	}
-	return result, err
+	return storage.FindOne(postIdHex)
 }
 
 func (s *mongoStorage) FindOne(postIdHex string) (result PostData, err error) {

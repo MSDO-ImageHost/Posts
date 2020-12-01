@@ -10,11 +10,10 @@ import (
 )
 
 func FindHistoryPost(postIdHex string) (result PostDataHistory, err error) {
-	result, err = storage.FindHistory(postIdHex)
-	if err != nil {
-		// TODO: catch timeout errors
+	if err := AssertClientInstance(); err != nil {
+		return result, err
 	}
-	return result, err
+	return storage.FindHistory(postIdHex)
 }
 
 func (s *mongoStorage) FindHistory(postIdHex string) (result PostDataHistory, err error) {

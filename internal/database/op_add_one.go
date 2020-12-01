@@ -8,12 +8,10 @@ import (
 )
 
 func AddOnePost(post PostData) (result PostData, err error) {
-	result, err = storage.AddOne(post)
-	if err != nil {
-		// TODO: catch timeout errors
+	if err := AssertClientInstance(); err != nil {
+		return result, err
 	}
-
-	return result, err
+	return storage.AddOne(post)
 }
 
 func (s *mongoStorage) AddOne(post PostData) (result PostData, err error) {

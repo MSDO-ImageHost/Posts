@@ -2,7 +2,6 @@ package database
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"os"
 
@@ -17,6 +16,26 @@ var (
 
 // Init configures the db connection credentials and initializes the database collections.
 func Init() (err error) {
+
+	if shell.Client != nil {
+		log.Println("Database:\tAn instance already exists")
+		if Ping() != nil {
+			log.Panicln("Database:\tCould not ping instance. Panicking")
+		}
+
+		if storage == nil {
+			log.Println("Database:\tMissing collection handlers. Restarting setup")
+			if err := Deinit(); err != nil {
+				log.Panicln("Database:\tAn error occurred when disconnecting", err)
+			}
+			shell.Client = nil
+			shell.DB = nil
+			storage = nil
+			Init()
+		}
+		return nil
+	}
+
 	log.Println("Database:\tSetting up")
 
 	// Check if environment variables exists
@@ -72,18 +91,6 @@ func Deinit() (err error) {
 func Ping() (err error) {
 	if err := shell.Client.Ping(context.TODO(), nil); err != nil {
 		return err
-	}
-	return nil
-}
-
-func CheckEnvs() (err error) {
-
-	var envs = []string{"MONGO_CONN_URI", "MONGO_SERVICE_DB"}
-
-	for _, env := range envs {
-		if os.Getenv("MONGO_SERVICE_DB") == "" {
-			return fmt.Errorf("%s is not configured!", env)
-		}
 	}
 	return nil
 }

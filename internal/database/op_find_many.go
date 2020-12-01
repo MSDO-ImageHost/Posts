@@ -9,11 +9,11 @@ import (
 )
 
 func FindManyPosts(postIdHexes []string) (results []PostData, err error) {
-	results, err = storage.FindMany(postIdHexes)
-	if err != nil {
-		// TODO: catch timeout errors
+	if err := AssertClientInstance(); err != nil {
+		return results, err
 	}
-	return results, err
+	return storage.FindMany(postIdHexes)
+
 }
 
 func (s *mongoStorage) FindMany(postIdHexes []string) (results []PostData, err error) {

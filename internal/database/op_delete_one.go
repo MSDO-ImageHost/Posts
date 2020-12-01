@@ -8,11 +8,10 @@ import (
 )
 
 func DeleteOnePost(postIdHex string) (result string, err error) {
-	result, err = storage.DeleteOne(postIdHex)
-	if err != nil {
-		// TODO: catch timeout errors
+	if err := AssertClientInstance(); err != nil {
+		return result, err
 	}
-	return result, err
+	return storage.DeleteOne(postIdHex)
 }
 
 func (s *mongoStorage) DeleteOne(postIdHex string) (result string, err error) {

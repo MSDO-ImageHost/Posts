@@ -2,7 +2,9 @@ package database
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
+	"os"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
@@ -10,6 +12,36 @@ import (
 func ValidHexFormat(hexId string) (err error) {
 	_, err = primitive.ObjectIDFromHex(hexId)
 	return err
+}
+
+func PrettyFormatMap(d interface{}) string {
+	b, err := json.MarshalIndent(d, "", "    ")
+	if err != nil {
+		log.Fatal(err)
+	}
+	return string(b)
+}
+
+func CheckEnvs() (err error) {
+
+	var envs = []string{"MONGO_CONN_URI", "MONGO_SERVICE_DB"}
+
+	for _, env := range envs {
+		if os.Getenv("MONGO_SERVICE_DB") == "" {
+			return fmt.Errorf("%s is not configured!", env)
+		}
+	}
+	return nil
+}
+
+func AssertClientInstance() error {
+	if shell.Client == nil {
+		log.Println("Database:\tNo database client instance! Attempting setup..")
+		if err := Init(); err != nil {
+			log.Panicln("Database:\tCould not establish connection! Panicking", err)
+		}
+	}
+	return nil
 }
 
 func hexes2ObjectID(hexIds []string) (objIds []primitive.ObjectID, err error) {
@@ -26,14 +58,6 @@ func hexes2ObjectID(hexIds []string) (objIds []primitive.ObjectID, err error) {
 		objIds[i] = objId
 	}
 	return objIds, nil
-}
-
-func PrettyFormatMap(d interface{}) string {
-	b, err := json.MarshalIndent(d, "", "    ")
-	if err != nil {
-		log.Fatal(err)
-	}
-	return string(b)
 }
 
 /** landfill

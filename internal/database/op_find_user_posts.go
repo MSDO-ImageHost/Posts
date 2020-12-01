@@ -9,11 +9,10 @@ import (
 )
 
 func FindUserPosts(author string) (results []PostData, err error) {
-	results, err = storage.FindUserPosts(author)
-	if err != nil {
-		// TODO: catch timeout errors
+	if err := AssertClientInstance(); err != nil {
+		return results, err
 	}
-	return results, err
+	return storage.FindUserPosts(author)
 }
 
 func (s *mongoStorage) FindUserPosts(author string) (results []PostData, err error) {
