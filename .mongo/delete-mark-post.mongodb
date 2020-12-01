@@ -1,0 +1,63 @@
+
+use('posts-db');
+
+
+post_id = '5fc6b13083a6710b15792a46';
+
+
+const queryAggregation = [
+  { $match: {_id: ObjectId(post_id)} },
+  { $lookup: {
+      from: 'headers',
+      as: 'headers',
+      let: { 'headers': '$headers' },
+      pipeline: [
+        { '$match': { '$expr': { '$in': [ '$_id', '$$headers' ] } } },
+        { '$sort': { 'created_at': -1 } },
+        { '$limit': 1 }
+      ]
+    }
+  },
+  { $lookup: {
+      from: 'bodies',
+      as: 'bodies',
+      let: { 'bodies': '$bodies' },
+      pipeline: [
+        { '$match': { '$expr': { '$in': [ '$_id', '$$bodies' ] } } },
+        { '$sort': { 'created_at': -1 }},
+        //{ '$limit': 1 }
+      ]
+    }
+  }
+];
+
+
+const markDeleteAggregation = [
+  { $match: {_id: ObjectId(post_id)} },
+  { $lookup: {
+      from: 'headers',
+      as: 'headers',
+      let: { 'headers': '$headers' },
+      pipeline: [
+        { '$match': { '$expr': { '$in': [ '$_id', '$$headers' ] } } },
+        { '$sort': { 'created_at': -1 } },
+        { '$limit': 1 }
+      ]
+    }
+  },
+  { $lookup: {
+      from: 'bodies',
+      as: 'bodies',
+      let: { 'bodies': '$bodies' },
+      pipeline: [
+        { '$match': { '$expr': { '$in': [ '$_id', '$$bodies' ] } } },
+        { '$sort': { 'created_at': -1 }},
+        { '$limit': 1 },
+        { '$set': { 'mark_deleted': true}}
+      ]
+    }
+  }
+];
+
+//db.scaffolds.aggregate(markDeleteAggregation);
+db.scaffolds.updateOne(queryAggregation, {'mark_deleted': true});

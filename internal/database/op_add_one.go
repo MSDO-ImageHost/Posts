@@ -35,10 +35,11 @@ func (s *mongoStorage) AddOne(post PostData) (result PostData, err error) {
 		CreatedAt: now,
 	}
 
-	scaffold := mongoScaffold{
+	scaffold := mongoScaffoldRefs{
 		ID:         primitive.NewObjectID(),
 		Author:     post.Author,
 		CreatedAt:  now,
+		UpdatedAt:  now,
 		HeaderRefs: []primitive.ObjectID{header.ID},
 		BodyRefs:   []primitive.ObjectID{body.ID},
 	}
@@ -61,7 +62,7 @@ func (s *mongoStorage) AddOne(post PostData) (result PostData, err error) {
 
 	// Update post data before returning it
 	result = post
-	result.IDHex = scaffold.ID.String()
+	result.IDHex = scaffold.ID.Hex()
 	result.CreatedAt = scaffold.CreatedAt
 	return result, nil
 }

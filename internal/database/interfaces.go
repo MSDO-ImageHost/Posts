@@ -5,7 +5,6 @@ package database
 type storageInterface interface {
 	// Create
 	AddOne(post PostData) (result PostData, err error)
-	AddMany(posts []PostData) (results []PostData, err error)
 
 	// Read
 	FindOne(postIdHex string) (result PostData, err error)
@@ -17,6 +16,7 @@ type storageInterface interface {
 	UpdateOne(post PostData) (result PostData, err error)
 
 	// Delete
-	DeleteOne(postIdHex string) (result PostData, err error)
-	DeleteMany(postIdHexes []string) (results []PostData, err error)
+	DeleteOne(postIdHex string) (result string, err error)
+	DeleteMany(postIdHexes []string) (results []string, err error)
+	MarkDeleteOne(postIdHex string) (result string, err error)
 }

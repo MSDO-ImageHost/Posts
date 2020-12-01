@@ -20,25 +20,29 @@ type mongoStorage struct {
 }
 
 // Scaffold is the main frame for storing references to content in the post
-type mongoScaffold struct {
-	ID          primitive.ObjectID   `bson:"_id"`
-	IDHex       string               `bson:"-"`
-	Author      string               `bson:"creator_id"`
-	CreatedAt   time.Time            `bson:"created_at"`
-	UpdatedAt   time.Time            `bson:"updated_at,omitempty"`
-	MarkDeleted bool                 `bson:"mark_deleted,omitempty"`
-	HeaderRefs  []primitive.ObjectID `bson:"header_ids"`
-	BodyRefs    []primitive.ObjectID `bson:"body_ids"`
-	Header      mongoContent         `bson:"header,omitempty"`
-	Body        mongoContent         `bson:"body,omitempty"`
-	Headers     []mongoContent       `bson:"headers,omitempty"`
-	Bodies      []mongoContent       `bson:"bodies,omitempty"`
+type mongoScaffoldRefs struct {
+	ID            primitive.ObjectID   `bson:"_id"`
+	Author        string               `bson:"creator_id"`
+	CreatedAt     time.Time            `bson:"created_at"`
+	UpdatedAt     time.Time            `bson:"updated_at,omitempty"`
+	MarkedDeleted bool                 `bson:"marked_deleted,omitempty"`
+	HeaderRefs    []primitive.ObjectID `bson:"headers"`
+	BodyRefs      []primitive.ObjectID `bson:"bodies"`
+}
+
+type mongoScaffoldContents struct {
+	ID             primitive.ObjectID `bson:"_id"`
+	Author         string             `bson:"creator_id"`
+	CreatedAt      time.Time          `bson:"created_at"`
+	UpdatedAt      time.Time          `bson:"updated_at,omitempty"`
+	MarkedDeleted  bool               `bson:"marked_deleted,omitempty"`
+	HeaderContents []mongoContent     `bson:"headers"`
+	BodyContents   []mongoContent     `bson:"bodies"`
 }
 
 // Content is used to store both header and body data in their own collections
 type mongoContent struct {
 	ID          primitive.ObjectID `bson:"_id"`
-	IDHex       string             `bson:"-"`
 	Author      string             `bson:"creator_id"`
 	CreatedAt   time.Time          `bson:"created_at"`
 	Data        string             `bson:"data,omitempty"`
@@ -49,6 +53,7 @@ type PostContent struct {
 	Author    string
 	CreatedAt time.Time
 	Data      string
+	Update    bool
 }
 type PostData struct {
 	IDHex     string
@@ -62,6 +67,7 @@ type PostDataHistory struct {
 	IDHex     string
 	Author    string
 	CreatedAt time.Time
+	UpdatedAt time.Time
 	Headers   []PostContent
 	Bodies    []PostContent
 }

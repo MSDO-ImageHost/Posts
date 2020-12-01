@@ -47,21 +47,6 @@ func (mr *MockstorageInterfaceMockRecorder) AddOne(post interface{}) *gomock.Cal
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddOne", reflect.TypeOf((*MockstorageInterface)(nil).AddOne), post)
 }
 
-// AddMany mocks base method
-func (m *MockstorageInterface) AddMany(posts []PostData) ([]PostData, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "AddMany", posts)
-	ret0, _ := ret[0].([]PostData)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// AddMany indicates an expected call of AddMany
-func (mr *MockstorageInterfaceMockRecorder) AddMany(posts interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddMany", reflect.TypeOf((*MockstorageInterface)(nil).AddMany), posts)
-}
-
 // FindOne mocks base method
 func (m *MockstorageInterface) FindOne(postIdHex string) (PostData, error) {
 	m.ctrl.T.Helper()
@@ -138,10 +123,10 @@ func (mr *MockstorageInterfaceMockRecorder) UpdateOne(post interface{}) *gomock.
 }
 
 // DeleteOne mocks base method
-func (m *MockstorageInterface) DeleteOne(postIdHex string) (PostData, error) {
+func (m *MockstorageInterface) DeleteOne(postIdHex string) (string, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteOne", postIdHex)
-	ret0, _ := ret[0].(PostData)
+	ret0, _ := ret[0].(string)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -153,10 +138,10 @@ func (mr *MockstorageInterfaceMockRecorder) DeleteOne(postIdHex interface{}) *go
 }
 
 // DeleteMany mocks base method
-func (m *MockstorageInterface) DeleteMany(postIdHexes []string) ([]PostData, error) {
+func (m *MockstorageInterface) DeleteMany(postIdHexes []string) ([]string, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteMany", postIdHexes)
-	ret0, _ := ret[0].([]PostData)
+	ret0, _ := ret[0].([]string)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
@@ -165,4 +150,19 @@ func (m *MockstorageInterface) DeleteMany(postIdHexes []string) ([]PostData, err
 func (mr *MockstorageInterfaceMockRecorder) DeleteMany(postIdHexes interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteMany", reflect.TypeOf((*MockstorageInterface)(nil).DeleteMany), postIdHexes)
+}
+
+// MarkDeleteOne mocks base method
+func (m *MockstorageInterface) MarkDeleteOne(postIdHex string) (string, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "MarkDeleteOne", postIdHex)
+	ret0, _ := ret[0].(string)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// MarkDeleteOne indicates an expected call of MarkDeleteOne
+func (mr *MockstorageInterfaceMockRecorder) MarkDeleteOne(postIdHex interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "MarkDeleteOne", reflect.TypeOf((*MockstorageInterface)(nil).MarkDeleteOne), postIdHex)
 }
