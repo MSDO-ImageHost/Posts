@@ -2,6 +2,7 @@ package database
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"os"
 
@@ -15,8 +16,15 @@ var (
 )
 
 // Init configures the db connection credentials and initializes the database collections.
-func Init() error {
+func Init() (err error) {
 	log.Println("Database: Setting up")
+
+	// Check if environment variables exists
+	log.Println("Database: Checking environment variables")
+	if err := CheckEnvs(); err != nil {
+		return err
+	}
+	log.Println("Database: Variables are set")
 
 	// Database handle
 	log.Println("Database: Opening connection")
@@ -30,6 +38,12 @@ func Init() error {
 		Client: client,
 		DB:     client.Database(os.Getenv("MONGO_SERVICE_DB")),
 	}
+
+	log.Println("Database: Pinging client")
+	if err := Ping(); err != nil {
+		return err
+	}
+	log.Println("Database: Pong from client")
 
 	// Configure collections and their respective handles
 	log.Println("Database: Configuring collections")
@@ -45,12 +59,31 @@ func Init() error {
 	return nil
 }
 
-func Deinit() error {
+func Deinit() (err error) {
 	log.Println("Database: Closing connection")
 
-	if err := shell.Client.Disconnect(context.TODO()); err != nil {
+	if err = shell.Client.Disconnect(context.TODO()); err != nil {
 		return err
 	}
 	log.Println("Database: Closed connection")
+	return nil
+}
+
+func Ping() (err error) {
+	if err := shell.Client.Ping(context.TODO(), nil); err != nil {
+		return err
+	}
+	return nil
+}
+
+func CheckEnvs() (err error) {
+
+	var envs = []string{"MONGO_CONN_URI", "MONGO_SERVICE_DB"}
+
+	for _, env := range envs {
+		if os.Getenv("MONGO_SERVICE_DB") == "" {
+			return fmt.Errorf("%s is not configured!", env)
+		}
+	}
 	return nil
 }

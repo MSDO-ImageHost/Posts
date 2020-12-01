@@ -23,21 +23,21 @@ func (s *mongoStorage) AddOne(post PostData) (result PostData, err error) {
 	// Construct post content components
 	header := mongoContent{
 		ID:        primitive.NewObjectID(),
-		OwnedBy:   post.Author,
-		Data:      post.Header,
+		Author:    post.Author,
+		Data:      post.Header.Data,
 		CreatedAt: now,
 	}
 
 	body := mongoContent{
 		ID:        primitive.NewObjectID(),
-		OwnedBy:   post.Author,
-		Data:      post.Body,
+		Author:    post.Author,
+		Data:      post.Body.Data,
 		CreatedAt: now,
 	}
 
 	scaffold := mongoScaffold{
 		ID:         primitive.NewObjectID(),
-		OwnedBy:    post.Author,
+		Author:     post.Author,
 		CreatedAt:  now,
 		HeaderRefs: []primitive.ObjectID{header.ID},
 		BodyRefs:   []primitive.ObjectID{body.ID},
@@ -46,17 +46,17 @@ func (s *mongoStorage) AddOne(post PostData) (result PostData, err error) {
 	// Insert components into their respective collections
 	_, err = s.HeaderStorage.InsertOne(context.TODO(), header)
 	if err != nil {
-		return PostData{}, err
+		return result, err
 	}
 
 	_, err = s.BodyStorage.InsertOne(context.TODO(), body)
 	if err != nil {
-		return PostData{}, err
+		return result, err
 	}
 
 	_, err = s.ScaffoldStorage.InsertOne(context.TODO(), scaffold)
 	if err != nil {
-		return PostData{}, err
+		return result, err
 	}
 
 	// Update post data before returning it

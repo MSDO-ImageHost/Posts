@@ -2,7 +2,7 @@
 use('posts-db');
 
 
-post_id = 1;
+post_id = "5fc5937602ac8fa03917d22e";
 
 const aggregation = [
   { $match: {_id: post_id} },

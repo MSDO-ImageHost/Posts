@@ -17,8 +17,8 @@ func TestAdd(t *testing.T) {
 
 	post := database.PostData{
 		Author: "123-christian-id",
-		Header: "Hello from header!",
-		Body:   "Hello from body!",
+		Header: database.PostContent{Data: "Hello from header!"},
+		Body:   database.PostContent{Data: "Hello from body!"},
 	}
 
 	s.EXPECT().AddOne(post).Return(post, errors.New("DB error"))
