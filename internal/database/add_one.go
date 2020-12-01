@@ -21,21 +21,21 @@ func (s *mongoStorage) AddOne(post PostData) (result PostData, err error) {
 	now := time.Now()
 
 	// Construct post content components
-	header := Content{
+	header := mongoContent{
 		ID:        primitive.NewObjectID(),
 		OwnedBy:   post.Author,
 		Data:      post.Header,
 		CreatedAt: now,
 	}
 
-	body := Content{
+	body := mongoContent{
 		ID:        primitive.NewObjectID(),
 		OwnedBy:   post.Author,
 		Data:      post.Body,
 		CreatedAt: now,
 	}
 
-	scaffold := Scaffold{
+	scaffold := mongoScaffold{
 		ID:         primitive.NewObjectID(),
 		OwnedBy:    post.Author,
 		CreatedAt:  now,

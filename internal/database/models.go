@@ -20,7 +20,7 @@ type mongoStorage struct {
 }
 
 // Scaffold is the main frame for storing references to content in the post
-type Scaffold struct {
+type mongoScaffold struct {
 	ID         primitive.ObjectID   `bson:"_id"`
 	OwnedBy    string               `bson:"creator_id"`
 	CreatedAt  time.Time            `bson:"created_at"`
@@ -30,7 +30,7 @@ type Scaffold struct {
 }
 
 // Content is used to store both header and body data in their own collections
-type Content struct {
+type mongoContent struct {
 	ID        primitive.ObjectID `bson:"_id"`
 	OwnedBy   string             `bson:"creator_id"`
 	CreatedAt time.Time          `bson:"created_at"`
