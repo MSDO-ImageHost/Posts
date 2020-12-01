@@ -32,17 +32,137 @@ func (m *MockstorageInterface) EXPECT() *MockstorageInterfaceMockRecorder {
 	return m.recorder
 }
 
-// Add mocks base method
-func (m *MockstorageInterface) Add(post Scaffold) (string, error) {
+// AddOne mocks base method
+func (m *MockstorageInterface) AddOne(post PostData) (PostData, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Add", post)
-	ret0, _ := ret[0].(string)
+	ret := m.ctrl.Call(m, "AddOne", post)
+	ret0, _ := ret[0].(PostData)
 	ret1, _ := ret[1].(error)
 	return ret0, ret1
 }
 
-// Add indicates an expected call of Add
-func (mr *MockstorageInterfaceMockRecorder) Add(post interface{}) *gomock.Call {
+// AddOne indicates an expected call of AddOne
+func (mr *MockstorageInterfaceMockRecorder) AddOne(post interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Add", reflect.TypeOf((*MockstorageInterface)(nil).Add), post)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddOne", reflect.TypeOf((*MockstorageInterface)(nil).AddOne), post)
+}
+
+// AddMany mocks base method
+func (m *MockstorageInterface) AddMany(posts []PostData) ([]PostData, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AddMany", posts)
+	ret0, _ := ret[0].([]PostData)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// AddMany indicates an expected call of AddMany
+func (mr *MockstorageInterfaceMockRecorder) AddMany(posts interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddMany", reflect.TypeOf((*MockstorageInterface)(nil).AddMany), posts)
+}
+
+// FindOne mocks base method
+func (m *MockstorageInterface) FindOne(postIdHex string) (PostData, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FindOne", postIdHex)
+	ret0, _ := ret[0].(PostData)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// FindOne indicates an expected call of FindOne
+func (mr *MockstorageInterfaceMockRecorder) FindOne(postIdHex interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindOne", reflect.TypeOf((*MockstorageInterface)(nil).FindOne), postIdHex)
+}
+
+// FindMany mocks base method
+func (m *MockstorageInterface) FindMany(postIdHexes []string) ([]PostData, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FindMany", postIdHexes)
+	ret0, _ := ret[0].([]PostData)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// FindMany indicates an expected call of FindMany
+func (mr *MockstorageInterfaceMockRecorder) FindMany(postIdHexes interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindMany", reflect.TypeOf((*MockstorageInterface)(nil).FindMany), postIdHexes)
+}
+
+// FindHistory mocks base method
+func (m *MockstorageInterface) FindHistory(postIdHex string) (PostDataHistory, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FindHistory", postIdHex)
+	ret0, _ := ret[0].(PostDataHistory)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// FindHistory indicates an expected call of FindHistory
+func (mr *MockstorageInterfaceMockRecorder) FindHistory(postIdHex interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindHistory", reflect.TypeOf((*MockstorageInterface)(nil).FindHistory), postIdHex)
+}
+
+// FindUserPosts mocks base method
+func (m *MockstorageInterface) FindUserPosts(author string) ([]PostData, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "FindUserPosts", author)
+	ret0, _ := ret[0].([]PostData)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// FindUserPosts indicates an expected call of FindUserPosts
+func (mr *MockstorageInterfaceMockRecorder) FindUserPosts(author interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "FindUserPosts", reflect.TypeOf((*MockstorageInterface)(nil).FindUserPosts), author)
+}
+
+// UpdateOne mocks base method
+func (m *MockstorageInterface) UpdateOne(post PostData) (PostData, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateOne", post)
+	ret0, _ := ret[0].(PostData)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// UpdateOne indicates an expected call of UpdateOne
+func (mr *MockstorageInterfaceMockRecorder) UpdateOne(post interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateOne", reflect.TypeOf((*MockstorageInterface)(nil).UpdateOne), post)
+}
+
+// DeleteOne mocks base method
+func (m *MockstorageInterface) DeleteOne(postIdHex string) (PostData, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteOne", postIdHex)
+	ret0, _ := ret[0].(PostData)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DeleteOne indicates an expected call of DeleteOne
+func (mr *MockstorageInterfaceMockRecorder) DeleteOne(postIdHex interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteOne", reflect.TypeOf((*MockstorageInterface)(nil).DeleteOne), postIdHex)
+}
+
+// DeleteMany mocks base method
+func (m *MockstorageInterface) DeleteMany(postIdHexes []string) ([]PostData, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteMany", postIdHexes)
+	ret0, _ := ret[0].([]PostData)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// DeleteMany indicates an expected call of DeleteMany
+func (mr *MockstorageInterfaceMockRecorder) DeleteMany(postIdHexes interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteMany", reflect.TypeOf((*MockstorageInterface)(nil).DeleteMany), postIdHexes)
 }
