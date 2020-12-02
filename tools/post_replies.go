@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/MSDO-ImageHost/Posts/pkg/broker"
+	"github.com/MSDO-ImageHost/Posts/internal/utils"
 	"github.com/streadway/amqp"
 )
 
@@ -26,12 +26,12 @@ func main() {
 
 	// Declare queue
 	queue, err := ch.QueueDeclare(
-		"posts.test-replies",
-		broker.QConfig.Durable,
-		broker.QConfig.AutoDelete,
-		broker.QConfig.Exclusive,
-		broker.QConfig.NoWait,
-		broker.QConfig.Args,
+		"confirm-post-creation",
+		true,
+		true,
+		false,
+		false,
+		nil,
 	)
 	if err != nil {
 		log.Fatal(err)
@@ -40,19 +40,20 @@ func main() {
 	/** Listen for responses **/
 	consume, err := ch.Consume(
 		queue.Name,
-		broker.CConfig.Consumer,
-		broker.CConfig.AutoAck,
-		broker.CConfig.Exclusive,
-		broker.CConfig.NoLocal,
-		broker.CConfig.NoWait,
-		broker.CConfig.Args,
+		"",
+		false,
+		false,
+		false,
+		false,
+		nil,
 	)
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	go func() {
 		for msg := range consume {
-			fmt.Println(string(msg.Body))
+			fmt.Println(utils.PrettyFormatMap(msg.Body))
 		}
 	}()
 

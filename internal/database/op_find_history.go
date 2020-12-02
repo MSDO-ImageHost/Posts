@@ -9,6 +9,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
+// Public module handler
 func FindHistoryPost(postIdHex string) (result PostDataHistory, err error) {
 	if err := AssertClientInstance(); err != nil {
 		return result, err

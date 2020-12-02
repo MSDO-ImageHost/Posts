@@ -7,6 +7,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+// Public module handler
 func AddOnePost(post PostData) (result PostData, err error) {
 	if err := AssertClientInstance(); err != nil {
 		return result, err
@@ -23,21 +24,20 @@ func (s *mongoStorage) AddOne(post PostData) (result PostData, err error) {
 		ID:        primitive.NewObjectID(),
 		Author:    post.Author,
 		Data:      post.Header.Data,
-		CreatedAt: now,
+		CreatedAt: &now,
 	}
 
 	body := mongoContent{
 		ID:        primitive.NewObjectID(),
 		Author:    post.Author,
 		Data:      post.Body.Data,
-		CreatedAt: now,
+		CreatedAt: &now,
 	}
 
 	scaffold := mongoScaffoldRefs{
 		ID:         primitive.NewObjectID(),
 		Author:     post.Author,
-		CreatedAt:  now,
-		UpdatedAt:  now,
+		CreatedAt:  &now,
 		HeaderRefs: []primitive.ObjectID{header.ID},
 		BodyRefs:   []primitive.ObjectID{body.ID},
 	}
@@ -62,5 +62,15 @@ func (s *mongoStorage) AddOne(post PostData) (result PostData, err error) {
 	result = post
 	result.IDHex = scaffold.ID.Hex()
 	result.CreatedAt = scaffold.CreatedAt
+	result.Header = PostContent{
+		Author:    header.Author,
+		Data:      header.Data,
+		CreatedAt: header.CreatedAt,
+	}
+	result.Body = PostContent{
+		Author:    body.Author,
+		Data:      body.Data,
+		CreatedAt: body.CreatedAt,
+	}
 	return result, nil
 }

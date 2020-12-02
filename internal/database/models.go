@@ -23,8 +23,8 @@ type mongoStorage struct {
 type mongoScaffoldRefs struct {
 	ID            primitive.ObjectID   `bson:"_id"`
 	Author        string               `bson:"creator_id"`
-	CreatedAt     time.Time            `bson:"created_at"`
-	UpdatedAt     time.Time            `bson:"updated_at,omitempty"`
+	CreatedAt     *time.Time           `bson:"created_at"`
+	UpdatedAt     *time.Time           `bson:"updated_at,omitempty"`
 	MarkedDeleted bool                 `bson:"marked_deleted,omitempty"`
 	HeaderRefs    []primitive.ObjectID `bson:"headers"`
 	BodyRefs      []primitive.ObjectID `bson:"bodies"`
@@ -33,8 +33,8 @@ type mongoScaffoldRefs struct {
 type mongoScaffoldContents struct {
 	ID             primitive.ObjectID `bson:"_id"`
 	Author         string             `bson:"creator_id"`
-	CreatedAt      time.Time          `bson:"created_at"`
-	UpdatedAt      time.Time          `bson:"updated_at,omitempty"`
+	CreatedAt      *time.Time         `bson:"created_at"`
+	UpdatedAt      *time.Time         `bson:"updated_at,omitempty"`
 	MarkedDeleted  bool               `bson:"marked_deleted,omitempty"`
 	HeaderContents []mongoContent     `bson:"headers"`
 	BodyContents   []mongoContent     `bson:"bodies"`
@@ -44,30 +44,30 @@ type mongoScaffoldContents struct {
 type mongoContent struct {
 	ID          primitive.ObjectID `bson:"_id"`
 	Author      string             `bson:"creator_id"`
-	CreatedAt   time.Time          `bson:"created_at"`
+	CreatedAt   *time.Time         `bson:"created_at"`
 	Data        string             `bson:"data,omitempty"`
 	MarkDeleted bool               `bson:"mark_deleted,omitempty"`
 }
 
 type PostContent struct {
 	Author    string
-	CreatedAt time.Time
+	CreatedAt *time.Time
 	Data      string
 	Update    bool
 }
 type PostData struct {
 	IDHex     string
 	Author    string
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	CreatedAt *time.Time
+	UpdatedAt *time.Time
 	Header    PostContent
 	Body      PostContent
 }
 type PostDataHistory struct {
 	IDHex     string
 	Author    string
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	CreatedAt *time.Time
+	UpdatedAt *time.Time
 	Headers   []PostContent
 	Bodies    []PostContent
 }

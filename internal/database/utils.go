@@ -1,10 +1,7 @@
 package database
 
 import (
-	"encoding/json"
-	"fmt"
 	"log"
-	"os"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
@@ -12,26 +9,6 @@ import (
 func ValidHexFormat(hexId string) (err error) {
 	_, err = primitive.ObjectIDFromHex(hexId)
 	return err
-}
-
-func PrettyFormatMap(d interface{}) string {
-	b, err := json.MarshalIndent(d, "", "    ")
-	if err != nil {
-		log.Fatal(err)
-	}
-	return string(b)
-}
-
-func CheckEnvs() (err error) {
-
-	var envs = []string{"MONGO_CONN_URI", "MONGO_SERVICE_DB"}
-
-	for _, env := range envs {
-		if os.Getenv("MONGO_SERVICE_DB") == "" {
-			return fmt.Errorf("%s is not configured!", env)
-		}
-	}
-	return nil
 }
 
 func AssertClientInstance() error {

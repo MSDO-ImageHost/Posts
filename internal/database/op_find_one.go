@@ -9,6 +9,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
+// Public module handler
 func FindOnePost(postIdHex string) (result PostData, err error) {
 	if err := AssertClientInstance(); err != nil {
 		return result, err

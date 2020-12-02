@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/MSDO-ImageHost/Posts/internal/utils"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -18,13 +19,13 @@ var (
 func Init() (err error) {
 
 	if shell.Client != nil {
-		log.Println("Database:\tAn instance already exists")
+		log.Println(_LOG_TAG, "An instance already exists")
 		if Ping() != nil {
 			log.Panicln("Database:\tCould not ping instance. Panicking")
 		}
 
 		if storage == nil {
-			log.Println("Database:\tMissing collection handlers. Restarting setup")
+			log.Println(_LOG_TAG, "Missing collection handlers. Restarting setup")
 			if err := Deinit(); err != nil {
 				log.Panicln("Database:\tAn error occurred when disconnecting", err)
 			}
@@ -36,55 +37,55 @@ func Init() (err error) {
 		return nil
 	}
 
-	log.Println("Database:\tSetting up")
+	log.Println(_LOG_TAG, "Setting up")
 
 	// Check if environment variables exists
-	log.Println("Database:\tChecking environment variables")
-	if err := CheckEnvs(); err != nil {
+	log.Println(_LOG_TAG, "Checking environment variables")
+	if err := utils.CheckEnvs([]string{"MONGO_CONN_URI", "MONGO_SERVICE_DB"}); err != nil {
 		return err
 	}
-	log.Println("Database:\tVariables are set")
+	log.Println(_LOG_TAG, "Variables are set")
 
 	// Database handle
-	log.Println("Database:\tOpening connection")
+	log.Println(_LOG_TAG, "Opening connection")
 	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(os.Getenv("MONGO_CONN_URI")))
 	if err != nil {
 		return err
 	}
-	log.Println("Database:\tConnection opened")
+	log.Println(_LOG_TAG, "Connection opened")
 
 	shell = mongoShell{
 		Client: client,
 		DB:     client.Database(os.Getenv("MONGO_SERVICE_DB")),
 	}
 
-	log.Println("Database:\tPinging client")
+	log.Println(_LOG_TAG, "Pinging client")
 	if err := Ping(); err != nil {
 		return err
 	}
-	log.Println("Database:\tPong from client")
+	log.Println(_LOG_TAG, "Pong from client")
 
 	// Configure collections and their respective handles
-	log.Println("Database:\tConfiguring collections")
+	log.Println(_LOG_TAG, "Configuring collections")
 	storage = &mongoStorage{
 		ScaffoldStorage: shell.DB.Collection("scaffolds"),
 		HeaderStorage:   shell.DB.Collection("headers"),
 		BodyStorage:     shell.DB.Collection("bodies"),
 		ConsumerStorage: shell.DB.Collection("consumer-meta"),
 	}
-	log.Println("Database:\tCollections ready")
+	log.Println(_LOG_TAG, "Collections ready")
 
-	log.Println("Database:\tSetup finished")
+	log.Println(_LOG_TAG, "Setup finished")
 	return nil
 }
 
 func Deinit() (err error) {
-	log.Println("Database:\tClosing connection")
+	log.Println(_LOG_TAG, "Closing connection")
 
 	if err = shell.Client.Disconnect(context.TODO()); err != nil {
 		return err
 	}
-	log.Println("Database:\tClosed connection")
+	log.Println(_LOG_TAG, "Closed connection")
 	return nil
 }
 

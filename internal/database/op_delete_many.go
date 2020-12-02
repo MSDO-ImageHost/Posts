@@ -8,6 +8,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+// Public module handler
 func DeleteManyPosts(postIdHexes []string) (results []string, err error) {
 	if err := AssertClientInstance(); err != nil {
 		return results, err

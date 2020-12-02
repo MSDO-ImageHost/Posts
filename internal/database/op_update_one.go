@@ -8,6 +8,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+// Public module handler
 func UpdateOnePost(post PostData) (result PostData, err error) {
 	if err := AssertClientInstance(); err != nil {
 		return result, err
@@ -32,7 +33,7 @@ func (s *mongoStorage) UpdateOne(post PostData) (result PostData, err error) {
 			ID:        primitive.NewObjectID(),
 			Author:    post.Author,
 			Data:      post.Header.Data,
-			CreatedAt: now,
+			CreatedAt: &now,
 		}
 
 		_, err = s.HeaderStorage.InsertOne(context.TODO(), header)
@@ -49,7 +50,7 @@ func (s *mongoStorage) UpdateOne(post PostData) (result PostData, err error) {
 			ID:        primitive.NewObjectID(),
 			Author:    post.Author,
 			Data:      post.Body.Data,
-			CreatedAt: now,
+			CreatedAt: &now,
 		}
 
 		_, err = s.BodyStorage.InsertOne(context.TODO(), body)

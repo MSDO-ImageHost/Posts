@@ -7,6 +7,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+// Public module handler
 func DeleteMarkOnePost(postIdHex string) (result string, err error) {
 	if err := AssertClientInstance(); err != nil {
 		return result, err

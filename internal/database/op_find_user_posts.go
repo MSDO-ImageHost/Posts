@@ -8,6 +8,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
+// Public module handler
 func FindUserPosts(author string) (results []PostData, err error) {
 	if err := AssertClientInstance(); err != nil {
 		return results, err
