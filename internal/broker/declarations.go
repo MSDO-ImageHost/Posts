@@ -1,8 +1,6 @@
 package broker
 
 import (
-	"log"
-
 	"github.com/streadway/amqp"
 )
 
@@ -18,8 +16,6 @@ func QueueDeclare(config QueueConfig) error {
 	if err != nil {
 		return err
 	}
-
-	log.Println(LOG_TAG, "Declared queue", config.Name)
 	return nil
 }
 

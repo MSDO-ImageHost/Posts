@@ -16,7 +16,7 @@ services:
       - TZ=Europe/Copenhagen
       - MONGO_CONN_URI=mongodb://mongo:27017/?readPreference=primary&ssl=false
       - MONGO_SERVICE_DB=posts-db
-      - RABBITMQ_CONN_URI=amqp://ImageHostPosts:DM8742020@rabbitmq:5672/
+      - RABBITMQ_CONN_URI=amqp://dev:dev@rabbitmq:5672/
       - JWT_HMAC_SECRET=ImageHostJWTSecret
     cap_add:
       - SYS_PTRACE
@@ -31,8 +31,8 @@ services:
     ports:
       - 15672:15672
     environment:
-      - RABBITMQ_DEFAULT_USER=ImageHostPosts
-      - RABBITMQ_DEFAULT_PASS=DM8742020
+      - RABBITMQ_DEFAULT_USER=dev
+      - RABBITMQ_DEFAULT_PASS=dev
     restart: unless-stopped
 
   mongo:
@@ -56,7 +56,8 @@ services:
       - TZ=Europe/Copenhagen
       - MONGO_CONN_URI=mongodb://mongo:27017/?readPreference=primary&ssl=false
       - MONGO_SERVICE_DB=posts-db
-      - RABBITMQ_CONN_URI=amqp://ImageHostPosts:DM8742020@rabbitmq:5672/
+      - RABBITMQ_CONN_URI=amqp://dev:dev@rabbitmq:5672/
+      - JWT_HMAC_SECRET=ImageHostJWTSecret
     restart: unless-stopped
 
     

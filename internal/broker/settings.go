@@ -1,3 +1,3 @@
 package broker
 
-var LOG_TAG string = "Broker:\t"
+var _LOG_TAG string = "Broker:\t"

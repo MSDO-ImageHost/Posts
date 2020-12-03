@@ -18,3 +18,13 @@ package auth
 //		fmt.Println(err)
 //	}
 //}
+
+func Decompose(token string) (jwtc JWTSkeleton, err error) {
+
+	jwtc = JWTSkeleton{
+		UserID: "123-christian-id",
+		Role:   "admin",
+	}
+
+	return jwtc, nil
+}

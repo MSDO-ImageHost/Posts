@@ -9,7 +9,7 @@ type storageInterface interface {
 	// Read
 	FindOne(postIdHex string) (result PostData, err error)
 	FindMany(postIdHexes []string) (results []PostData, err error)
-	FindHistory(postIdHex string) (result PostDataHistory, err error)
+	FindHistory(postIdHex string) (result PostHistoryData, err error)
 	FindUserPosts(author string) (results []PostData, err error)
 
 	// Update

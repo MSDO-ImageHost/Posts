@@ -4,24 +4,11 @@ import (
 	"time"
 )
 
-// Requests
-type CreateOnePostRequest struct {
-	Header string `json:"header"`
-	Body   string `json:"body"`
+type SinglePostID struct {
+	PostID string `json:"post_id"`
 }
 
-// Responses
-type NoHistoryPostResponse struct {
-	PostID    string      `json:"post_id"`
-	Author    string      `json:"author_id"`
-	CreatedAt *time.Time  `json:"created_at"`
-	UpdatedAt *time.Time  `json:"updated_at,omitempty"`
-	Header    PostContent `json:"header"`
-	Body      PostContent `json:"body"`
-}
-
-// Structures
-type PostContent struct {
+type PostContentStruct struct {
 	Author    string     `json:"author_id"`
 	CreatedAt *time.Time `json:"created_at"`
 	Data      string     `json:"data"`
@@ -32,16 +19,35 @@ type StatusCode struct {
 	Message string `json:"message"`
 }
 
-type Paging struct {
+type PagingStruct struct {
 	Start interface{} `json:"start"`
 	End   interface{} `json:"end"`
 	Limit uint        `json:"limit"`
 }
 
-type ResponseWrapper struct {
-	Data             interface{} `json:"data"`
-	ProcessingTimeNs int64       `json:"processing_time_ns"`
-	NodeRespondant   interface{} `json:"-"`
+type NoPostHistoryStruct struct {
+	PostID    string        `json:"post_id"`
+	Author    string        `json:"author_id"`
+	CreatedAt *time.Time    `json:"created_at"`
+	UpdatedAt *time.Time    `json:"updated_at,omitempty"`
+	Header    interface{}   `json:"header"` // Used as string for unmarshalling and PostContentStruct for marshalling
+	Body      interface{}   `json:"body"`
+	Paging    *PagingStruct `json:"paging,omitempty"`
+}
+
+type PostHistoryStruct struct {
+	PostID    string              `json:"post_id"`
+	Author    string              `json:"author_id"`
+	CreatedAt *time.Time          `json:"created_at"`
+	UpdatedAt *time.Time          `json:"updated_at,omitempty"`
+	Headers   []PostContentStruct `json:"header"`
+	Bodies    []PostContentStruct `json:"body"`
+	Paging    *PagingStruct       `json:"paging,omitempty"`
+}
+
+type ManyPostIds struct {
+	PostIDs []string      `json:"post_ids"`
+	Paging  *PagingStruct `json:"paging,omitempty"`
 }
 
 /**

@@ -3,16 +3,19 @@ package main
 import (
 	"fmt"
 	"log"
+	"os"
+	"os/signal"
+	"syscall"
 
 	"github.com/MSDO-ImageHost/Posts/internal/utils"
 	"github.com/streadway/amqp"
 )
 
-var forever chan bool = make(chan bool)
+var sig chan os.Signal = make(chan os.Signal)
 
 func main() {
 
-	conn, err := amqp.Dial("amqp://ImageHostPosts:DM8742020@rabbitmq:5672/")
+	conn, err := amqp.Dial("amqp://dev:dev@rabbitmq:5672/")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -26,9 +29,9 @@ func main() {
 
 	// Declare queue
 	queue, err := ch.QueueDeclare(
-		"confirm-post-creation",
+		"test-queue",
 		true,
-		true,
+		false,
 		false,
 		false,
 		nil,
@@ -53,9 +56,12 @@ func main() {
 
 	go func() {
 		for msg := range consume {
-			fmt.Println(utils.PrettyFormatMap(msg.Body))
+			fmt.Println(utils.PrettyFormatMap(msg))
+			fmt.Println(string(msg.Body))
+			msg.Ack(true)
 		}
 	}()
 
-	<-forever
+	signal.Notify(sig, syscall.SIGINT, syscall.SIGTERM)
+	<-sig
 }

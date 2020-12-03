@@ -63,7 +63,7 @@ type PostData struct {
 	Header    PostContent
 	Body      PostContent
 }
-type PostDataHistory struct {
+type PostHistoryData struct {
 	IDHex     string
 	Author    string
 	CreatedAt *time.Time

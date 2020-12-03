@@ -10,14 +10,14 @@ import (
 )
 
 // Public module handler
-func FindHistoryPost(postIdHex string) (result PostDataHistory, err error) {
+func FindPostHistory(postIdHex string) (result PostHistoryData, err error) {
 	if err := AssertClientInstance(); err != nil {
 		return result, err
 	}
 	return storage.FindHistory(postIdHex)
 }
 
-func (s *mongoStorage) FindHistory(postIdHex string) (result PostDataHistory, err error) {
+func (s *mongoStorage) FindHistory(postIdHex string) (result PostHistoryData, err error) {
 
 	// Convert hex string into bson object id
 	scaffoldID, err := primitive.ObjectIDFromHex(postIdHex)

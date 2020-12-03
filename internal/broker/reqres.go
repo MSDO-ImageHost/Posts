@@ -24,7 +24,7 @@ func NewReqRes(handleConf HandleConfig, handler func(req HandleRequestPayload) (
 	go func() {
 		for msg := range consumer {
 
-			log.Println(LOG_TAG, "got msg", msg)
+			log.Println(_LOG_TAG, "got msg", msg)
 
 			// Verify integrety of message
 			if msg.ContentType != "application/json" {

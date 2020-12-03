@@ -1,3 +1,3 @@
 package broker
 
-type BrokerInterface interface{}
+type brokerInterface interface{}

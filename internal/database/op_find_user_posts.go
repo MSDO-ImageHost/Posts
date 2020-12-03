@@ -69,15 +69,15 @@ func (s *mongoStorage) FindUserPosts(author string) (results []PostData, err err
 		results[i].UpdatedAt = scaffolds[i].UpdatedAt
 
 		if len(scaffolds[0].HeaderContents) > 0 {
-			results[i].Header.Author = scaffolds[0].HeaderContents[0].Author
-			results[i].Header.CreatedAt = scaffolds[0].HeaderContents[0].CreatedAt
-			results[i].Header.Data = scaffolds[0].HeaderContents[0].Data
+			results[i].Header.Author = scaffolds[i].HeaderContents[0].Author
+			results[i].Header.CreatedAt = scaffolds[i].HeaderContents[0].CreatedAt
+			results[i].Header.Data = scaffolds[i].HeaderContents[0].Data
 		}
 
 		if len(scaffolds[0].BodyContents) > 0 {
-			results[i].Body.Author = scaffolds[0].BodyContents[0].Author
-			results[i].Body.CreatedAt = scaffolds[0].BodyContents[0].CreatedAt
-			results[i].Body.Data = scaffolds[0].BodyContents[0].Data
+			results[i].Body.Author = scaffolds[i].BodyContents[0].Author
+			results[i].Body.CreatedAt = scaffolds[i].BodyContents[0].CreatedAt
+			results[i].Body.Data = scaffolds[i].BodyContents[0].Data
 		}
 	}
 

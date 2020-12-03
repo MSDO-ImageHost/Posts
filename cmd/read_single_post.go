@@ -4,27 +4,23 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/MSDO-ImageHost/Posts/internal/api"
+	api "github.com/MSDO-ImageHost/Posts/internal/api"
 	broker "github.com/MSDO-ImageHost/Posts/internal/broker"
 	storage "github.com/MSDO-ImageHost/Posts/internal/database"
 )
 
-func postCreationHandler(req broker.HandleRequestPayload) (res broker.HandleResponsePayload, err error) {
+func readSinglePostHandler(req broker.HandleRequestPayload) (res broker.HandleResponsePayload, err error) {
 
 	// Parse request
-	newPost := api.CreateOnePostRequest{}
-	if err := json.Unmarshal(req.Payload, &newPost); err != nil {
+	postReq := api.NoPostHistoryStruct{}
+	if err := json.Unmarshal(req.Payload, &postReq); err != nil {
 		res.Status.Code = http.StatusBadRequest
 		res.Status.Message = err.Error()
 		return res, err
 	}
 
-	// Store post into database
-	storageRes, err := storage.AddOnePost(storage.PostData{
-		Author: req.UserID,
-		Header: storage.PostContent{Data: newPost.Header},
-		Body:   storage.PostContent{Data: newPost.Body},
-	})
+	// Query database
+	storageRes, err := storage.FindOnePost(postReq.PostID)
 	if err != nil {
 		res.Status.Code = http.StatusInternalServerError
 		res.Status.Message = err.Error()
@@ -32,16 +28,17 @@ func postCreationHandler(req broker.HandleRequestPayload) (res broker.HandleResp
 	}
 
 	// Construct response object
-	postRes := api.NoHistoryPostResponse{
+	postRes := api.NoPostHistoryStruct{
 		PostID:    storageRes.IDHex,
 		Author:    storageRes.Author,
 		CreatedAt: storageRes.CreatedAt,
-		Header: api.PostContent{
+		UpdatedAt: storageRes.UpdatedAt,
+		Header: api.PostContentStruct{
 			Author:    storageRes.Header.Author,
 			Data:      storageRes.Header.Data,
 			CreatedAt: storageRes.Header.CreatedAt,
 		},
-		Body: api.PostContent{
+		Body: api.PostContentStruct{
 			Author:    storageRes.Body.Author,
 			Data:      storageRes.Body.Data,
 			CreatedAt: storageRes.Body.CreatedAt,
@@ -56,6 +53,7 @@ func postCreationHandler(req broker.HandleRequestPayload) (res broker.HandleResp
 		return res, err
 	}
 
+	// Set status codes and return
 	res.Payload = resBytes
 	res.Status.Code = http.StatusCreated
 	res.Status.Message = http.StatusText(http.StatusCreated)
