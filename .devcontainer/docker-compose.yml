@@ -17,7 +17,7 @@ services:
       - MONGO_CONN_URI=mongodb://mongo:27017/?readPreference=primary&ssl=false
       - MONGO_SERVICE_DB=posts-db
       - RABBITMQ_CONN_URI=amqp://dev:dev@rabbitmq:5672/
-      - JWT_HMAC_SECRET=ImageHostJWTSecret
+      - JWT_HMAC_SECRET=secret
     cap_add:
       - SYS_PTRACE
     security_opt:
@@ -57,7 +57,7 @@ services:
       - MONGO_CONN_URI=mongodb://mongo:27017/?readPreference=primary&ssl=false
       - MONGO_SERVICE_DB=posts-db
       - RABBITMQ_CONN_URI=amqp://dev:dev@rabbitmq:5672/
-      - JWT_HMAC_SECRET=ImageHostJWTSecret
+      - JWT_HMAC_SECRET=secret
     restart: unless-stopped
 
     

@@ -7,9 +7,7 @@ import (
 	"github.com/streadway/amqp"
 )
 
-var (
-	rabbit RabbitBroker
-)
+var rabbit RabbitBroker
 
 // Initializes a new connection to RabbitMQ broker
 func Init() error {

@@ -21,7 +21,7 @@ func createOnePostHandler(req broker.HandleRequestPayload) (res broker.HandleRes
 
 	// Alter database
 	storageRes, err := storage.AddOnePost(storage.PostData{
-		Author: req.UserID,
+		//Author: <nil>,
 		Header: storage.PostContent{Data: postReq.Header.(string)},
 		Body:   storage.PostContent{Data: postReq.Body.(string)},
 	})

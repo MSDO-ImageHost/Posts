@@ -9,7 +9,7 @@ import (
 
 	broker "github.com/MSDO-ImageHost/Posts/internal/broker"
 	storage "github.com/MSDO-ImageHost/Posts/internal/database"
-	"github.com/MSDO-ImageHost/Posts/internal/utils"
+	jwt "github.com/dgrijalva/jwt-go"
 )
 
 var sig chan os.Signal = make(chan os.Signal)
@@ -91,7 +91,6 @@ func main() {
 	<-sig
 }
 
-func handlerPlaceholder(req broker.HandleRequestPayload) (res broker.HandleResponsePayload, err error) {
-	log.Println(_LOG_TAG, "placeholder", utils.PrettyFormatMap(req))
-	return res, nil
+func getToken(token *jwt.Token) (interface{}, error) {
+	return os.Getenv("JWT_HMAC_SECRET"), nil
 }

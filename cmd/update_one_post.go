@@ -19,18 +19,21 @@ func updateOnePostHandler(req broker.HandleRequestPayload) (res broker.HandleRes
 		return res, err
 	}
 
+	newHeader, updateHeader := postReq.Header.(string)
+	newBody, updateBody := postReq.Body.(string)
+
 	// Alter database
 	storageRes, err := storage.UpdateOnePost(storage.PostData{
 		IDHex: postReq.PostID,
 		Header: storage.PostContent{
-			Data:   postReq.Header.(string),
-			Author: req.UserID,
-			Update: true,
+			Data: newHeader,
+			//Author: <nil>,
+			Update: updateHeader,
 		},
 		Body: storage.PostContent{
-			Data:   postReq.Body.(string),
-			Author: req.UserID,
-			Update: true,
+			Data: newBody,
+			//Author: <nil>,
+			Update: updateBody,
 		},
 	})
 

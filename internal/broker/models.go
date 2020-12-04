@@ -11,8 +11,8 @@ type RabbitBroker struct {
 }
 
 type HandleRequestPayload struct {
-	UserID, Role string
-	Payload      []byte
+	Headers map[string]interface{}
+	Payload []byte
 }
 
 type HandleResponsePayload struct {
