@@ -30,16 +30,16 @@ func readSinglePostHandler(req broker.HandleRequestPayload) (res broker.HandleRe
 	// Construct response object
 	postRes := api.NoPostHistoryStruct{
 		PostID:    storageRes.IDHex,
-		Author:    storageRes.Author,
+		AuthorID:  storageRes.AuthorID,
 		CreatedAt: storageRes.CreatedAt,
 		UpdatedAt: storageRes.UpdatedAt,
 		Header: api.PostContentStruct{
-			Author:    storageRes.Header.Author,
+			AuthorID:  storageRes.Header.AuthorID,
 			Data:      storageRes.Header.Data,
 			CreatedAt: storageRes.Header.CreatedAt,
 		},
 		Body: api.PostContentStruct{
-			Author:    storageRes.Body.Author,
+			AuthorID:  storageRes.Body.AuthorID,
 			Data:      storageRes.Body.Data,
 			CreatedAt: storageRes.Body.CreatedAt,
 		},

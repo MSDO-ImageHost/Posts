@@ -2,20 +2,22 @@ package database
 
 import (
 	"context"
+	"fmt"
 
+	auth "github.com/MSDO-ImageHost/Posts/internal/auth"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 // Public module handler
-func DeleteOnePost(postIdHex string) (result string, err error) {
+func DeleteOnePost(postIdHex string, a auth.User) (result string, err error) {
 	if err := AssertClientInstance(); err != nil {
 		return result, err
 	}
-	return storage.DeleteOne(postIdHex)
+	return storage.DeleteOne(postIdHex, a)
 }
 
-func (s *mongoStorage) DeleteOne(postIdHex string) (result string, err error) {
+func (s *mongoStorage) DeleteOne(postIdHex string, a auth.User) (result string, err error) {
 
 	// Convert hex string into bson object id
 	scaffoldID, err := primitive.ObjectIDFromHex(postIdHex)
@@ -23,9 +25,19 @@ func (s *mongoStorage) DeleteOne(postIdHex string) (result string, err error) {
 		return result, err
 	}
 
-	// Permanently delete scaffolds
+	// Find the scaffold
 	var scaffoldRef mongoScaffoldRefs
-	if err := s.ScaffoldStorage.FindOneAndDelete(context.TODO(), bson.M{"_id": scaffoldID}).Decode(&scaffoldRef); err != nil {
+	if err := s.ScaffoldStorage.FindOne(context.TODO(), bson.M{"_id": scaffoldID}).Decode(&scaffoldRef); err != nil {
+		return result, err
+	}
+
+	// Check that the user can alter data
+	if canModify := a.CanModify(auth.User{UserID: scaffoldRef.AuthorID}); !canModify {
+		return result, fmt.Errorf("Insufficient permissions")
+	}
+
+	// Permanently delete scaffold
+	if err := s.ScaffoldStorage.FindOneAndDelete(context.TODO(), bson.M{"_id": scaffoldRef.ID}).Decode(&scaffoldRef); err != nil {
 		return result, err
 	}
 

@@ -9,7 +9,7 @@ type SinglePostID struct {
 }
 
 type PostContentStruct struct {
-	Author    string     `json:"author_id"`
+	AuthorID  string     `json:"author_id"`
 	CreatedAt *time.Time `json:"created_at"`
 	Data      string     `json:"data"`
 }
@@ -27,7 +27,7 @@ type PagingStruct struct {
 
 type NoPostHistoryStruct struct {
 	PostID    string        `json:"post_id"`
-	Author    string        `json:"author_id"`
+	AuthorID  string        `json:"author_id"`
 	CreatedAt *time.Time    `json:"created_at"`
 	UpdatedAt *time.Time    `json:"updated_at,omitempty"`
 	Header    interface{}   `json:"header"` // Used as string for unmarshalling and PostContentStruct for marshalling
@@ -37,7 +37,7 @@ type NoPostHistoryStruct struct {
 
 type PostHistoryStruct struct {
 	PostID    string              `json:"post_id"`
-	Author    string              `json:"author_id"`
+	AuthorID  string              `json:"author_id"`
 	CreatedAt *time.Time          `json:"created_at"`
 	UpdatedAt *time.Time          `json:"updated_at,omitempty"`
 	Headers   []PostContentStruct `json:"header"`

@@ -51,13 +51,11 @@ func main() {
 	wg.Wait()
 
 	// Create events
-	log.Println(_LOG_TAG, "Registrering post creation events handler")
 	if err := broker.NewSubPub(createSinglePostConf, createOnePostHandler); err != nil {
 		log.Fatal(err)
 	}
 
 	// Read events
-	log.Println(_LOG_TAG, "Registrering post read events handler")
 	if err := broker.NewSubPub(readSinglePostConf, readSinglePostHandler); err != nil {
 		log.Fatal(err)
 	}
@@ -72,13 +70,11 @@ func main() {
 	}
 
 	// Update events
-	log.Println(_LOG_TAG, "Registrering post update events handler")
 	if err := broker.NewSubPub(updateOnePostConf, updateOnePostHandler); err != nil {
 		log.Fatal(err)
 	}
 
 	// Delete events
-	log.Println(_LOG_TAG, "Registrering post delete events handler")
 	if err := broker.NewSubPub(deleteOnePostConf, deleteOnePostHandler); err != nil {
 		log.Fatal(err)
 	}

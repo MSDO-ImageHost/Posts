@@ -31,7 +31,7 @@ func readPostHistoryHandler(req broker.HandleRequestPayload) (res broker.HandleR
 	headers := make([]api.PostContentStruct, len(storageRes.Headers))
 	for i := range storageRes.Headers {
 		headers[i] = api.PostContentStruct{
-			Author:    storageRes.Headers[i].Author,
+			AuthorID:  storageRes.Headers[i].AuthorID,
 			CreatedAt: storageRes.Headers[i].CreatedAt,
 			Data:      storageRes.Headers[i].Data,
 		}
@@ -41,7 +41,7 @@ func readPostHistoryHandler(req broker.HandleRequestPayload) (res broker.HandleR
 	bodies := make([]api.PostContentStruct, len(storageRes.Bodies))
 	for i := range storageRes.Bodies {
 		bodies[i] = api.PostContentStruct{
-			Author:    storageRes.Bodies[i].Author,
+			AuthorID:  storageRes.Bodies[i].AuthorID,
 			CreatedAt: storageRes.Bodies[i].CreatedAt,
 			Data:      storageRes.Bodies[i].Data,
 		}
@@ -50,7 +50,7 @@ func readPostHistoryHandler(req broker.HandleRequestPayload) (res broker.HandleR
 	// Construct response object
 	postRes := api.PostHistoryStruct{
 		PostID:    storageRes.IDHex,
-		Author:    storageRes.Author,
+		AuthorID:  storageRes.AuthorID,
 		CreatedAt: storageRes.CreatedAt,
 		Headers:   headers,
 		Bodies:    bodies,

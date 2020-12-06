@@ -2,25 +2,38 @@ package database
 
 import (
 	"context"
+	"fmt"
 	"time"
 
+	"github.com/MSDO-ImageHost/Posts/internal/auth"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 // Public module handler
-func UpdateOnePost(post PostData) (result PostData, err error) {
+func UpdateOnePost(post PostData, a auth.User) (result PostData, err error) {
 	if err := AssertClientInstance(); err != nil {
 		return result, err
 	}
-	return storage.UpdateOne(post)
+	return storage.UpdateOne(post, a)
 }
 
-func (s *mongoStorage) UpdateOne(post PostData) (result PostData, err error) {
+func (s *mongoStorage) UpdateOne(post PostData, a auth.User) (result PostData, err error) {
 	// Convert hex string into bson object id
 	scaffoldID, err := primitive.ObjectIDFromHex(post.IDHex)
 	if err != nil {
 		return result, err
+	}
+
+	// Find the scaffold
+	var scaffoldRef mongoScaffoldRefs
+	if err := s.ScaffoldStorage.FindOne(context.TODO(), bson.M{"_id": scaffoldID}).Decode(&scaffoldRef); err != nil {
+		return result, err
+	}
+
+	// Check that the user can alter data
+	if canModify := a.CanModify(auth.User{UserID: scaffoldRef.AuthorID}); !canModify {
+		return result, fmt.Errorf("Insufficient permissions")
 	}
 
 	now := time.Now()
@@ -31,7 +44,7 @@ func (s *mongoStorage) UpdateOne(post PostData) (result PostData, err error) {
 	if post.Header.Update {
 		header := mongoContent{
 			ID:        primitive.NewObjectID(),
-			Author:    post.Author,
+			AuthorID:  post.AuthorID,
 			Data:      post.Header.Data,
 			CreatedAt: &now,
 		}
@@ -48,7 +61,7 @@ func (s *mongoStorage) UpdateOne(post PostData) (result PostData, err error) {
 	if post.Body.Update {
 		body := mongoContent{
 			ID:        primitive.NewObjectID(),
-			Author:    post.Author,
+			AuthorID:  post.AuthorID,
 			Data:      post.Body.Data,
 			CreatedAt: &now,
 		}

@@ -32,16 +32,16 @@ func readManyPostsHandler(req broker.HandleRequestPayload) (res broker.HandleRes
 	for i := range storageRes {
 		postResults[i] = api.NoPostHistoryStruct{
 			PostID:    storageRes[i].IDHex,
-			Author:    storageRes[i].Author,
+			AuthorID:  storageRes[i].AuthorID,
 			CreatedAt: storageRes[i].CreatedAt,
 			UpdatedAt: storageRes[i].UpdatedAt,
 			Header: api.PostContentStruct{
-				Author:    storageRes[i].Header.Author,
+				AuthorID:  storageRes[i].Header.AuthorID,
 				Data:      storageRes[i].Header.Data,
 				CreatedAt: storageRes[i].Header.CreatedAt,
 			},
 			Body: api.PostContentStruct{
-				Author:    storageRes[i].Body.Author,
+				AuthorID:  storageRes[i].Body.AuthorID,
 				Data:      storageRes[i].Body.Data,
 				CreatedAt: storageRes[i].Body.CreatedAt,
 			},

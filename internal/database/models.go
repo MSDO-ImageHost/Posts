@@ -22,7 +22,7 @@ type mongoStorage struct {
 // Scaffold is the main frame for storing references to content in the post
 type mongoScaffoldRefs struct {
 	ID            primitive.ObjectID   `bson:"_id"`
-	Author        string               `bson:"creator_id"`
+	AuthorID      string               `bson:"creator_id"`
 	CreatedAt     *time.Time           `bson:"created_at"`
 	UpdatedAt     *time.Time           `bson:"updated_at,omitempty"`
 	MarkedDeleted bool                 `bson:"marked_deleted,omitempty"`
@@ -32,7 +32,7 @@ type mongoScaffoldRefs struct {
 
 type mongoScaffoldContents struct {
 	ID             primitive.ObjectID `bson:"_id"`
-	Author         string             `bson:"creator_id"`
+	AuthorID       string             `bson:"creator_id"`
 	CreatedAt      *time.Time         `bson:"created_at"`
 	UpdatedAt      *time.Time         `bson:"updated_at,omitempty"`
 	MarkedDeleted  bool               `bson:"marked_deleted,omitempty"`
@@ -43,21 +43,21 @@ type mongoScaffoldContents struct {
 // Content is used to store both header and body data in their own collections
 type mongoContent struct {
 	ID          primitive.ObjectID `bson:"_id"`
-	Author      string             `bson:"creator_id"`
+	AuthorID    string             `bson:"creator_id"`
 	CreatedAt   *time.Time         `bson:"created_at"`
 	Data        string             `bson:"data,omitempty"`
 	MarkDeleted bool               `bson:"mark_deleted,omitempty"`
 }
 
 type PostContent struct {
-	Author    string
+	AuthorID  string
 	CreatedAt *time.Time
 	Data      string
 	Update    bool
 }
 type PostData struct {
 	IDHex     string
-	Author    string
+	AuthorID  string
 	CreatedAt *time.Time
 	UpdatedAt *time.Time
 	Header    PostContent
@@ -65,7 +65,7 @@ type PostData struct {
 }
 type PostHistoryData struct {
 	IDHex     string
-	Author    string
+	AuthorID  string
 	CreatedAt *time.Time
 	UpdatedAt *time.Time
 	Headers   []PostContent

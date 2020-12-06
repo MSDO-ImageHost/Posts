@@ -71,18 +71,18 @@ func (s *mongoStorage) FindMany(postIdHexes []string) (results []PostData, err e
 	results = make([]PostData, len(scaffolds))
 	for i := range scaffolds {
 		results[i].IDHex = scaffolds[i].ID.Hex()
-		results[i].Author = scaffolds[i].Author
+		results[i].AuthorID = scaffolds[i].AuthorID
 		results[i].CreatedAt = scaffolds[i].CreatedAt
 		results[i].UpdatedAt = scaffolds[i].UpdatedAt
 
 		if len(scaffolds[0].HeaderContents) > 0 {
-			results[i].Header.Author = scaffolds[0].HeaderContents[0].Author
+			results[i].Header.AuthorID = scaffolds[0].HeaderContents[0].AuthorID
 			results[i].Header.CreatedAt = scaffolds[0].HeaderContents[0].CreatedAt
 			results[i].Header.Data = scaffolds[0].HeaderContents[0].Data
 		}
 
 		if len(scaffolds[0].BodyContents) > 0 {
-			results[i].Body.Author = scaffolds[0].BodyContents[0].Author
+			results[i].Body.AuthorID = scaffolds[0].BodyContents[0].AuthorID
 			results[i].Body.CreatedAt = scaffolds[0].BodyContents[0].CreatedAt
 			results[i].Body.Data = scaffolds[0].BodyContents[0].Data
 		}

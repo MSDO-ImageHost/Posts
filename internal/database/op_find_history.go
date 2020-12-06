@@ -66,14 +66,14 @@ func (s *mongoStorage) FindHistory(postIdHex string) (result PostHistoryData, er
 	}
 
 	result.IDHex = scaffolds[0].ID.Hex()
-	result.Author = scaffolds[0].Author
+	result.AuthorID = scaffolds[0].AuthorID
 	result.CreatedAt = scaffolds[0].CreatedAt
 	result.UpdatedAt = scaffolds[0].UpdatedAt
 
 	if len(scaffolds[0].HeaderContents) > 0 {
 		headers := make([]PostContent, len(scaffolds[0].HeaderContents))
 		for i, content := range scaffolds[0].HeaderContents {
-			headers[i].Author = content.Author
+			headers[i].AuthorID = content.AuthorID
 			headers[i].CreatedAt = content.CreatedAt
 			headers[i].Data = content.Data
 		}
@@ -83,7 +83,7 @@ func (s *mongoStorage) FindHistory(postIdHex string) (result PostHistoryData, er
 	if len(scaffolds[0].BodyContents) > 0 {
 		bodies := make([]PostContent, len(scaffolds[0].BodyContents))
 		for i, content := range scaffolds[0].BodyContents {
-			bodies[i].Author = content.Author
+			bodies[i].AuthorID = content.AuthorID
 			bodies[i].CreatedAt = content.CreatedAt
 			bodies[i].Data = content.Data
 		}

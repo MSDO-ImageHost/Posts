@@ -3,19 +3,20 @@ package database
 import (
 	"context"
 
+	"github.com/MSDO-ImageHost/Posts/internal/auth"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 // Public module handler
-func DeleteMarkOnePost(postIdHex string) (result string, err error) {
+func MarkDeleteOne(postIdHex string, auth auth.User) (result string, err error) {
 	if err := AssertClientInstance(); err != nil {
 		return result, err
 	}
-	return storage.MarkDeleteOne(postIdHex)
+	return storage.MarkDeleteOne(postIdHex, auth)
 }
 
-func (s *mongoStorage) MarkDeleteOne(postIdHex string) (result string, err error) {
+func (s *mongoStorage) MarkDeleteOne(postIdHex string, auth auth.User) (result string, err error) {
 	// Convert hex string into bson object id
 	scaffoldID, err := primitive.ObjectIDFromHex(postIdHex)
 	if err != nil {

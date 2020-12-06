@@ -20,10 +20,23 @@ type HandleResponsePayload struct {
 	Status  api.StatusCode
 }
 
+type ExchangeConfig struct {
+	Name, Kind                            string
+	Durable, AutoDelete, Internal, NoWait bool
+	Args                                  amqp.Table
+}
+
+type QueueBindConfig struct {
+	Name, Key string
+	Exchange  ExchangeConfig
+	NoWait    bool
+	Args      amqp.Table
+}
 type QueueConfig struct {
 	Name                                   string
 	Durable, AutoDelete, Exclusive, NoWait bool
 	Args                                   amqp.Table
+	Bind                                   *QueueBindConfig
 }
 
 type ConsumerConfig struct {
@@ -34,4 +47,5 @@ type ConsumerConfig struct {
 type HandleConfig struct {
 	SubQueueConf, PubQueueConf QueueConfig
 	ConsumerConf               ConsumerConfig
+	ExchangeConf               ExchangeConfig
 }

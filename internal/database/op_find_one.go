@@ -70,18 +70,18 @@ func (s *mongoStorage) FindOne(postIdHex string) (result PostData, err error) {
 	}
 
 	result.IDHex = scaffolds[0].ID.Hex()
-	result.Author = scaffolds[0].Author
+	result.AuthorID = scaffolds[0].AuthorID
 	result.CreatedAt = scaffolds[0].CreatedAt
 	result.UpdatedAt = scaffolds[0].UpdatedAt
 
 	if len(scaffolds[0].HeaderContents) > 0 {
-		result.Header.Author = scaffolds[0].HeaderContents[0].Author
+		result.Header.AuthorID = scaffolds[0].HeaderContents[0].AuthorID
 		result.Header.CreatedAt = scaffolds[0].HeaderContents[0].CreatedAt
 		result.Header.Data = scaffolds[0].HeaderContents[0].Data
 	}
 
 	if len(scaffolds[0].BodyContents) > 0 {
-		result.Body.Author = scaffolds[0].BodyContents[0].Author
+		result.Body.AuthorID = scaffolds[0].BodyContents[0].AuthorID
 		result.Body.CreatedAt = scaffolds[0].BodyContents[0].CreatedAt
 		result.Body.Data = scaffolds[0].BodyContents[0].Data
 	}

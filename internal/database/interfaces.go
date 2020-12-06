@@ -2,6 +2,8 @@
 
 package database
 
+import "github.com/MSDO-ImageHost/Posts/internal/auth"
+
 type storageInterface interface {
 	// Create
 	AddOne(post PostData) (result PostData, err error)
@@ -13,10 +15,10 @@ type storageInterface interface {
 	FindUserPosts(author string) (results []PostData, err error)
 
 	// Update
-	UpdateOne(post PostData) (result PostData, err error)
+	UpdateOne(post PostData, auth auth.User) (result PostData, err error)
 
 	// Delete
-	DeleteOne(postIdHex string) (result string, err error)
-	DeleteMany(postIdHexes []string) (results []string, err error)
-	MarkDeleteOne(postIdHex string) (result string, err error)
+	DeleteOne(postIdHex string, auth auth.User) (result string, err error)
+	DeleteMany(postIdHexes []string, auth auth.User) (results []string, err error)
+	MarkDeleteOne(postIdHex string, auth auth.User) (result string, err error)
 }

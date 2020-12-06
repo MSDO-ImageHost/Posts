@@ -5,11 +5,24 @@ import (
 	"net/http"
 
 	"github.com/MSDO-ImageHost/Posts/internal/api"
+	"github.com/MSDO-ImageHost/Posts/internal/auth"
 	broker "github.com/MSDO-ImageHost/Posts/internal/broker"
 	storage "github.com/MSDO-ImageHost/Posts/internal/database"
 )
 
 func updateOnePostHandler(req broker.HandleRequestPayload) (res broker.HandleResponsePayload, err error) {
+
+	headers, err := api.ParseHeader(req.Headers)
+	if err != nil {
+		return res, err
+	}
+
+	userAuth, err := auth.AuthJWT(headers.JWT)
+	if err != nil {
+		res.Status.Code = http.StatusUnauthorized
+		res.Status.Message = err.Error()
+		return res, err
+	}
 
 	// Parse request
 	postReq := api.NoPostHistoryStruct{}
@@ -27,15 +40,15 @@ func updateOnePostHandler(req broker.HandleRequestPayload) (res broker.HandleRes
 		IDHex: postReq.PostID,
 		Header: storage.PostContent{
 			Data: newHeader,
-			//Author: <nil>,
+			//AuthorID: <nil>,
 			Update: updateHeader,
 		},
 		Body: storage.PostContent{
 			Data: newBody,
-			//Author: <nil>,
+			//AuthorID: <nil>,
 			Update: updateBody,
 		},
-	})
+	}, userAuth)
 
 	if err != nil {
 		res.Status.Code = http.StatusInternalServerError
@@ -46,15 +59,15 @@ func updateOnePostHandler(req broker.HandleRequestPayload) (res broker.HandleRes
 	// Construct response object
 	postRes := api.NoPostHistoryStruct{
 		PostID:    storageRes.IDHex,
-		Author:    storageRes.Author,
+		AuthorID:  storageRes.AuthorID,
 		CreatedAt: storageRes.CreatedAt,
 		Header: api.PostContentStruct{
-			Author:    storageRes.Header.Author,
+			AuthorID:  storageRes.Header.AuthorID,
 			Data:      storageRes.Header.Data,
 			CreatedAt: storageRes.Header.CreatedAt,
 		},
 		Body: api.PostContentStruct{
-			Author:    storageRes.Body.Author,
+			AuthorID:  storageRes.Body.AuthorID,
 			Data:      storageRes.Body.Data,
 			CreatedAt: storageRes.Body.CreatedAt,
 		},

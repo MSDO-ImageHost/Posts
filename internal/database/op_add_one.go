@@ -22,21 +22,21 @@ func (s *mongoStorage) AddOne(post PostData) (result PostData, err error) {
 	// Construct post content components
 	header := mongoContent{
 		ID:        primitive.NewObjectID(),
-		Author:    post.Author,
+		AuthorID:  post.AuthorID,
 		Data:      post.Header.Data,
 		CreatedAt: &now,
 	}
 
 	body := mongoContent{
 		ID:        primitive.NewObjectID(),
-		Author:    post.Author,
+		AuthorID:  post.AuthorID,
 		Data:      post.Body.Data,
 		CreatedAt: &now,
 	}
 
 	scaffold := mongoScaffoldRefs{
 		ID:         primitive.NewObjectID(),
-		Author:     post.Author,
+		AuthorID:   post.AuthorID,
 		CreatedAt:  &now,
 		HeaderRefs: []primitive.ObjectID{header.ID},
 		BodyRefs:   []primitive.ObjectID{body.ID},
@@ -63,12 +63,12 @@ func (s *mongoStorage) AddOne(post PostData) (result PostData, err error) {
 	result.IDHex = scaffold.ID.Hex()
 	result.CreatedAt = scaffold.CreatedAt
 	result.Header = PostContent{
-		Author:    header.Author,
+		AuthorID:  header.AuthorID,
 		Data:      header.Data,
 		CreatedAt: header.CreatedAt,
 	}
 	result.Body = PostContent{
-		Author:    body.Author,
+		AuthorID:  body.AuthorID,
 		Data:      body.Data,
 		CreatedAt: body.CreatedAt,
 	}
