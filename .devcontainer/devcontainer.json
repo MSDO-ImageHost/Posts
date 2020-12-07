@@ -9,8 +9,8 @@
         "rabbitmq",
         "mongo",
         "mongo-express",
-        "authentication",
-        "mysql"
+        "mysql",
+        "authentication"
     ],
     "shutdownAction": "stopCompose",
     "postCreateCommand": "go mod download",
@@ -30,6 +30,7 @@
         "mhutchie.git-graph",
         // Other linters
         "davidanson.vscode-markdownlint",
+        "shd101wyy.markdown-preview-enhanced",
         "ms-azuretools.vscode-docker",
         // Other helpers
         "shardulm94.trailing-spaces",

@@ -21,6 +21,17 @@ func NewSubPub(handleConf HandleConfig, handler func(req HandleRequestPayload) (
 		return err
 	}
 
+	// Declare 'rapid' exchange
+	if err := ExchangeDeclare(handleConf.QueueBindConf.Exchange); err != nil {
+		return err
+	}
+
+	// Bind queue to rapid with routing key
+	handleConf.QueueBindConf.Name = handleConf.SubQueueConf.Name
+	if err := QueueBind(handleConf.QueueBindConf); err != nil {
+		return err
+	}
+
 	// Consumer for subscription messages
 	consumer, err := ConsumerDeclare(handleConf)
 	if err != nil {
@@ -74,6 +85,7 @@ func NewSubPub(handleConf HandleConfig, handler func(req HandleRequestPayload) (
 			log.Println(_LOG_TAG, "Fulfilled request with correlation id", msg.CorrelationId)
 		}
 	}()
+
 	log.Printf("%s Registered subpub handler for %s -> %s\n",
 		_LOG_TAG,
 		handleConf.SubQueueConf.Name,
@@ -90,14 +102,21 @@ func PublicateResponse(
 	ack bool,
 	start time.Time) (err error) {
 
-	headers["processing_time_ns"] = time.Since(start).Nanoseconds()
+	// Check if the sender wants a reply in a specific queue
+	responseQueue := conf.PubQueueConf.Name
+	if msg.ReplyTo != "" {
+		responseQueue = msg.ReplyTo
+	}
 
-	err = rabbit.Channel.Publish("", conf.PubQueueConf.Name, false, false, amqp.Publishing{
+	// Populate response message and publish it
+	headers["processing_time_ns"] = time.Since(start).Nanoseconds()
+	err = rabbit.Channel.Publish("", responseQueue, false, false, amqp.Publishing{
 		Headers:       headers,
 		ContentType:   "application/json",
 		CorrelationId: msg.CorrelationId,
 		Timestamp:     time.Now().UTC(),
 		Body:          payload,
+		AppId:         "posts-v1",
 	})
 	if err != nil || msg.Ack(ack) != nil {
 		return err

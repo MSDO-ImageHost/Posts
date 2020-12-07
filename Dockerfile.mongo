@@ -1,0 +1,3 @@
+FROM mongo:4.2.2 as runtime
+
+COPY /.mongo/db-init /docker-entrypoint-initdb.d

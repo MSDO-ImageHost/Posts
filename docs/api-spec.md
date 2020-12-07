@@ -1,47 +1,63 @@
 # API Reference
 
-## General
-#### Access control
-Any request must contain a valid session token
-```json
-{
-    "auth_token": "<JWT>",
-    ... // rest of request
-}
-```
-#### Meta wrapper
-Every response contain metadata about the request. The requested data is stored in the `data` property. Any request may get rejected or the response contains no data whereof `data` will be `null`.
-```json
-{
-    "data": "<Object: requested data>",
-    "status_code": "<Number: HTTP status code",
-    "message": "<String>",
-    "processing_time": "<Number: Processing time of the request in ms>",
-    "node_respondant": "<NodeID: ID of the node handling the request>"
-}
-```
-
----
-## Posts
-
-#### Create a post `posts.create`
+## Message parameters
+The following table displays fields that messages can or must contain
+| Key               | Value                                         | Type      | Required          | Action    |
+|-------------------|-----------------------------------------------|-----------|-------------------|-----------|
+| ContentType       | "application/json"                            | Property  | Yes               | Req/Res   |
+| CorrelationId     | "\<String: something id\>"                    | Property  | Yes               | Req/Res   |
+| ReplyTo           | "<String: reply queue>"                       | Property  | No                | Req       |
+| JWT               | "\<String:xxx.yyy.zzz\>"                      | Header    | For write only    | Req       |
+| StatusCode        | "\<Number: status code\>"                     | Header    |                   | Res       |
+| StatusMessage     | "\<String: status message\>"                  | Header    |                   | Res       |
+| ProcessingTimeNs  | "\<Number: processing time in nano seconds\>" | Header    |                   | Res       |
 
 
-Request
+
+-----
+## Routing
+| Event                 | Queue                 | API   |
+|-----------------------|-----------------------|-------|
+| Create one post       | posts.create.one      |       |
+| Read a single post    | posts.read.one        |       |
+| Read post history     | posts.read.history    |       |
+| Read many posts       | posts.read.many       |       |
+| Read user posts       | posts.read.userposts  |       |
+| Update one post       | posts.update.one      |       |
+| Delete one post       | posts.delete.one      |       |
+| Delete many posts     | posts.delete.many     |       |
+
+
+
+
+#### Submit a create message on queue `posts.new`
+Payload of request message
 ```json
 {
     "header": "<String: title of the post>",
     "body": "<String: body text of the post>"
 }
 ```
-Response
+Response is published in queue `posts.return.new` or specified by `reply_to` in the message
 ```json
 {
-    "post_id": "<PostID: ID of the created post>"
+    "post_id": "<PostID: ID of the created post>",
+    "created_at": "<ISO8601 timestamp>",
+    "author_id": "<UserID: ID of the author>",
+    "header": {
+        "author_id": "<UserID: ID of the author>",
+        "created_at": "<ISO8601 timestamp>",
+        "data":"<String: title of the post>",
+    },
+    "body": {
+        "author_id": "<UserID: ID of the author>",
+        "created_at": "<ISO8601 timestamp>",
+        "data":"<String: body of the post>",
+    }
 }
 ```
-#### Get post `posts.get`
-Request
+#### Get post `posts.read.one`
+Payload of request message
 ```json
 {
     "post_id": "<PostID: ID of the post>"
@@ -50,11 +66,19 @@ Request
 Response
 ```json
 {
-    "post_id": "<PostID: ID of the post>",
+    "post_id": "<PostID: ID of the created post>",
     "created_at": "<ISO8601 timestamp>",
     "author_id": "<UserID: ID of the author>",
-    "header": "<String: title of the post>",
-    "body": "<String: post body>"
+    "header": {
+        "author_id": "<UserID: ID of the author>",
+        "created_at": "<ISO8601 timestamp>",
+        "data":"<String: title of the post>",
+    },
+    "body": {
+        "author_id": "<UserID: ID of the author>",
+        "created_at": "<ISO8601 timestamp>",
+        "data":"<String: body of the post>",
+    }
 }
 ```
 
@@ -132,55 +156,3 @@ Response
 }
 ```
 
----
-## Examples of usage
-
-
-**Creating a new post**
-Request/produce to `posts.create`
-```json
-{
-    "auth_token": "123.123.123",
-    "title": "Hello, World! 🌎",
-    "body": "This is my first post.."
-}
-```
-Response
-```json
-{
-    "data": {
-        "post_id": "post-id-123"
-    },
-    "status_code": 200,
-    "message": "OK",
-    "processing_time": 420,
-    "node_respondant": "node-123"
-}
-```
-
----
-**Getting a post:**
-Request/produce to `posts.get`
-```json
-{
-    "post_id": "post-id-123"
-}
-```
-Response
-```json
-{
-    "data": {
-        "post_id": "post-id-123",
-        "created_at": "2020-11-12T14:29:59+01:00",
-        "author_id": "post-id-123",
-        "post": {
-            "title": "Hello, World! 🌎",
-            "body": "This is my first post.."
-        }
-    },
-    "status_code": 200,
-    "message": "OK",
-    "processing_time": 42,
-    "respondent_node": "node-456"
-}
-```

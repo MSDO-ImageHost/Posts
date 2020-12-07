@@ -63,28 +63,8 @@ services:
 
   ## Authentication ##
   authentication:
-    build: https://github.com/MSDO-ImageHost/Authentication.git
+    build: ../../Authentication/
     container_name: authentication
-    environment:
-      - AMQP_USER=dev
-      - AMQP_PASS=dev
-      - AMQP_URI=amqp://dev:dev@rabbitmq:5672
-      - MYSQL_PASSWORD=DM8742020
-    restart: unless-stopped
-
-  authentication2:
-    build: https://github.com/MSDO-ImageHost/Authentication.git
-    container_name: authentication2
-    environment:
-      - AMQP_USER=dev
-      - AMQP_PASS=dev
-      - AMQP_URI=amqp://dev:dev@rabbitmq:5672
-      - MYSQL_PASSWORD=DM8742020
-    restart: unless-stopped
-
-  authentication3:
-    build: https://github.com/MSDO-ImageHost/Authentication.git
-    container_name: authentication3
     environment:
       - AMQP_USER=dev
       - AMQP_PASS=dev

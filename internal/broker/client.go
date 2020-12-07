@@ -43,6 +43,7 @@ func Init() error {
 	return nil
 }
 
+// Closes the active connection to the RabbitMQ host
 func Deinit() error {
 	log.Println(_LOG_TAG, "Closing client connection")
 	// Close channel in use
