@@ -5,7 +5,7 @@ The following table displays fields that messages can or must contain
 | Key               | Value                                         | Type      | Required          | Action    |
 |-------------------|-----------------------------------------------|-----------|-------------------|-----------|
 | ContentType       | "application/json"                            | Property  | Yes               | Req/Res   |
-| CorrelationId     | "\<String: something id\>"                    | Property  | Yes               | Req/Res   |
+| CorrelationId     | "\<String: something id\>"                    | Property  | No                | Req/Res   |
 | ReplyTo           | "<String: reply queue>"                       | Property  | No                | Req       |
 | JWT               | "\<String:xxx.yyy.zzz\>"                      | Header    | For write only    | Req       |
 | StatusCode        | "\<Number: status code\>"                     | Header    |                   | Res       |
@@ -16,29 +16,27 @@ The following table displays fields that messages can or must contain
 
 -----
 ## Routing
-| Event                 | Queue                 | API   |
-|-----------------------|-----------------------|-------|
-| Create one post       | posts.create.one      |       |
-| Read a single post    | posts.read.one        |       |
-| Read post history     | posts.read.history    |       |
-| Read many posts       | posts.read.many       |       |
-| Read user posts       | posts.read.userposts  |       |
-| Update one post       | posts.update.one      |       |
-| Delete one post       | posts.delete.one      |       |
-| Delete many posts     | posts.delete.many     |       |
+| Events                | Queues                | Routing keys on 'rapid'   | Response queues           |
+|-----------------------|-----------------------|---------------------------|---------------------------|
+| Create one post       | posts.create.one      | CreateOnePost             | posts.return.one          |
+| Read a single post    | posts.read.one        | RequestOnePost            | posts.return.one          |
+| Read post history     | posts.read.history    | RequestPostHistory        | posts.return.one-history  |
+| Read many posts       | posts.read.many       | RequestManyPosts          | posts.return.many         |
+| Read user posts       | posts.read.userposts  | RequestUserPosts          | posts.return.many         |
+| Update one post       | posts.update.one      | UpdateOnePost             | posts.return.one          |
+| Delete one post       | posts.delete.one      | DeleteOnePost             | posts.return.one          |
+| Delete many posts     | posts.delete.many     | DeleteManyPosts           | posts.return.many         |
 
-
-
-
-#### Submit a create message on queue `posts.new`
-Payload of request message
+## Message structures
+#### Create a new post
+Request
 ```json
 {
     "header": "<String: title of the post>",
     "body": "<String: body text of the post>"
 }
 ```
-Response is published in queue `posts.return.new` or specified by `reply_to` in the message
+Response
 ```json
 {
     "post_id": "<PostID: ID of the created post>",
@@ -56,8 +54,8 @@ Response is published in queue `posts.return.new` or specified by `reply_to` in 
     }
 }
 ```
-#### Get post `posts.read.one`
-Payload of request message
+#### Get a single post
+Request
 ```json
 {
     "post_id": "<PostID: ID of the post>"
@@ -81,28 +79,7 @@ Response
     }
 }
 ```
-
-#### Update post `posts.update`
-Request
-```json
-{
-    "post_id": "<PostID: ID of the post to update>",
-    "header": "<String: updated title of the post>",     // optional
-    "body": "<String: updated text of the post>",              // optional
-}
-```
-
-
-#### Delete post `posts.delete`
-Request
-```json
-{
-    "post_id": "<PostID: ID of the updated post>"
-}
-```
-
-
-#### Get many posts `posts.get.many`
+#### Get many posts
 Request
 ```json
 {
@@ -118,26 +95,29 @@ Response
 ```json
 [
     {
-        "post_id": "<PostID: ID of the post>",
+        "post_id": "<PostID: ID of the created post>",
         "created_at": "<ISO8601 timestamp>",
         "author_id": "<UserID: ID of the author>",
-        "header": "<String: title of the post>",
-        "body": "<String: post body>"
-
+        "header": {
+            "author_id": "<UserID: ID of the author>",
+            "created_at": "<ISO8601 timestamp>",
+            "data":"<String: title of the post>",
+        },
+        "body": {
+            "author_id": "<UserID: ID of the author>",
+            "created_at": "<ISO8601 timestamp>",
+            "data":"<String: body of the post>",
+        }
     },
     ...
 ]
 ```
-#### Get history for post `posts.get.history`
+
+#### Get history for a single post
 Request
 ```json
 {
     "post_id": "<PostID: ID of the post>",
-    "paging": {                                                                 // optional
-        "start": "<Number|ISO8601 timestamp: start of the current page>",       // default=0
-        "end": "<Number|ISO8601 timestamp: end of the current page>",           // default=9
-        "limit": "<Number: max number of posts in current page (-1 for all)>"   // optional
-    }
 }
 ```
 Response
@@ -145,14 +125,138 @@ Response
 {
     "post_id": "<PostID: ID of the post>",
     "author_id": "<UserID: ID of the author>",
-    "history": [
+    "header": [
         {
+            "author_id": "<UserID: ID of the author>",
             "created_at": "<ISO8601 timestamp>",
-            "header": "<String: title of the post>",
-            "body": "<String: body text of the post>",
+            "data":"<String: title of the post>",
+        },
+        ...
+    ],
+    "body": [
+        {
+            "author_id": "<UserID: ID of the author>",
+            "created_at": "<ISO8601 timestamp>",
+            "data":"<String: body content of the post>",
         },
         ...
     ]
 }
 ```
+
+
+#### Get user posts
+Request
+```json
+{
+    "author_id": "<UserID: ID of the user>",
+}
+```
+Response
+```json
+[
+    {
+        "post_id": "<PostID: ID of the created post>",
+        "created_at": "<ISO8601 timestamp>",
+        "author_id": "<UserID: ID of the author>",
+        "header": {
+            "author_id": "<UserID: ID of the author>",
+            "created_at": "<ISO8601 timestamp>",
+            "data":"<String: title of the post>",
+        },
+        "body": {
+            "author_id": "<UserID: ID of the author>",
+            "created_at": "<ISO8601 timestamp>",
+            "data":"<String: body of the post>",
+        }
+    },
+    ...
+]
+```
+
+#### Update a single post
+Request
+```json
+{
+    "post_id": "<PostID: ID of the post to update>",
+    "header": "<String: updated title of the post>",    // optional
+    "body": "<String: updated text of the post>",       // optional
+}
+```
+Response
+```json
+{
+    "post_id": "<PostID: ID of the created post>",
+    "created_at": "<ISO8601 timestamp>",
+    "author_id": "<UserID: ID of the author>",
+    "header": {
+        "author_id": "<UserID: ID of the author>",
+        "created_at": "<ISO8601 timestamp>",
+        "data":"<String: title of the post>",
+    },
+    "body": {
+        "author_id": "<UserID: ID of the author>",
+        "created_at": "<ISO8601 timestamp>",
+        "data":"<String: body of the post>",
+    }
+}
+```
+
+#### Delete a single post
+Request
+```json
+{
+    "post_id": "<PostID: ID of the updated post>"
+}
+```
+Response
+```json
+{
+    "post_id": "<PostID: ID of the created post>",
+    "created_at": "<ISO8601 timestamp>",
+    "author_id": "<UserID: ID of the author>",
+    "header": {
+        "author_id": "<UserID: ID of the author>",
+        "created_at": "<ISO8601 timestamp>",
+        "data":"<String: title of the post>",
+    },
+    "body": {
+        "author_id": "<UserID: ID of the author>",
+        "created_at": "<ISO8601 timestamp>",
+        "data":"<String: body of the post>",
+    }
+}
+```
+
+
+#### Delete many posts
+Request
+```json
+{
+    "post_ids": ["<PostID>", "<PostID>", ...],
+}
+```
+Response
+```json
+[
+    {
+        "post_id": "<PostID: ID of the created post>",
+        "created_at": "<ISO8601 timestamp>",
+        "author_id": "<UserID: ID of the author>",
+        "header": {
+            "author_id": "<UserID: ID of the author>",
+            "created_at": "<ISO8601 timestamp>",
+            "data":"<String: title of the post>",
+        },
+        "body": {
+            "author_id": "<UserID: ID of the author>",
+            "created_at": "<ISO8601 timestamp>",
+            "data":"<String: body of the post>",
+        }
+    },
+    ...
+]
+```
+
+
 

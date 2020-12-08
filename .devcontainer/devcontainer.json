@@ -8,7 +8,9 @@
         "vscode",
         "rabbitmq",
         "mongo",
-        "mongo-express"
+        "mongo-express",
+        "mysql",
+        "authentication"
     ],
     "shutdownAction": "stopCompose",
     "postCreateCommand": "go mod download",
