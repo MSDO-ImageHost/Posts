@@ -4,20 +4,22 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/MSDO-ImageHost/Posts/internal/api"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
 // Public module handler
-func FindManyPosts(postIdHexes []string) (results []PostData, err error) {
+func FindManyPosts(postIdHexes []string, paging api.PagingStruct) (results []PostData, err error) {
 	if err := AssertClientInstance(); err != nil {
 		return results, err
 	}
-	return storage.FindMany(postIdHexes)
-
+	return storage.FindMany(postIdHexes, paging)
 }
 
-func (s *mongoStorage) FindMany(postIdHexes []string) (results []PostData, err error) {
+func (s *mongoStorage) FindMany(postIdHexes []string, paging api.PagingStruct) (results []PostData, err error) {
+
+	fmt.Println(paging)
 
 	// Convert hex strings into bson object ids
 	scaffoldIDs, err := hexes2ObjectID(postIdHexes)

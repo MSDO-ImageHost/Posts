@@ -20,7 +20,7 @@ func readManyPostsHandler(req broker.HandleRequestPayload) (res broker.HandleRes
 	}
 
 	// Alter database
-	storageRes, err := storage.FindManyPosts(postReq.PostIDs)
+	storageRes, err := storage.FindManyPosts(postReq.PostIDs, *postReq.Paging)
 	if err != nil {
 		res.Status.Code = http.StatusInternalServerError
 		res.Status.Message = err.Error()

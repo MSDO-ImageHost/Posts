@@ -2,7 +2,10 @@
 
 package database
 
-import "github.com/MSDO-ImageHost/Posts/internal/auth"
+import (
+	"github.com/MSDO-ImageHost/Posts/internal/api"
+	"github.com/MSDO-ImageHost/Posts/internal/auth"
+)
 
 type storageInterface interface {
 	// Create
@@ -10,9 +13,9 @@ type storageInterface interface {
 
 	// Read
 	FindOne(postIdHex string) (result PostData, err error)
-	FindMany(postIdHexes []string) (results []PostData, err error)
+	FindMany(postIdHexes []string, paging api.PagingStruct) (results []PostData, err error)
 	FindHistory(postIdHex string) (result PostHistoryData, err error)
-	FindUserPosts(author string) (results []PostData, err error)
+	FindUserPosts(author string, paging api.PagingStruct) (results []PostData, err error)
 
 	// Update
 	UpdateOne(post PostData, auth auth.User) (result PostData, err error)

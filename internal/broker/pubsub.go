@@ -41,6 +41,7 @@ func NewSubPub(handleConf HandleConfig, handler func(req HandleRequestPayload) (
 	// Listen for new messages
 	go func() {
 		for msg := range consumer {
+			msg.Ack(true)
 			log.Println(_LOG_TAG, "Received request with correlation id", msg.CorrelationId)
 			start := time.Now()
 
@@ -52,7 +53,7 @@ func NewSubPub(handleConf HandleConfig, handler func(req HandleRequestPayload) (
 			if msg.ContentType != "application/json" || !json.Valid(msg.Body) {
 				headers["status_code"] = http.StatusBadRequest
 				headers["status_code_msg"] = http.StatusText(http.StatusBadRequest)
-				log.Println(_LOG_TAG, "Rejected request with correlation id", msg.CorrelationId)
+				log.Println(_LOG_TAG, "Rejected request with correlation id. Incorrect ContentType or JSON payload", msg.CorrelationId)
 				if err := PublicateResponse(handleConf, msg, headers, nil, false, start); err != nil {
 					log.Fatal(_LOG_TAG, "Failed process response to", msg.CorrelationId, err)
 				}
@@ -69,7 +70,7 @@ func NewSubPub(handleConf HandleConfig, handler func(req HandleRequestPayload) (
 			if err != nil {
 				headers["status_code"] = http.StatusInternalServerError
 				headers["status_code_msg"] = err.Error()
-				log.Println(_LOG_TAG, "Failed to fulfill request with correlation id", msg.CorrelationId)
+				log.Println(_LOG_TAG, "Failed to fulfill request with correlation id.", msg.CorrelationId, err)
 				if err := PublicateResponse(handleConf, msg, headers, res.Payload, false, start); err != nil {
 					log.Fatal(_LOG_TAG, "Failed process response to", msg.CorrelationId, err)
 				}
@@ -86,10 +87,12 @@ func NewSubPub(handleConf HandleConfig, handler func(req HandleRequestPayload) (
 		}
 	}()
 
-	log.Printf("%s Registered subpub handler for %s -> %s\n",
+	log.Printf("%s Registered subpub handler for %s -> %s with routing key %s on exchange %s\n",
 		_LOG_TAG,
 		handleConf.SubQueueConf.Name,
 		handleConf.PubQueueConf.Name,
+		handleConf.QueueBindConf.Name,
+		handleConf.QueueBindConf.Exchange.Name,
 	)
 	return nil
 }

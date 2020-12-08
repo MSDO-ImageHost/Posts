@@ -4,19 +4,20 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/MSDO-ImageHost/Posts/internal/api"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
 // Public module handler
-func FindUserPosts(author string) (results []PostData, err error) {
+func FindUserPosts(author string, paging api.PagingStruct) (results []PostData, err error) {
 	if err := AssertClientInstance(); err != nil {
 		return results, err
 	}
-	return storage.FindUserPosts(author)
+	return storage.FindUserPosts(author, paging)
 }
 
-func (s *mongoStorage) FindUserPosts(author string) (results []PostData, err error) {
+func (s *mongoStorage) FindUserPosts(author string, paging api.PagingStruct) (results []PostData, err error) {
 
 	// Use Mongo aggregation scheme to query documents
 	aggregationScheme := []bson.M{

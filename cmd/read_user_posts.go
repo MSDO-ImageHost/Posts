@@ -20,7 +20,7 @@ func readUserPostsHandler(req broker.HandleRequestPayload) (res broker.HandleRes
 	}
 
 	// Query database
-	storageRes, err := storage.FindUserPosts(postReq.AuthorID)
+	storageRes, err := storage.FindUserPosts(postReq.AuthorID, *postReq.Paging)
 	if err != nil {
 		res.Status.Code = http.StatusInternalServerError
 		res.Status.Message = err.Error()
