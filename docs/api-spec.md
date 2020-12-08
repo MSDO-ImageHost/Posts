@@ -125,6 +125,8 @@ Response
 {
     "post_id": "<PostID: ID of the post>",
     "author_id": "<UserID: ID of the author>",
+    "created_at": "<ISO8601 timestamp>",
+    "updated_at": "<ISO8601 timestamp>",
     "header": [
         {
             "author_id": "<UserID: ID of the author>",
