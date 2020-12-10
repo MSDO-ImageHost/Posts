@@ -44,7 +44,6 @@ type QueueBindConfig struct {
 
 // Queue configuration for a new queue in RabbitMQ
 type QueueConfig struct {
-	Intents                                []Intent
 	Name                                   string
 	Durable, AutoDelete, Exclusive, NoWait bool
 	Args                                   amqp.Table
@@ -58,8 +57,9 @@ type ConsumerConfig struct {
 
 // Configuration object that composes other structures into a single configuration
 type HandleConfig struct {
-	SubQueueConf  QueueConfig
-	PubQueueConfs []QueueConfig
-	ConsumerConf  ConsumerConfig
-	ExchangeConf  ExchangeConfig
+	SubIntent, PubIntent Intent
+	SubQueueConf         QueueConfig
+	PubQueueConfs        []QueueConfig
+	ConsumerConf         ConsumerConfig
+	ExchangeConf         ExchangeConfig
 }

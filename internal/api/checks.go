@@ -5,10 +5,10 @@ import "fmt"
 func (s NoPostHistoryStruct) HasRequiredFields() error {
 
 	if !s.HasStringHeader() {
-		return fmt.Errorf("Header does not contain a string")
+		return fmt.Errorf("Payload \"header\" field does not contain a string")
 	}
 	if !s.HasStringBody() {
-		return fmt.Errorf("Body does not contain a string")
+		return fmt.Errorf("Payload \"Body\" field does not contain a string")
 	}
 
 	if !s.HasImageData() {

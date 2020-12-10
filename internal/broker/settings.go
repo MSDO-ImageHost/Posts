@@ -9,11 +9,16 @@ const (
 	ConfirmOnePostCreation   Intent = "ConfirmOnePostCreation"
 	ConfirmManyPostCreations Intent = "ConfirmManyPostCreations"
 
-	ReadOnePost           Intent = "ReadOnePost"
-	ReadManyPosts         Intent = "ReadManyPosts"
-	ReadOnePostHistory    Intent = "ReadOnePostHistory"
-	ReadManyPostHistories Intent = "ReadManyPostHistories"
-	ReadUserPosts         Intent = "ReadUserPosts"
+	RequestOnePost           Intent = "RequestOnePost"
+	RequestManyPosts         Intent = "RequestManyPosts"
+	RequestOnePostHistory    Intent = "RequestOnePostHistory"
+	RequestManyPostHistories Intent = "RequestManyPostHistories"
+	RequestUserPosts         Intent = "RequestUserPosts"
+	ReturnOnePost            Intent = "ReturnOnePost"
+	ReturnManyPosts          Intent = "ReturnManyPosts"
+	ReturnOnePostHistory     Intent = "ReturnOnePostHistory"
+	ReturnManyPostHistories  Intent = "ReturnManyPostHistories"
+	ReturnUserPosts          Intent = "ReturnUserPosts"
 
 	UpdateOnePost   Intent = "UpdateOnePost"
 	UpdateManyPosts Intent = "UpdateManyPosts"
@@ -29,22 +34,16 @@ const (
 )
 
 var (
-	AllIntents = []Intent{
-		//CreateOnePost,
-		//CreateManyPosts,
+	AllReturnIntents = []Intent{
 		ConfirmOnePostCreation,
 		ConfirmManyPostCreations,
-		ReadOnePost,
-		ReadManyPosts,
-		ReadOnePostHistory,
-		ReadManyPostHistories,
-		ReadUserPosts,
-		//UpdateOnePost,
-		//UpdateManyPosts,
+		ReturnOnePost,
+		ReturnManyPosts,
+		ReturnOnePostHistory,
+		ReturnManyPostHistories,
+		ReturnUserPosts,
 		ConfirmOnePostUpdate,
 		ConfirmManyPostUpdates,
-		//DeleteOnePost,
-		//DeleteManyPosts,
 		ConfirmOnePostDeletion,
 		ConfirmManyPostDeletions,
 	}

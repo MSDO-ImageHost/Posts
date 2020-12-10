@@ -30,14 +30,8 @@ func QueuesDeclare(cs []QueueConfig) error {
 }
 
 // Binds a queue to an exchange with specified routing key
-func (qc *QueueConfig) Bind(e ExchangeConfig) error {
-
-	for _, i := range qc.Intents {
-		if err := rabbit.ConsumeChannel.QueueBind(qc.Name, i.String(), e.Name, qc.NoWait, qc.Args); err != nil {
-
-		}
-	}
-	return nil
+func (qc *QueueConfig) Bind(e ExchangeConfig, i Intent) error {
+	return rabbit.ConsumeChannel.QueueBind(qc.Name, i.String(), e.Name, qc.NoWait, qc.Args)
 }
 
 // Declare a new consumer for queue

@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/MSDO-ImageHost/Posts/internal/auth"
 	"github.com/MSDO-ImageHost/Posts/internal/utils"
@@ -11,8 +12,11 @@ import (
 func main() {
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+		"exp":  time.Date(2022, 10, 10, 12, 0, 0, 0, time.UTC).Unix(),
+		"iat":  time.Date(2022, 10, 10, 12, 0, 0, 0, time.UTC).Unix(),
 		"sub":  "12",
 		"role": 0,
+		"iss":  "ImageHost.sdu.dk",
 	})
 
 	// Sign and get the complete encoded token as a string using the secret
@@ -25,7 +29,7 @@ func main() {
 		}
 		return []byte("secret"), nil
 	})
-	fmt.Println(parsedToken)
+	fmt.Println(utils.PrettyFormatMap(parsedToken))
 
 	a, err := auth.AuthJWT(tokenString)
 	fmt.Println(utils.PrettyFormatMap(a), err)

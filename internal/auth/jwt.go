@@ -13,14 +13,14 @@ func AuthJWT(tokenString string) (auth User, err error) {
 
 	token, err := jwt.ParseWithClaims(tokenString, claimsModel, FetchJwtSecret)
 	if err != nil {
-		return auth, err
+		return auth, InvalidAuthToken
 	}
 
 	// Token is valid
 	if token.Valid {
 		claims, err := DecodeClaims(token.Claims)
 		if err != nil {
-			return auth, err
+			return auth, InvalidAuthToken
 		}
 
 		auth.JwtToken = tokenString
@@ -28,7 +28,7 @@ func AuthJWT(tokenString string) (auth User, err error) {
 		auth.Rank = claims.Rank
 		return auth, nil
 	}
-	return auth, err
+	return auth, nil
 }
 
 // Fetches the secret (that was used to generate the JWTs) used to validate JWT tokens

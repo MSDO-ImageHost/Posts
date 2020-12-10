@@ -4,6 +4,15 @@ import (
 	"time"
 )
 
+type NewPostStruct struct {
+	PostID    string    `json:"post_id"`
+	AuthorID  string    `json:"author_id"`
+	Header    string    `json:"header"`
+	Body      string    `json:"body"`
+	ImageData *[]byte   `json:"image_data"`
+	Tags      *[]string `json:"tags"`
+}
+
 type SinglePostID struct {
 	PostID string `json:"post_id"`
 }
@@ -15,8 +24,7 @@ type PostContentStruct struct {
 }
 
 type StatusCode struct {
-	Code    int    `json:"status_code"`
-	Message string `json:"message"`
+	Code int
 }
 
 type PagingStruct struct {
@@ -26,14 +34,16 @@ type PagingStruct struct {
 }
 
 type NoPostHistoryStruct struct {
-	PostID    string        `json:"post_id"`
-	AuthorID  string        `json:"author_id"`
-	CreatedAt *time.Time    `json:"created_at"`
-	UpdatedAt *time.Time    `json:"updated_at,omitempty"`
-	Header    interface{}   `json:"header"` // Used as string for unmarshalling and PostContentStruct for marshalling
-	Body      interface{}   `json:"body"`   // Used as string for unmarshalling and PostContentStruct for marshalling
-	ImageData *[]byte       `json:"image_data,omitempty"`
-	Paging    *PagingStruct `json:"paging,omitempty"`
+	PostID    string      `json:"post_id"`
+	AuthorID  string      `json:"author_id"`
+	CreatedAt *time.Time  `json:"created_at"`
+	UpdatedAt *time.Time  `json:"updated_at,omitempty"`
+	Header    interface{} `json:"header"` // Used as string for unmarshalling and PostContentStruct for marshalling
+	Body      interface{} `json:"body"`   // Used as string for unmarshalling and PostContentStruct for marshalling
+	ImageData *[]byte     `json:"image_data,omitempty"`
+	Tags      *[]string   `json:"tags,omitempty"`
+
+	Paging *PagingStruct `json:"paging,omitempty"`
 }
 
 type PostHistoryStruct struct {

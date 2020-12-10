@@ -15,7 +15,6 @@ func readUserPostsHandler(req broker.HandleRequestPayload) (res broker.HandleRes
 	postReq := api.NoPostHistoryStruct{}
 	if err := json.Unmarshal(req.Payload, &postReq); err != nil {
 		res.Status.Code = http.StatusBadRequest
-		res.Status.Message = err.Error()
 		return res, err
 	}
 
@@ -23,7 +22,6 @@ func readUserPostsHandler(req broker.HandleRequestPayload) (res broker.HandleRes
 	storageRes, err := storage.FindUserPosts(postReq.AuthorID, *postReq.Paging)
 	if err != nil {
 		res.Status.Code = http.StatusInternalServerError
-		res.Status.Message = err.Error()
 		return res, err
 	}
 
@@ -52,13 +50,11 @@ func readUserPostsHandler(req broker.HandleRequestPayload) (res broker.HandleRes
 	resBytes, err := json.Marshal(postResults)
 	if err != nil {
 		res.Status.Code = http.StatusInternalServerError
-		res.Status.Message = err.Error()
 		return res, err
 	}
 
 	// Set status codes and return
 	res.Payload = resBytes
 	res.Status.Code = http.StatusCreated
-	res.Status.Message = http.StatusText(http.StatusCreated)
 	return res, nil
 }

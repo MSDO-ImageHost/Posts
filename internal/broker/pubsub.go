@@ -17,11 +17,11 @@ func NewSubPub(hc HandleConfig, handler func(req HandleRequestPayload) (res Hand
 		return err
 	}
 
-	//Declare subscription queue
+	// Declare subscription queue and bind to rapid
 	if err := QueueDeclare(hc.SubQueueConf); err != nil {
 		return err
 	}
-	if err := hc.SubQueueConf.Bind(hc.ExchangeConf); err != nil {
+	if err := hc.SubQueueConf.Bind(hc.ExchangeConf, hc.SubIntent); err != nil {
 		return err
 	}
 
@@ -30,7 +30,7 @@ func NewSubPub(hc HandleConfig, handler func(req HandleRequestPayload) (res Hand
 		if err := QueueDeclare(q); err != nil {
 			return err
 		}
-		if err := q.Bind(hc.ExchangeConf); err != nil {
+		if err := q.Bind(hc.ExchangeConf, hc.PubIntent); err != nil {
 			return err
 		}
 	}
@@ -49,21 +49,12 @@ func NewSubPub(hc HandleConfig, handler func(req HandleRequestPayload) (res Hand
 			start := time.Now()
 
 			// Start building response message
-			resMsg := Response{
-				Headers:       amqp.Table{},
-				ContentType:   "application/json",
-				CorrelationId: reqMsg.CorrelationId,
-				AppId:         "posts-v1",
-			}
+			resMsg := Response{Headers: amqp.Table{}, ContentType: "application/json", CorrelationId: reqMsg.CorrelationId, AppId: "posts-v1"}
 
 			// Verify delivery integrity
 			if err := AssertDelivery(reqMsg); err != nil {
-				resMsg.Headers["status_code"] = http.StatusBadRequest
-				resMsg.Headers["status_code_reqMsg"] = http.StatusText(http.StatusBadRequest)
 				log.Printf("%s '%s': Rejected request: %s\t\n", _LOG_TAG, reqMsg.CorrelationId, err)
-				if err := resMsg.Publish(hc, reqMsg); err != nil {
-					log.Fatalf("%s '%s': Failed to reply back: %s ", _LOG_TAG, reqMsg.CorrelationId, err)
-				}
+				resMsg.Publish(start, hc, reqMsg, http.StatusBadRequest, err)
 				continue
 			}
 
@@ -72,53 +63,54 @@ func NewSubPub(hc HandleConfig, handler func(req HandleRequestPayload) (res Hand
 				Headers: (map[string]interface{})(reqMsg.Headers),
 				Payload: reqMsg.Body,
 			})
-			resMsg.Headers["status_code"] = res.Status.Code
-			resMsg.Headers["status_code_reqMsg"] = res.Status.Message
 
 			// Error or rejections from business logic
 			if err != nil {
-				resMsg.Headers["status_code"] = http.StatusInternalServerError
-				resMsg.Headers["status_code_reqMsg"] = err.Error()
 				log.Printf("%s '%s': Failed to fulfill request: %s ", _LOG_TAG, reqMsg.CorrelationId, err)
-				if err := resMsg.Publish(hc, reqMsg); err != nil {
-					log.Fatalf("%s '%s': Failed to reply back: %s ", _LOG_TAG, reqMsg.CorrelationId, err)
-				}
+				resMsg.Publish(start, hc, reqMsg, res.Status.Code, err)
 				continue
 			}
 
 			// Publish response message
-			resMsg.Headers["processing_time_ns"] = time.Since(start).Nanoseconds()
+			resMsg.Body = res.Payload
 			resMsg.Timestamp = time.Now().UTC()
-			if err := resMsg.Publish(hc, reqMsg); err != nil {
-				log.Fatalf("%s '%s': Failed to reply back: %s ", _LOG_TAG, reqMsg.CorrelationId, err)
-			}
+			resMsg.Publish(start, hc, reqMsg, res.Status.Code, nil)
+
+			// Roger and over
 			log.Printf("%s '%s': Fulfilled request", _LOG_TAG, reqMsg.CorrelationId)
 		}
 	}()
-	log.Printf("%s Registered event %s", _LOG_TAG, hc.SubQueueConf.Name)
+	log.Printf("%s Listing for %s events -> (%s)", _LOG_TAG, hc.SubIntent.String(), hc.SubQueueConf.Name)
 	return nil
 }
 
-func (r Response) Publish(hc HandleConfig, reqMsg amqp.Delivery) error {
+// Emit the response
+func (r Response) Publish(start time.Time, hc HandleConfig, reqMsg amqp.Delivery, statusCode int, err error) {
 	resMsg := (amqp.Publishing)(r)
 
-	// Build list of response queues
-	pubQueues := append(hc.PubQueueConfs, QueueConfig{Name: reqMsg.ReplyTo})
-
-	// Publish response message
-	for _, pubQueue := range pubQueues {
-		if err := rabbit.PublishChannel.Publish(hc.ExchangeConf.Name, pubQueue.Name, false, false, resMsg); err != nil {
-			return fmt.Errorf("Failed to reply back %s", err)
-		}
-		if err := rabbit.PublishChannel.Publish(hc.ExchangeConf.Name, pubQueue.Name, false, false, resMsg); err != nil {
-			return fmt.Errorf("Failed to reply back: %s", err)
-		}
+	var errMsg string = ""
+	if err != nil {
+		errMsg = err.Error()
 	}
-	return reqMsg.Ack(true)
+
+	// Set payload headers
+	resMsg.Headers["processing_time_ns"] = time.Since(start).Nanoseconds()
+	resMsg.Headers["status_code"] = statusCode
+	resMsg.Headers["status_msg"] = fmt.Sprintf("%s. %s", http.StatusText(statusCode), errMsg)
+
+	// Publish message
+	if err := rabbit.PublishChannel.Publish(hc.ExchangeConf.Name, hc.PubIntent.String(), false, false, resMsg); err != nil {
+		log.Fatalf("%s Failed to emit response %s -> %s: %s", _LOG_TAG, hc.PubIntent.String(), hc.ExchangeConf.Name, err)
+	}
+	log.Printf("%s '%s': Emitted response. %s -> %s", _LOG_TAG, reqMsg.CorrelationId, hc.PubIntent.String(), hc.ExchangeConf.Name)
+
+	if err := reqMsg.Ack(true); err != nil {
+		log.Fatalf("%s Failed to acknowledge request: %s", _LOG_TAG, err)
+	}
 }
 
+// Check if basic parameters are ok on the delivery
 func AssertDelivery(msg amqp.Delivery) error {
-
 	if msg.ContentType == "" {
 		return fmt.Errorf("ContentType is not specified")
 	}
@@ -127,8 +119,7 @@ func AssertDelivery(msg amqp.Delivery) error {
 	}
 
 	if !json.Valid(msg.Body) {
-		return fmt.Errorf("Body payload contains invalid JSON")
+		return fmt.Errorf("Message payload contains invalid JSON")
 	}
-
 	return nil
 }
