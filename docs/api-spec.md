@@ -28,6 +28,17 @@ The following table displays fields that messages can or must contain
 | Delete many posts     | posts.delete.many     | posts.return.many         | DeleteManyPosts           | ConfirmDeleteManyPosts        |
 
 ## Message structures
+
+#### Pagination
+At least two of the fields is required
+```json
+{
+    "start?": "<~~Number |~~ ISO8601: start of the current page>",
+    "end?": "<~~Number |~~ ISO8601: end of the current page>",
+    "limit?": "<Number: max number of posts in current page (-1 for all)>"
+}
+```
+
 #### Create a new post
 Request
 ```json
@@ -40,16 +51,16 @@ Response
 ```json
 {
     "post_id": "<PostID: ID of the created post>",
-    "created_at": "<ISO8601 timestamp>",
+    "created_at": "<ISO8601>",
     "author_id": "<UserID: ID of the author>",
     "header": {
         "author_id": "<UserID: ID of the author>",
-        "created_at": "<ISO8601 timestamp>",
+        "created_at": "<ISO8601>",
         "data":"<String: title of the post>",
     },
     "body": {
         "author_id": "<UserID: ID of the author>",
-        "created_at": "<ISO8601 timestamp>",
+        "created_at": "<ISO8601>",
         "data":"<String: body of the post>",
     },
     "image_data": "<Base64 Byte Array>",
@@ -67,16 +78,17 @@ Response
 ```json
 {
     "post_id": "<PostID: ID of the created post>",
-    "created_at": "<ISO8601 timestamp>",
+    "created_at": "<ISO8601>",
+    "updated_at?": "<ISO8601>",
     "author_id": "<UserID: ID of the author>",
     "header": {
         "author_id": "<UserID: ID of the author>",
-        "created_at": "<ISO8601 timestamp>",
+        "created_at": "<ISO8601>",
         "data":"<String: title of the post>",
     },
     "body": {
         "author_id": "<UserID: ID of the author>",
-        "created_at": "<ISO8601 timestamp>",
+        "created_at": "<ISO8601>",
         "data":"<String: body of the post>",
     }
 }
@@ -85,12 +97,8 @@ Response
 Request
 ```json
 {
-    "post_ids": ["<PostID?>", "<PostID?>", ...],                                  // optional
-    "paging": {                                                                 // optional
-        "start": "<Number?|ISO8601 timestamp?: start of the current page>",       // default=0
-        "end": "<Number?|ISO8601 timestamp?: end of the current page>",           // default=9
-        "limit": "<Number?: max number of posts in current page (-1 for all)>"   // optional
-    }
+    "post_ids?": ["<PostID>", "<PostID>", ...],
+    "paging?": "<pagination object>"
 }
 ```
 Response
@@ -98,16 +106,17 @@ Response
 [
     {
         "post_id": "<PostID: ID of the created post>",
-        "created_at": "<ISO8601 timestamp>",
+        "created_at": "<ISO8601>",
+        "updated_at?": "<ISO8601>",
         "author_id": "<UserID: ID of the author>",
         "header": {
             "author_id": "<UserID: ID of the author>",
-            "created_at": "<ISO8601 timestamp>",
+            "created_at": "<ISO8601>",
             "data":"<String: title of the post>",
         },
         "body": {
             "author_id": "<UserID: ID of the author>",
-            "created_at": "<ISO8601 timestamp>",
+            "created_at": "<ISO8601>",
             "data":"<String: body of the post>",
         }
     },
@@ -127,12 +136,12 @@ Response
 {
     "post_id": "<PostID: ID of the post>",
     "author_id": "<UserID: ID of the author>",
-    "created_at": "<ISO8601 timestamp>",
-    "updated_at": "<ISO8601 timestamp>",
+    "created_at": "<ISO8601>",
+    "updated_at?": "<ISO8601>",
     "header": [
         {
             "author_id": "<UserID: ID of the author>",
-            "created_at": "<ISO8601 timestamp>",
+            "created_at": "<ISO8601>",
             "data":"<String: title of the post>",
         },
         ...
@@ -140,7 +149,7 @@ Response
     "body": [
         {
             "author_id": "<UserID: ID of the author>",
-            "created_at": "<ISO8601 timestamp>",
+            "created_at": "<ISO8601>",
             "data":"<String: body content of the post>",
         },
         ...
@@ -154,6 +163,7 @@ Request
 ```json
 {
     "author_id": "<UserID: ID of the user>",
+    "paging?": "<pagination object>"
 }
 ```
 Response
@@ -161,16 +171,17 @@ Response
 [
     {
         "post_id": "<PostID: ID of the created post>",
-        "created_at": "<ISO8601 timestamp>",
         "author_id": "<UserID: ID of the author>",
+        "created_at": "<ISO8601>",
+        "updated_at?": "<ISO8601>",
         "header": {
             "author_id": "<UserID: ID of the author>",
-            "created_at": "<ISO8601 timestamp>",
+            "created_at": "<ISO8601>",
             "data":"<String: title of the post>",
         },
         "body": {
             "author_id": "<UserID: ID of the author>",
-            "created_at": "<ISO8601 timestamp>",
+            "created_at": "<ISO8601>",
             "data":"<String: body of the post>",
         }
     },
@@ -183,24 +194,25 @@ Request
 ```json
 {
     "post_id": "<PostID: ID of the post to update>",
-    "header": "<String?: updated title of the post>",
-    "body": "<String?: updated text of the post>",
+    "header?": "<String: updated title of the post>",
+    "body?": "<String: updated text of the post>",
 }
 ```
 Response
 ```json
 {
     "post_id": "<PostID: ID of the created post>",
-    "created_at": "<ISO8601 timestamp>",
     "author_id": "<UserID: ID of the author>",
+    "created_at": "<ISO8601>",
+    "updated_at?": "<ISO8601>",
     "header": {
         "author_id": "<UserID: ID of the author>",
-        "created_at": "<ISO8601 timestamp>",
+        "created_at": "<ISO8601>",
         "data":"<String: title of the post>",
     },
     "body": {
         "author_id": "<UserID: ID of the author>",
-        "created_at": "<ISO8601 timestamp>",
+        "created_at": "<ISO8601>",
         "data":"<String: body of the post>",
     }
 }
@@ -217,16 +229,17 @@ Response
 ```json
 {
     "post_id": "<PostID: ID of the created post>",
-    "created_at": "<ISO8601 timestamp>",
     "author_id": "<UserID: ID of the author>",
+    "created_at": "<ISO8601>",
+    "updated_at?": "<ISO8601>",
     "header": {
         "author_id": "<UserID: ID of the author>",
-        "created_at": "<ISO8601 timestamp>",
+        "created_at": "<ISO8601>",
         "data":"<String: title of the post>",
     },
     "body": {
         "author_id": "<UserID: ID of the author>",
-        "created_at": "<ISO8601 timestamp>",
+        "created_at": "<ISO8601>",
         "data":"<String: body of the post>",
     }
 }
@@ -237,8 +250,8 @@ Response
 Request
 ```json
 {
-    "post_ids": ["<PostID?>", "<PostID?>", ...],
-    "author_id": "<UserID?>",
+    "post_ids?": ["<PostID>", "<PostID>", ...],
+    "author_id?": "<UserID>",
 }
 ```
 Response
@@ -246,16 +259,17 @@ Response
 [
     {
         "post_id": "<PostID: ID of the created post>",
-        "created_at": "<ISO8601 timestamp>",
+        "created_at": "<ISO8601>",
+        "updated_at?": "<ISO8601>",
         "author_id": "<UserID: ID of the author>",
         "header": {
             "author_id": "<UserID: ID of the author>",
-            "created_at": "<ISO8601 timestamp>",
+            "created_at": "<ISO8601>",
             "data":"<String: title of the post>",
         },
         "body": {
             "author_id": "<UserID: ID of the author>",
-            "created_at": "<ISO8601 timestamp>",
+            "created_at": "<ISO8601>",
             "data":"<String: body of the post>",
         }
     },
