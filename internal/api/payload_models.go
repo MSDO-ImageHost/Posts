@@ -4,15 +4,6 @@ import (
 	"time"
 )
 
-type NewPostStruct struct {
-	PostID    string    `json:"post_id"`
-	AuthorID  string    `json:"author_id"`
-	Header    string    `json:"header"`
-	Body      string    `json:"body"`
-	ImageData *[]byte   `json:"image_data"`
-	Tags      *[]string `json:"tags"`
-}
-
 type SinglePostID struct {
 	PostID string `json:"post_id"`
 }
@@ -41,7 +32,7 @@ type NoPostHistoryStruct struct {
 	Header    interface{} `json:"header"` // Used as string for unmarshalling and PostContentStruct for marshalling
 	Body      interface{} `json:"body"`   // Used as string for unmarshalling and PostContentStruct for marshalling
 	ImageData *[]byte     `json:"image_data,omitempty"`
-	Tags      *[]string   `json:"tags,omitempty"`
+	Tags      []string    `json:"tags"`
 
 	Paging *PagingStruct `json:"paging,omitempty"`
 }

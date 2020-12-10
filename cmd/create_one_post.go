@@ -46,6 +46,11 @@ func createOnePostHandler(req broker.HandleRequestPayload) (res broker.HandleRes
 		return res, err
 	}
 
+	// Avoid null value in json
+	if postReq.Tags == nil {
+		postReq.Tags = make([]string, 0)
+	}
+
 	// Construct response object
 	postRes := api.NoPostHistoryStruct{
 		PostID:    storageRes.IDHex,

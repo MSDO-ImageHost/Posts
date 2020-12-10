@@ -35,7 +35,7 @@ func main() {
 	}
 	defer ch.Close()
 
-	for i := 0; i < 100; i++ {
+	for i := 0; i < 1; i++ {
 
 		goodTokenString, _ := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{"sub": strconv.Itoa(i), "role": 0}).SignedString(correctSecret)
 		goodAuth, _ := auth.AuthJWT(goodTokenString)
