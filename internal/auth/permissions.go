@@ -1,9 +1,9 @@
 package auth
 
 const (
-	USER_RANK  Rank = 00
-	MOD_RANK   Rank = 10
-	ADMIN_RANK Rank = 20
+	USER_RANK  float64 = 00
+	MOD_RANK   float64 = 10
+	ADMIN_RANK float64 = 20
 )
 
 func (requester *User) IsOwner(owner User) bool {

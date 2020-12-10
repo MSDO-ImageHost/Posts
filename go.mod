@@ -4,6 +4,7 @@ go 1.15
 
 require (
 	github.com/aws/aws-sdk-go v1.34.28
+	github.com/beevik/guid v0.0.0-20170504223318-d0ea8faecee0
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/golang/mock v1.4.4
 	github.com/mitchellh/mapstructure v1.4.0

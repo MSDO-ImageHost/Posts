@@ -5,6 +5,7 @@ import (
 )
 
 type Token *jwt.Token
+type Rank byte //interface{}
 
 type Claims struct {
 	// Standard fields
@@ -17,13 +18,13 @@ type Claims struct {
 	Id        string `mapstructure:"jti"`
 
 	// Custom fields
-	Rank Rank `mapstructure:"role"`
+	Rank float64 `mapstructure:"role"`
 }
-
-type Rank byte
 
 type User struct {
 	JwtToken string
 	UserID   string
-	Rank     Rank
+	Rank     float64
 }
+
+var claimsModel jwt.MapClaims = jwt.MapClaims{"sub": nil, "role": 0}

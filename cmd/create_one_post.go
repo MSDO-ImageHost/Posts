@@ -31,6 +31,9 @@ func createOnePostHandler(req broker.HandleRequestPayload) (res broker.HandleRes
 		res.Status.Message = err.Error()
 		return res, err
 	}
+	if err := postReq.HasRequiredFields(); err != nil {
+		return res, err
+	}
 
 	// Alter database
 	storageRes, err := storage.AddOnePost(storage.PostData{
@@ -60,6 +63,7 @@ func createOnePostHandler(req broker.HandleRequestPayload) (res broker.HandleRes
 			Data:      storageRes.Body.Data,
 			CreatedAt: storageRes.Body.CreatedAt,
 		},
+		ImageData: postReq.ImageData,
 	}
 
 	// Parse response object into json

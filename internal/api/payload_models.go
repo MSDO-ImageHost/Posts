@@ -32,6 +32,7 @@ type NoPostHistoryStruct struct {
 	UpdatedAt *time.Time    `json:"updated_at,omitempty"`
 	Header    interface{}   `json:"header"` // Used as string for unmarshalling and PostContentStruct for marshalling
 	Body      interface{}   `json:"body"`   // Used as string for unmarshalling and PostContentStruct for marshalling
+	ImageData *[]byte       `json:"image_data,omitempty"`
 	Paging    *PagingStruct `json:"paging,omitempty"`
 }
 

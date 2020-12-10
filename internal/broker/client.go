@@ -21,22 +21,33 @@ func Init() error {
 	}
 	log.Println(_LOG_TAG, "Opened connection")
 
-	// Create channel
-	log.Println(_LOG_TAG, "Opening channel")
-	channel, err := connection.Channel()
+	// Create consume channel
+	log.Println(_LOG_TAG, "Opening consume channel")
+	consumeChannel, err := connection.Channel()
 	if err != nil {
 		return err
 	}
-
-	if err = channel.Qos(1, 0, false); err != nil {
+	if err = consumeChannel.Qos(1, 0, false); err != nil {
 		return err
 	}
-	log.Println(_LOG_TAG, "Channel opened")
+	log.Println(_LOG_TAG, "Consume channel opened")
+
+	// Create publish channel
+	log.Println(_LOG_TAG, "Opening publish channel")
+	publishChannel, err := connection.Channel()
+	if err != nil {
+		return err
+	}
+	if err = publishChannel.Qos(1, 0, false); err != nil {
+		return err
+	}
+	log.Println(_LOG_TAG, "Consume publish opened")
 
 	// Store reference in memory
 	rabbit = RabbitBroker{
-		Host:    connection,
-		Channel: channel,
+		Host:           connection,
+		ConsumeChannel: consumeChannel,
+		PublishChannel: publishChannel,
 	}
 
 	log.Println(_LOG_TAG, "Finished client connection setup")
@@ -46,8 +57,11 @@ func Init() error {
 // Closes the active connection to the RabbitMQ host
 func Deinit() error {
 	log.Println(_LOG_TAG, "Closing client connection")
-	// Close channel in use
-	if err := rabbit.Channel.Close(); err != nil {
+	// Close channels in use
+	if err := rabbit.ConsumeChannel.Close(); err != nil {
+		return err
+	}
+	if err := rabbit.PublishChannel.Close(); err != nil {
 		return err
 	}
 

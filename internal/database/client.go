@@ -17,31 +17,11 @@ var (
 
 // Init configures the db connection credentials and initializes the database collections.
 func Init() (err error) {
-
-	if shell.Client != nil {
-		log.Println(_LOG_TAG, "An instance already exists")
-		if Ping() != nil {
-			log.Panicln("Database:\tCould not ping instance. Panicking")
-		}
-
-		if storage == nil {
-			log.Println(_LOG_TAG, "Missing collection handlers. Restarting setup")
-			if err := Deinit(); err != nil {
-				log.Panicln("Database:\tAn error occurred when disconnecting", err)
-			}
-			shell.Client = nil
-			shell.DB = nil
-			storage = nil
-			Init()
-		}
-		return nil
-	}
-
 	log.Println(_LOG_TAG, "Setting up")
 
 	// Check if environment variables exists
 	log.Println(_LOG_TAG, "Checking environment variables")
-	if err := utils.CheckEnvs([]string{"MONGO_CONN_URI", "MONGO_SERVICE_DB"}); err != nil {
+	if err := utils.CheckEnvs([]string{"MONGO_CONN_URI"}); err != nil {
 		return err
 	}
 	log.Println(_LOG_TAG, "Variables are set")
@@ -56,7 +36,7 @@ func Init() (err error) {
 
 	shell = mongoShell{
 		Client: client,
-		DB:     client.Database(os.Getenv("MONGO_SERVICE_DB")),
+		DB:     client.Database("posts"),
 	}
 
 	log.Println(_LOG_TAG, "Pinging client")

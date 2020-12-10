@@ -6,25 +6,46 @@ import (
 
 // Declares a new exchange for
 func ExchangeDeclare(c ExchangeConfig) error {
-	return rabbit.Channel.ExchangeDeclare(c.Name, c.Kind, c.Durable, c.AutoDelete, c.Internal, c.NoWait, c.Args)
+	return rabbit.ConsumeChannel.ExchangeDeclare(c.Name, c.Kind, c.Durable, c.AutoDelete, c.Internal, c.NoWait, c.Args)
 }
 
 // Declares a new queue
 func QueueDeclare(c QueueConfig) error {
-	_, err := rabbit.Channel.QueueDeclare(c.Name, c.Durable, c.AutoDelete, c.Exclusive, c.NoWait, c.Args)
+	_, err := rabbit.ConsumeChannel.QueueDeclare(c.Name, c.Durable, c.AutoDelete, c.Exclusive, c.NoWait, c.Args)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
+// Declares a new queue
+func QueuesDeclare(cs []QueueConfig) error {
+	for _, c := range cs {
+		_, err := rabbit.ConsumeChannel.QueueDeclare(c.Name, c.Durable, c.AutoDelete, c.Exclusive, c.NoWait, c.Args)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 // Binds a queue to an exchange with specified routing key
-func QueueBind(c QueueBindConfig) error {
-	return rabbit.Channel.QueueBind(c.Name, c.Key, c.Exchange.Name, c.NoWait, c.Args)
+func (qc *QueueConfig) Bind(e ExchangeConfig) error {
+
+	for _, i := range qc.Intents {
+		if err := rabbit.ConsumeChannel.QueueBind(qc.Name, i.String(), e.Name, qc.NoWait, qc.Args); err != nil {
+
+		}
+	}
+	return nil
 }
 
 // Declare a new consumer for queue
 func ConsumerDeclare(hc HandleConfig) (<-chan amqp.Delivery, error) {
 	c := hc.ConsumerConf
-	return rabbit.Channel.Consume(hc.SubQueueConf.Name, "", c.AutoAck, c.Exclusive, c.NoLocal, c.NoWait, c.Args)
+	return rabbit.ConsumeChannel.Consume(hc.SubQueueConf.Name, "", c.AutoAck, c.Exclusive, c.NoLocal, c.NoWait, c.Args)
+}
+
+func (i Intent) String() string {
+	return (string)(i)
 }

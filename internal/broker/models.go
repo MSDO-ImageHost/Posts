@@ -5,10 +5,14 @@ import (
 	"github.com/streadway/amqp"
 )
 
+type Response amqp.Publishing
+type Intent string
+
 // Instance to hold the RabbitMQ host and channel
 type RabbitBroker struct {
-	Host    *amqp.Connection
-	Channel *amqp.Channel
+	Host           *amqp.Connection
+	ConsumeChannel *amqp.Channel
+	PublishChannel *amqp.Channel
 }
 
 // Data structure that is passed into any business logic handler
@@ -40,10 +44,10 @@ type QueueBindConfig struct {
 
 // Queue configuration for a new queue in RabbitMQ
 type QueueConfig struct {
+	Intents                                []Intent
 	Name                                   string
 	Durable, AutoDelete, Exclusive, NoWait bool
 	Args                                   amqp.Table
-	Bind                                   *QueueBindConfig
 }
 
 // Configuration of the consumer used to consume messages from RabbitMQ
@@ -52,10 +56,10 @@ type ConsumerConfig struct {
 	Args                                amqp.Table
 }
 
-// Configuration object that composes other structures into a single
+// Configuration object that composes other structures into a single configuration
 type HandleConfig struct {
-	SubQueueConf, PubQueueConf QueueConfig
-	ConsumerConf               ConsumerConfig
-	//ExchangeConf               ExchangeConfig
-	QueueBindConf QueueBindConfig
+	SubQueueConf  QueueConfig
+	PubQueueConfs []QueueConfig
+	ConsumerConf  ConsumerConfig
+	ExchangeConf  ExchangeConfig
 }

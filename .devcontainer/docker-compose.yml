@@ -5,6 +5,12 @@ volumes:
   rabbitmq-data:
   auth-db-data:
 
+networks:
+  rabbit-network:
+  auth-network:
+  posts-network:
+
+
 services:
   vscode:
     image: qmcgaw/godevcontainer
@@ -23,65 +29,41 @@ services:
       - SYS_PTRACE
     security_opt:
       - seccomp:unconfined
+    networks:
+      - rabbit-network
+      - auth-network
+      - posts-network
     entrypoint: zsh -c "while sleep 1000; do :; done"
-
-  rabbitmq:
-    image: rabbitmq:3-management
-    volumes:
-      - rabbitmq-data:/var/lib/rabbitmq
-    ports:
-      - 15672:15672
-    environment:
-      - RABBITMQ_DEFAULT_USER=dev
-      - RABBITMQ_DEFAULT_PASS=dev
-    restart: unless-stopped
-
-  mongo:
-    image: mongo:latest
-    volumes:
-      - posts-db-data:/data/db
-      - ../.mongo/db-init:/docker-entrypoint-initdb.d
-    environment:
-      - MONGO_INITDB_DATABASE=posts
-    restart: unless-stopped
 
   mongo-express:
     image: mongo-express
     ports:
       - 8081:8081
+    networks:
+      - posts-network
     restart: always
+
+  rabbitmq:
+    extends:
+      file: ../docker-compose.yml
+      service: rabbitmq
 
   posts:
-    build: .
-    environment:
-      - TZ=Europe/Copenhagen
-      - MONGO_CONN_URI=mongodb://mongo:27017/?readPreference=primary&ssl=false
-      - MONGO_SERVICE_DB=posts-db
-      - RABBITMQ_CONN_URI=amqp://dev:dev@rabbitmq:5672/
-      - JWT_HMAC_SECRET=secret
-    restart: unless-stopped
+    extends:
+      file: ../docker-compose.yml
+      service: posts
 
+  mongo:
+    extends:
+      file: ../docker-compose.yml
+      service: mongo
 
-  ## Authentication ##
   authentication:
-    build: ../../Authentication/
-    container_name: authentication
-    environment:
-      - AMQP_USER=dev
-      - AMQP_PASS=dev
-      - AMQP_URI=amqp://dev:dev@rabbitmq:5672
-      - MYSQL_PASSWORD=DM8742020
-    restart: unless-stopped
+    extends:
+      file: ../docker-compose.yml
+      service: authentication
 
   mysql:
-    image: mysql:8
-    container_name: mysql
-    command: --init-file /data/application/init.sql
-    volumes:
-      - auth-db-data:/var/lib/mysql
-      - ../../Authentication/init.sql:/data/application/init.sql
-    environment:
-      - MYSQL_ROOT_PASSWORD=DM8742020
-      - MYSQL_DATABASE=authentication
-    restart: always
-  ## End of Authentication ##
+    extends:
+      file: ../docker-compose.yml
+      service: mysql
