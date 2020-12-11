@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	api "github.com/MSDO-ImageHost/Posts/internal/api"
@@ -26,10 +25,8 @@ func readManyPostsHandler(req broker.HandleRequestPayload) (res broker.HandleRes
 		return res, err
 	}
 
-	fmt.Println("\n\n")
 	// Alter database
 	storageRes, err := storage.FindManyPosts(postReq.PostIDs, *postReq.Paging)
-	fmt.Println("\n\n")
 	if err != nil {
 		res.Status.Code = http.StatusInternalServerError
 		return res, err

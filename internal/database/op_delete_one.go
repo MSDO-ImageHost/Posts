@@ -10,14 +10,14 @@ import (
 )
 
 // Public module handler
-func DeleteOnePost(postIdHex string, a auth.User) (result string, err error) {
+func DeleteOnePost(postIdHex string, a auth.User) (result PostData, err error) {
 	if err := AssertClientInstance(); err != nil {
 		return result, err
 	}
 	return storage.DeleteOne(postIdHex, a)
 }
 
-func (s *mongoStorage) DeleteOne(postIdHex string, a auth.User) (result string, err error) {
+func (s *mongoStorage) DeleteOne(postIdHex string, a auth.User) (result PostData, err error) {
 
 	// Convert hex string into bson object id
 	scaffoldID, err := primitive.ObjectIDFromHex(postIdHex)
@@ -34,6 +34,11 @@ func (s *mongoStorage) DeleteOne(postIdHex string, a auth.User) (result string, 
 	// Check that the user can alter data
 	if canModify := a.CanModify(auth.User{UserID: scaffoldRef.AuthorID}); !canModify {
 		return result, fmt.Errorf("Insufficient permissions")
+	}
+
+	result, err = s.FindOne(postIdHex)
+	if err != nil {
+		return result, err
 	}
 
 	// Permanently delete scaffold
@@ -53,6 +58,5 @@ func (s *mongoStorage) DeleteOne(postIdHex string, a auth.User) (result string, 
 		return result, err
 	}
 
-	result = postIdHex
 	return result, nil
 }

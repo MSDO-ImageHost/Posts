@@ -6,46 +6,27 @@ import (
 
 	"github.com/MSDO-ImageHost/Posts/internal/api"
 	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo"
 )
 
 // Public module handler
-func FindUserPosts(author string, paging api.PagingStruct) (results []PostData, err error) {
+func FindUserPosts(author_id string, paging api.PagingStruct) (results []PostData, err error) {
 	if err := AssertClientInstance(); err != nil {
 		return results, err
 	}
-	return storage.FindUserPosts(author, paging)
+	return storage.FindUserPosts(author_id, paging)
 }
 
-func (s *mongoStorage) FindUserPosts(author string, paging api.PagingStruct) (results []PostData, err error) {
+func (s *mongoStorage) FindUserPosts(author_id string, paging api.PagingStruct) (results []PostData, err error) {
 
-	// Use Mongo aggregation scheme to query documents
-	aggregationScheme := []bson.M{
-		{"$match": bson.M{"creator_id": author}},
-		{"$lookup": bson.M{
-			"from": "headers",
-			"as":   "headers",
-			"let":  bson.D{{Key: "headers", Value: "$headers"}},
-			"pipeline": mongo.Pipeline{
-				bson.D{{Key: "$match", Value: bson.M{"$expr": bson.M{"$in": [2]string{"$_id", "$$headers"}}}}},
-				bson.D{{Key: "$sort", Value: bson.M{"created_at": -1}}},
-				bson.D{{Key: "$limit", Value: 1}},
-			}},
-		},
-		{"$lookup": bson.M{
-			"from": "bodies",
-			"as":   "bodies",
-			"let":  bson.D{{Key: "bodies", Value: "$bodies"}},
-			"pipeline": mongo.Pipeline{
-				bson.D{{Key: "$match", Value: bson.M{"$expr": bson.M{"$in": [2]string{"$_id", "$$bodies"}}}}},
-				bson.D{{Key: "$sort", Value: bson.M{"created_at": -1}}},
-				bson.D{{Key: "$limit", Value: 1}},
-			}},
-		},
-	}
+	// Use Mongo aggregation scheme to query document
+	aggregation := make([]bson.M, 0)
+	aggregation = append(aggregation, sortByDateDecending)
+	aggregation = append(aggregation, headerHistoryDecending(1))
+	aggregation = append(aggregation, bodyHistoryDecending(1))
+	aggregation = append(aggregation, bson.M{"$match": bson.M{"creator_id": author_id}})
 
 	// Find matching documents
-	cur, err := s.ScaffoldStorage.Aggregate(context.TODO(), aggregationScheme)
+	cur, err := s.ScaffoldStorage.Aggregate(context.TODO(), aggregation)
 	if err != nil {
 		return results, err
 	}
@@ -81,6 +62,5 @@ func (s *mongoStorage) FindUserPosts(author string, paging api.PagingStruct) (re
 			results[i].Body.Data = scaffolds[i].BodyContents[0].Data
 		}
 	}
-
 	return results, nil
 }

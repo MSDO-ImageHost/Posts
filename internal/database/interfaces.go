@@ -21,7 +21,7 @@ type storageInterface interface {
 	UpdateOne(post PostData, auth auth.User) (result PostData, err error)
 
 	// Delete
-	DeleteOne(postIdHex string, auth auth.User) (result string, err error)
+	DeleteOne(postIdHex string, auth auth.User) (result PostData, err error)
 	DeleteMany(postIdHexes []string, auth auth.User) (results []string, err error)
 	MarkDeleteOne(postIdHex string, auth auth.User) (result string, err error)
 }

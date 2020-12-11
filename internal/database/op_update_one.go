@@ -44,7 +44,7 @@ func (s *mongoStorage) UpdateOne(post PostData, a auth.User) (result PostData, e
 	if post.Header.Update {
 		header := mongoContent{
 			ID:        primitive.NewObjectID(),
-			AuthorID:  post.AuthorID,
+			AuthorID:  a.UserID,
 			Data:      post.Header.Data,
 			CreatedAt: &now,
 		}
@@ -61,7 +61,7 @@ func (s *mongoStorage) UpdateOne(post PostData, a auth.User) (result PostData, e
 	if post.Body.Update {
 		body := mongoContent{
 			ID:        primitive.NewObjectID(),
-			AuthorID:  post.AuthorID,
+			AuthorID:  a.UserID,
 			Data:      post.Body.Data,
 			CreatedAt: &now,
 		}

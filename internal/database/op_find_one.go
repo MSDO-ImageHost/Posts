@@ -6,7 +6,6 @@ import (
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"go.mongodb.org/mongo-driver/mongo"
 )
 
 // Public module handler
@@ -26,33 +25,14 @@ func (s *mongoStorage) FindOne(postIdHex string) (result PostData, err error) {
 	}
 
 	// Use Mongo aggregation scheme to query document
-	aggregationScheme := []bson.M{
-		{"$match": bson.M{"_id": scaffoldID}},
-		//{"$match": bson.M{"$and": []bson.M{{"_id": scaffoldID}, {"marked_deleted": false}}}},
-		{"$lookup": bson.M{
-			"from": "headers",
-			"as":   "headers",
-			"let":  bson.D{{Key: "headers", Value: "$headers"}},
-			"pipeline": mongo.Pipeline{
-				bson.D{{Key: "$match", Value: bson.M{"$expr": bson.M{"$in": [2]string{"$_id", "$$headers"}}}}},
-				bson.D{{Key: "$sort", Value: bson.M{"created_at": -1}}},
-				bson.D{{Key: "$limit", Value: 1}},
-			}},
-		},
-		{"$lookup": bson.M{
-			"from": "bodies",
-			"as":   "bodies",
-			"let":  bson.D{{Key: "bodies", Value: "$bodies"}},
-			"pipeline": mongo.Pipeline{
-				bson.D{{Key: "$match", Value: bson.M{"$expr": bson.M{"$in": [2]string{"$_id", "$$bodies"}}}}},
-				bson.D{{Key: "$sort", Value: bson.M{"created_at": -1}}},
-				bson.D{{Key: "$limit", Value: 1}},
-			}},
-		},
-	}
+	aggregation := make([]bson.M, 0)
+	aggregation = append(aggregation, sortByDateDecending)
+	aggregation = append(aggregation, headerHistoryDecending(1))
+	aggregation = append(aggregation, bodyHistoryDecending(1))
+	aggregation = append(aggregation, allOrFilteredScaffoldIds([]primitive.ObjectID{scaffoldID}))
 
 	// Find matching document
-	cur, err := s.ScaffoldStorage.Aggregate(context.TODO(), aggregationScheme)
+	cur, err := s.ScaffoldStorage.Aggregate(context.TODO(), aggregation)
 	if err != nil {
 		return result, err
 	}

@@ -50,6 +50,7 @@ func readPostHistoryHandler(req broker.HandleRequestPayload) (res broker.HandleR
 		PostID:    storageRes.IDHex,
 		AuthorID:  storageRes.AuthorID,
 		CreatedAt: storageRes.CreatedAt,
+		UpdatedAt: storageRes.UpdatedAt,
 		Headers:   headers,
 		Bodies:    bodies,
 	}

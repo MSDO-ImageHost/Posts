@@ -37,7 +37,22 @@ func deleteOnePostHandler(req broker.HandleRequestPayload) (res broker.HandleRes
 	}
 
 	// Construct response object
-	postRes := api.SinglePostID{PostID: storageRes}
+	postRes := api.NoPostHistoryStruct{
+		PostID:    storageRes.IDHex,
+		AuthorID:  storageRes.AuthorID,
+		CreatedAt: storageRes.CreatedAt,
+		UpdatedAt: storageRes.UpdatedAt,
+		Header: api.PostContentStruct{
+			AuthorID:  storageRes.Header.AuthorID,
+			Data:      storageRes.Header.Data,
+			CreatedAt: storageRes.Header.CreatedAt,
+		},
+		Body: api.PostContentStruct{
+			AuthorID:  storageRes.Body.AuthorID,
+			Data:      storageRes.Body.Data,
+			CreatedAt: storageRes.Body.CreatedAt,
+		},
+	}
 
 	// Parse response object into json
 	resBytes, err := json.Marshal(postRes)

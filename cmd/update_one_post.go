@@ -38,12 +38,12 @@ func updateOnePostHandler(req broker.HandleRequestPayload) (res broker.HandleRes
 		IDHex: postReq.PostID,
 		Header: storage.PostContent{
 			Data: newHeader,
-			//AuthorID: <nil>,
+			//AuthorID: userAuth.UserID,
 			Update: updateHeader,
 		},
 		Body: storage.PostContent{
 			Data: newBody,
-			//AuthorID: <nil>,
+			//AuthorID: userAuth.UserID,
 			Update: updateBody,
 		},
 	}, userAuth)
