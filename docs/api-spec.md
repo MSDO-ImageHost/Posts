@@ -64,7 +64,7 @@ Response
         "data":"<String: body of the post>",
     },
     "image_data": "<Base64 Byte Array>",
-    "tags": ["Tag1", "Tag2", ..., "TagN"]
+    "tags?": ["Tag1", "Tag2", ..., "TagN"]
 }
 ```
 #### Get a single post

@@ -5,137 +5,109 @@ import (
 	"time"
 )
 
-func TestNoPostHistoryStructHasStringHeader(t *testing.T) {
-
-	post := NoPostHistoryStruct{Header: "Header is a string"}
-	if post.HasStringHeader() != true {
-		t.Error("Failed to validate header as string, when it is.")
+func TestIsString(t *testing.T) {
+	if isString("this is a string") != true {
+		t.Error("Failed to verify string")
 	}
-
-	post.Header = nil
-	if post.HasStringHeader() != false {
-		t.Error("Incorrectly validated header as a string.")
+	if isString(123) != false {
+		t.Error("Incorrectly verified integer")
 	}
-
-	post.Header = int(123)
-	if post.HasStringHeader() != false {
-		t.Error("Incorrectly validated header as a string.")
+	if isString(float32(123)) != false {
+		t.Error("Incorrectly verified integer")
 	}
-
-	post.Header = float32(45.87)
-	if post.HasStringHeader() != false {
-		t.Error("Incorrectly validated header as a string.")
+	if isString(time.Now()) != false {
+		t.Error("Incorrectly verified time.Time")
 	}
-
-	post.Header = false
-	if post.HasStringHeader() != false {
-		t.Error("Incorrectly validated header as a string.")
+	if isString([]byte("hehehe")) != false {
+		t.Error("Incorrectly verified byte array")
 	}
-
-	post.Header = true
-	if post.HasStringHeader() != false {
-		t.Error("Incorrectly validated header as a string.")
-	}
-
-	post.Header = time.Now()
-	if post.HasStringHeader() != false {
-		t.Error("Incorrectly validated header as a string.")
+	if isString(map[int]string{2: "asd"}) != false {
+		t.Error("Incorrectly verified map")
 	}
 }
 
-func TestNoPostHistoryStructHasStringBody(t *testing.T) {
-	post := NoPostHistoryStruct{Body: "Body is a string"}
-	if post.HasStringBody() != true {
-		t.Error("Failed to validate body as string, when it is.")
+func TestIsUint(t *testing.T) {
+	if isUInt(uint(123)) != true {
+		t.Error("Failed to verify unsigned integer")
 	}
-
-	post.Body = nil
-	if post.HasStringBody() != false {
-		t.Error("Incorrectly validated body as a string.")
+	if isUInt("this is a string") != false {
+		t.Error("Incorrectly verified unsigned integer")
 	}
-
-	post.Body = int(123)
-	if post.HasStringBody() != false {
-		t.Error("Incorrectly validated body as a string.")
+	if isUInt(int(-123)) != false {
+		t.Error("Incorrectly verified unsigned integer")
 	}
-
-	post.Body = float32(45.87)
-	if post.HasStringBody() != false {
-		t.Error("Incorrectly validated body as a string.")
+	if isUInt(float32(123)) != false {
+		t.Error("Incorrectly verified unsigned integer")
 	}
-
-	post.Body = false
-	if post.HasStringBody() != false {
-		t.Error("Incorrectly validated body as a string.")
+	if isUInt(time.Now()) != false {
+		t.Error("Incorrectly verified unsigned integer")
 	}
-
-	post.Body = true
-	if post.HasStringBody() != false {
-		t.Error("Incorrectly validated body as a string.")
+	if isUInt([]byte("hehehe")) != false {
+		t.Error("Incorrectly verified unsigned integer")
 	}
-
-	post.Body = time.Now()
-	if post.HasStringBody() != false {
-		t.Error("Incorrectly validated body as a string.")
+	if isUInt(map[int]string{2: "asd"}) != false {
+		t.Error("Incorrectly verified unsigned integer")
 	}
 }
 
-func TestNoPostHistoryStructHasImageData(t *testing.T) {
-
-	imageData := []byte("asidfjasimagedataiusdhajsd")
-
-	post := NoPostHistoryStruct{ImageData: &imageData}
-	if post.HasImageData() != true {
-		t.Error("Incorrectly validated image data to be absent.")
+func TestIsTime(t *testing.T) {
+	if isTime(time.Now().Format(time.RFC3339)) != true {
+		t.Error("Failed to verify RFC3339 timestamp")
 	}
-
-	post.ImageData = nil
-	if post.HasImageData() != false {
-		t.Error("Incorrectly validated image data to be present.")
+	if isTime("this is a string") != false {
+		t.Error("Incorrectly verified RFC3339 timestamp")
+	}
+	if isTime("this is a string") != false {
+		t.Error("Incorrectly verified RFC3339 timestamp")
+	}
+	if isTime(-123) != false {
+		t.Error("Incorrectly verified RFC3339 timestamp")
+	}
+	if isTime(float32(123)) != false {
+		t.Error("Incorrectly verified RFC3339 timestamp")
+	}
+	if isTime(time.Now()) != false {
+		t.Error("Incorrectly verified RFC3339 timestamp")
+	}
+	if isTime([]byte("hehehe")) != false {
+		t.Error("Incorrectly verified RFC3339 timestamp")
+	}
+	if isTime(map[int]string{2: "asd"}) != false {
+		t.Error("Incorrectly verified RFC3339 timestamp")
 	}
 }
 
-func TestNoPostHistoryStructHasRequiredFields(t *testing.T) {
+func TestPagingValidSetting(t *testing.T) {
 
-	imageData := []byte("asidfjasimagedataiusdhajsd")
-
-	post := NoPostHistoryStruct{Header: "This is the header", Body: "This is the body", ImageData: &imageData}
-	if err := post.HasRequiredFields(); err != nil {
-		t.Error("Failed to assert required fields to be present and have correct type", err)
+	paging := PagingStruct{}
+	if paging.ValidSetting() != nil {
+		t.Error("Asserted valid setting as invalid")
 	}
 
-	post.Header = nil
-	if err := post.HasRequiredFields(); err == nil {
-		t.Error("Incorrectly validated fields to be present and have correct type.", err)
+	// Testing for numbers
+	paging.Start = 0
+	paging.End = 9
+	if paging.ValidSetting() != nil {
+		t.Error("Asserted valid setting as invalid")
 	}
 
-	post.Body = nil
-	if err := post.HasRequiredFields(); err == nil {
-		t.Error("Incorrectly validated fields to be present and have correct type.", err)
+	paging.Start = -10
+	paging.End = -5
+	if paging.ValidSetting() == nil {
+		t.Error("Asserted invalid setting as valid")
 	}
 
-	post.ImageData = nil
-	if err := post.HasRequiredFields(); err == nil {
-		t.Error("Incorrectly validated fields to be present and have correct type.", err)
+	// Testing for time formats
+	paging.Start = time.Date(2020, 1, 1, 0, 0, 0, 0, time.UTC).Format(time.RFC3339)
+	paging.End = time.Date(2021, 1, 1, 0, 0, 0, 0, time.UTC).Format(time.RFC3339)
+	if paging.ValidSetting() != nil {
+		t.Error("Asserted valid setting as invalid")
 	}
 
-	post.Header = int(123)
-	if err := post.HasRequiredFields(); err == nil {
-		t.Error("Incorrectly validated fields to be present and have correct type.", err)
+	paging.Start = time.Date(2021, 1, 1, 0, 0, 0, 0, time.UTC).Format(time.RFC3339)
+	paging.End = time.Date(2020, 1, 1, 0, 0, 0, 0, time.UTC).Format(time.RFC3339)
+	if paging.ValidSetting() == nil {
+		t.Error("Asserted invalid setting as valid")
 	}
 
-	post.Header = float32(123)
-	if err := post.HasRequiredFields(); err == nil {
-		t.Error("Incorrectly validated fields to be present and have correct type.", err)
-	}
-
-	post.Body = int(123)
-	if err := post.HasRequiredFields(); err == nil {
-		t.Error("Incorrectly validated fields to be present and have correct type.", err)
-	}
-
-	post.Body = float32(123)
-	if err := post.HasRequiredFields(); err == nil {
-		t.Error("Incorrectly validated fields to be present and have correct type.", err)
-	}
 }

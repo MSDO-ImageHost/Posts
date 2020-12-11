@@ -4,9 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"os/signal"
 	"sync"
-	"syscall"
 
 	"github.com/streadway/amqp"
 )
@@ -37,15 +35,24 @@ func main() {
 			//Headers:       amqp.Table{"JWT": goodAuth.JwtToken},
 			ContentType:   "application/json",
 			CorrelationId: "give me all those posts",
-			//Body:          []byte(string(`{"header":"header!!", "body":"body!!", "image_data": ""}`)),
+			Body:          []byte(string(`{"post_ids": ["5fd25e97ed2bcc5bbb6172b7"], "paging": {"start":45, "end":50}}`)),
+		})
+		if err != nil {
+			fmt.Println(err)
+		}
+
+		// Read many posts
+		err = ch.Publish("rapid", "RequestManyPosts", false, false, amqp.Publishing{
+			//Headers:       amqp.Table{"JWT": goodAuth.JwtToken},
+			ContentType:   "application/json",
+			CorrelationId: "give me all those posts",
+			Body:          []byte(string(`{"paging": {"start":"2020-12-10 19:43:19.484 +0000 UTC", "end":50}}`)),
 		})
 		if err != nil {
 			fmt.Println(err)
 		}
 
 	}
-
-	fmt.Println("Now consuming")
 
 	//consumer, err := ch.Consume("Posts", "", true, false, false, false, nil)
 	//if err != nil {
@@ -66,8 +73,8 @@ func main() {
 	//		msg.Ack(true)
 	//	}
 	//}()
-
-	signal.Notify(sig, syscall.SIGINT, syscall.SIGTERM)
-	<-sig
+	//fmt.Println("Now consuming")
+	//signal.Notify(sig, syscall.SIGINT, syscall.SIGTERM)
+	//<-sig
 
 }

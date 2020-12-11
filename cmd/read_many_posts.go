@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	api "github.com/MSDO-ImageHost/Posts/internal/api"
@@ -12,14 +13,23 @@ import (
 func readManyPostsHandler(req broker.HandleRequestPayload) (res broker.HandleResponsePayload, err error) {
 
 	// Parse request
-	postReq := api.ManyPostIds{}
+	postReq := api.ManyPostIds{
+		PostIDs: make([]string, 0),
+		Paging: &api.PagingStruct{
+			Start: 0,
+			End:   9,
+			Limit: 10,
+		},
+	}
 	if err := json.Unmarshal(req.Payload, &postReq); err != nil {
 		res.Status.Code = http.StatusBadRequest
 		return res, err
 	}
 
+	fmt.Println("\n\n")
 	// Alter database
 	storageRes, err := storage.FindManyPosts(postReq.PostIDs, *postReq.Paging)
+	fmt.Println("\n\n")
 	if err != nil {
 		res.Status.Code = http.StatusInternalServerError
 		return res, err

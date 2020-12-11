@@ -25,16 +25,15 @@ type PagingStruct struct {
 }
 
 type NoPostHistoryStruct struct {
-	PostID    string      `json:"post_id"`
-	AuthorID  string      `json:"author_id"`
-	CreatedAt *time.Time  `json:"created_at"`
-	UpdatedAt *time.Time  `json:"updated_at,omitempty"`
-	Header    interface{} `json:"header"` // Used as string for unmarshalling and PostContentStruct for marshalling
-	Body      interface{} `json:"body"`   // Used as string for unmarshalling and PostContentStruct for marshalling
-	ImageData *[]byte     `json:"image_data,omitempty"`
-	Tags      []string    `json:"tags"`
-
-	Paging *PagingStruct `json:"paging,omitempty"`
+	PostID    string        `json:"post_id"`
+	AuthorID  string        `json:"author_id"`
+	CreatedAt *time.Time    `json:"created_at"`
+	UpdatedAt *time.Time    `json:"updated_at,omitempty"`
+	Header    interface{}   `json:"header"` // Used as string for unmarshalling and PostContentStruct for marshalling
+	Body      interface{}   `json:"body"`   // Used as string for unmarshalling and PostContentStruct for marshalling
+	ImageData *[]byte       `json:"image_data,omitempty"`
+	Tags      []string      `json:"tags,omitempty"`
+	Paging    *PagingStruct `json:"paging,omitempty"`
 }
 
 type PostHistoryStruct struct {
