@@ -3,11 +3,9 @@ version: "3.7"
 volumes:
   rabbitmq-data:
   posts-db-data:
-  auth-db-data:
 
 networks:
   rabbit-network:
-  auth-network:
   posts-network:
 
 services:
@@ -46,30 +44,3 @@ services:
       - posts-network
     restart: unless-stopped
     ## End of Posts ##
-
-  ## Authentication ##
-  authentication:
-    image: imagehostmad/authentication:latest
-    environment:
-      - AMQP_USER=dev
-      - AMQP_PASS=dev
-      - AMQP_URI=amqp://dev:dev@rabbitmq:5672
-      - MYSQL_PASSWORD=DM8742020
-    networks:
-      - rabbit-network
-      - auth-network
-    restart: unless-stopped
-
-  mysql:
-    image: mysql:8
-    command: --init-file /data/application/init.sql
-    volumes:
-      - auth-db-data:/var/lib/mysql
-      - .compose-service-files/auth-db-init.sql:/data/application/init.sql:ro
-    environment:
-      - MYSQL_ROOT_PASSWORD=DM8742020
-      - MYSQL_DATABASE=authentication
-    networks:
-      - auth-network
-    restart: always
-  ## End of Authentication ##

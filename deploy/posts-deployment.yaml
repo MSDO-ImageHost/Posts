@@ -1,10 +1,13 @@
+apiVersion: apps/v1
 kind: Deployment
-apiVersion: extensions/v1beta1
 metadata:
-  name: posts-v1-deployment
+  name: posts-deployment
 spec:
+  # A deployment's specification really only 
+  # has a few useful options
+  
   # 1. How many copies of each pod do we want?
-  replicas: 1
+  replicas: 3
 
   # 2. How do want to update the pods?
   strategy: Recreate
@@ -14,8 +17,8 @@ spec:
     # This must match the labels we set on the pod!
     matchLabels:
       deploy: posts-v1
-
-  # This template field is a regular pod configuration
+  
+  # This template field is a regular pod configuration 
   # nested inside the deployment spec
   template:
     metadata:
@@ -25,5 +28,5 @@ spec:
         deploy: posts-v1
     spec:
       containers:
-        - name: nginx
-          image: nginx:1.7.9
+        - name: posts-v1
+          image: imagehostmad/posts:latest

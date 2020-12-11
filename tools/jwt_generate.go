@@ -33,5 +33,4 @@ func main() {
 
 	a, err := auth.AuthJWT(tokenString)
 	fmt.Println(utils.PrettyFormatMap(a), err)
-
 }

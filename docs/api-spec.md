@@ -7,7 +7,7 @@ The following table displays fields that messages can or must contain
 | ContentType       | "application/json"                            | Property  | Yes               | Request / Response    |
 | CorrelationId     | "\<String: something id\>"                    | Property  | No                | Request / Response    |
 | ReplyTo           | "<String: reply queue>"                       | Property  | No                | Request               |
-| JWT               | "\<String:xxx.yyy.zzz\>"                      | Header    | For write only    | Request               |
+| jwt               | "\<String:xxx.yyy.zzz\>"                      | Header    | For write only    | Request               |
 | StatusCode        | "\<Number: status code\>"                     | Header    |                   | Response              |
 | StatusMessage     | "\<String: status message\>"                  | Header    |                   | Response              |
 | ProcessingTimeNs  | "\<Number: processing time in nano seconds\>" | Header    |                   | Response              |
@@ -27,6 +27,9 @@ The following table displays fields that messages can or must contain
 | Delete one post       | posts.delete.one      | posts.return.one          | DeleteOnePost             | ConfirmDeleteOnePost          |
 | Delete many posts     | posts.delete.many     | posts.return.many         | DeleteManyPosts           | ConfirmDeleteManyPosts        |
 
+#### Routing diagram
+![rabbit-routing](rabbit-routing.png "e Text 2")
+
 ## Message structures
 
 #### Pagination
@@ -44,7 +47,9 @@ Request
 ```json
 {
     "header": "<String: title of the post>",
-    "body": "<String: body text of the post>"
+    "body": "<String: body text of the post>",
+    "image_data": "<Base64 Byte Array>",
+    "tags?": ["Tag1", "Tag2", ..., "TagN"]
 }
 ```
 Response
