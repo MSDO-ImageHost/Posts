@@ -57,13 +57,3 @@ services:
     extends:
       file: ../docker-compose.yml
       service: mongo
-
-  authentication:
-    extends:
-      file: ../docker-compose.yml
-      service: authentication
-
-  mysql:
-    extends:
-      file: ../docker-compose.yml
-      service: mysql

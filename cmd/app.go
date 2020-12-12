@@ -7,6 +7,8 @@ import (
 	"sync"
 	"syscall"
 
+	_ "github.com/docker/go-healthcheck"
+
 	broker "github.com/MSDO-ImageHost/Posts/internal/broker"
 	storage "github.com/MSDO-ImageHost/Posts/internal/database"
 	jwt "github.com/dgrijalva/jwt-go"

@@ -1,7 +1,6 @@
 package database
 
 import (
-	"context"
 	"fmt"
 	"time"
 
@@ -27,7 +26,7 @@ func (s *mongoStorage) UpdateOne(post PostData, a auth.User) (result PostData, e
 
 	// Find the scaffold
 	var scaffoldRef mongoScaffoldRefs
-	if err := s.ScaffoldStorage.FindOne(context.TODO(), bson.M{"_id": scaffoldID}).Decode(&scaffoldRef); err != nil {
+	if err := s.ScaffoldStorage.FindOne(timeOutCtx, bson.M{"_id": scaffoldID}).Decode(&scaffoldRef); err != nil {
 		return result, err
 	}
 
@@ -49,7 +48,7 @@ func (s *mongoStorage) UpdateOne(post PostData, a auth.User) (result PostData, e
 			CreatedAt: &now,
 		}
 
-		_, err = s.HeaderStorage.InsertOne(context.TODO(), header)
+		_, err = s.HeaderStorage.InsertOne(timeOutCtx, header)
 		if err != nil {
 			return result, err
 		}
@@ -66,7 +65,7 @@ func (s *mongoStorage) UpdateOne(post PostData, a auth.User) (result PostData, e
 			CreatedAt: &now,
 		}
 
-		_, err = s.BodyStorage.InsertOne(context.TODO(), body)
+		_, err = s.BodyStorage.InsertOne(timeOutCtx, body)
 		if err != nil {
 			return result, err
 		}
@@ -75,7 +74,7 @@ func (s *mongoStorage) UpdateOne(post PostData, a auth.User) (result PostData, e
 	}
 
 	// Update matching document
-	_, err = s.ScaffoldStorage.UpdateOne(context.TODO(), filter, update)
+	_, err = s.ScaffoldStorage.UpdateOne(timeOutCtx, filter, update)
 	if err != nil {
 		return result, err
 	}

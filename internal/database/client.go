@@ -1,7 +1,6 @@
 package database
 
 import (
-	"context"
 	"log"
 	"os"
 
@@ -28,7 +27,7 @@ func Init() (err error) {
 
 	// Database handle
 	log.Println(_LOG_TAG, "Opening connection")
-	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(os.Getenv("MONGO_CONN_URI")))
+	client, err := mongo.Connect(timeOutCtx, options.Client().ApplyURI(os.Getenv("MONGO_CONN_URI")))
 	if err != nil {
 		return err
 	}
@@ -39,11 +38,11 @@ func Init() (err error) {
 		DB:     client.Database("posts"),
 	}
 
-	log.Println(_LOG_TAG, "Pinging client")
+	log.Println(_LOG_TAG, "Pinging server")
 	if err := Ping(); err != nil {
 		return err
 	}
-	log.Println(_LOG_TAG, "Pong from client")
+	log.Println(_LOG_TAG, "Pong from server")
 
 	// Configure collections and their respective handles
 	log.Println(_LOG_TAG, "Configuring collections")
@@ -62,7 +61,7 @@ func Init() (err error) {
 func Deinit() (err error) {
 	log.Println(_LOG_TAG, "Closing connection")
 
-	if err = shell.Client.Disconnect(context.TODO()); err != nil {
+	if err = shell.Client.Disconnect(timeOutCtx); err != nil {
 		return err
 	}
 	log.Println(_LOG_TAG, "Closed connection")
@@ -70,7 +69,7 @@ func Deinit() (err error) {
 }
 
 func Ping() (err error) {
-	if err := shell.Client.Ping(context.TODO(), nil); err != nil {
+	if err := shell.Client.Ping(timeOutCtx, nil); err != nil {
 		return err
 	}
 	return nil

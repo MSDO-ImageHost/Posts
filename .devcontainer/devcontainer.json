@@ -9,8 +9,6 @@
         "rabbitmq",
         "mongo",
         "mongo-express",
-        "mysql",
-        "authentication"
     ],
     "shutdownAction": "stopCompose",
     "postCreateCommand": "go mod download",

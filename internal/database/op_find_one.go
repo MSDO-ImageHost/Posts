@@ -1,7 +1,6 @@
 package database
 
 import (
-	"context"
 	"fmt"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -32,15 +31,15 @@ func (s *mongoStorage) FindOne(postIdHex string) (result PostData, err error) {
 	aggregation = append(aggregation, allOrFilteredScaffoldIds([]primitive.ObjectID{scaffoldID}))
 
 	// Find matching document
-	cur, err := s.ScaffoldStorage.Aggregate(context.TODO(), aggregation)
+	cur, err := s.ScaffoldStorage.Aggregate(timeOutCtx, aggregation)
 	if err != nil {
 		return result, err
 	}
-	defer cur.Close(context.TODO())
+	defer cur.Close(timeOutCtx)
 
 	// Decode findings
 	var scaffolds []mongoScaffoldContents
-	if err := cur.All(context.TODO(), &scaffolds); err != nil {
+	if err := cur.All(timeOutCtx, &scaffolds); err != nil {
 		return result, nil
 	}
 

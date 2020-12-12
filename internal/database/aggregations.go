@@ -1,8 +1,6 @@
 package database
 
 import (
-	"fmt"
-
 	"github.com/MSDO-ImageHost/Posts/internal/api"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -64,7 +62,6 @@ func paginationBuilder(p api.PagingStruct) []bson.M {
 		if err == nil {
 			filterGreaterThan := bson.M{"$project": bson.M{"created_at": bson.M{"$gt": startTime}}}
 			pagination = append(pagination, filterGreaterThan)
-			fmt.Println("wqeweqw", filterGreaterThan)
 		}
 	}
 
