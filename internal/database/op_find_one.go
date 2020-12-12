@@ -64,5 +64,6 @@ func (s *mongoStorage) FindOne(postIdHex string) (result PostData, err error) {
 		result.Body.CreatedAt = scaffolds[0].BodyContents[0].CreatedAt
 		result.Body.Data = scaffolds[0].BodyContents[0].Data
 	}
+	defer cancel()
 	return result, nil
 }

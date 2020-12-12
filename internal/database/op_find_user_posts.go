@@ -61,5 +61,6 @@ func (s *mongoStorage) FindUserPosts(author_id string, paging api.PagingStruct) 
 			results[i].Body.Data = scaffolds[i].BodyContents[0].Data
 		}
 	}
+	defer cancel()
 	return results, nil
 }

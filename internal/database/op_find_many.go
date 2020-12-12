@@ -75,6 +75,7 @@ func (s *mongoStorage) FindMany(postIdHexes []string, paging api.PagingStruct) (
 	}
 	fmt.Println(utils.PrettyFormatMap(results))
 
+	defer cancel()
 	return results, nil
 }
 

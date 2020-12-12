@@ -55,5 +55,6 @@ func (s *mongoStorage) DeleteMany(postIdHexes []string, a auth.User) (results []
 	wg.Wait()
 
 	results = postIdHexes
+	defer cancel()
 	return results, nil
 }

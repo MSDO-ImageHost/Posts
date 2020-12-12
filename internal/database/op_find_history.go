@@ -89,5 +89,6 @@ func (s *mongoStorage) FindHistory(postIdHex string) (result PostHistoryData, er
 		result.Bodies = bodies
 	}
 
+	defer cancel()
 	return result, nil
 }

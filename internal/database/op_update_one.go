@@ -85,5 +85,6 @@ func (s *mongoStorage) UpdateOne(post PostData, a auth.User) (result PostData, e
 		return result, err
 	}
 
+	defer cancel()
 	return result, nil
 }

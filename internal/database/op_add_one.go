@@ -71,5 +71,7 @@ func (s *mongoStorage) AddOne(post PostData) (result PostData, err error) {
 		Data:      body.Data,
 		CreatedAt: body.CreatedAt,
 	}
+
+	defer cancel()
 	return result, nil
 }

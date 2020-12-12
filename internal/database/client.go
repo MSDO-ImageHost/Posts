@@ -55,6 +55,7 @@ func Init() (err error) {
 	log.Println(_LOG_TAG, "Collections ready")
 
 	log.Println(_LOG_TAG, "Setup finished")
+	defer cancel()
 	return nil
 }
 
@@ -65,6 +66,7 @@ func Deinit() (err error) {
 		return err
 	}
 	log.Println(_LOG_TAG, "Closed connection")
+	defer cancel()
 	return nil
 }
 
@@ -72,5 +74,6 @@ func Ping() (err error) {
 	if err := shell.Client.Ping(timeOutCtx, nil); err != nil {
 		return err
 	}
+	defer cancel()
 	return nil
 }

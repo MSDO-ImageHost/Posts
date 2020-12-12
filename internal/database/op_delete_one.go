@@ -57,5 +57,6 @@ func (s *mongoStorage) DeleteOne(postIdHex string, a auth.User) (result PostData
 		return result, err
 	}
 
+	defer cancel()
 	return result, nil
 }

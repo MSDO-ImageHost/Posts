@@ -45,5 +45,6 @@ func (s *mongoStorage) MarkDeleteOne(postIdHex string, auth auth.User) (result s
 	}
 
 	result = postIdHex
+	defer cancel()
 	return result, nil
 }
