@@ -1,7 +1,6 @@
 package broker
 
 import (
-	"fmt"
 	"log"
 	"os"
 
@@ -14,7 +13,7 @@ var rabbit RabbitBroker
 func Init() error {
 	log.Println(_LOG_TAG, "Setting up client connection")
 
-	connUri := fmt.Sprint("amqp://", "dev" ,":", "dev" "@", os.Getenv("RABBITMQ_CONN_URI"))
+	//connUri := fmt.Sprint("amqp://", "dev" ,":", "dev" "@", os.Getenv("RABBITMQ_CONN_URI"))
 
 	// Connect to broker
 	log.Println(_LOG_TAG, "Opening connection")
