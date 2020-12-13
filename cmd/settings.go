@@ -15,20 +15,20 @@ var (
 	// Request queues
 	createOnePostReqQueue         = broker.QueueConfig{Name: "posts.create.one", Durable: true, AutoDelete: false, Exclusive: false, NoWait: false}
 	createManyPostsReqQueue       = broker.QueueConfig{Name: "posts.create.many", Durable: true, AutoDelete: false, Exclusive: false, NoWait: false}
-	readOnePostReqQueue           = broker.QueueConfig{Name: "posts.read.one", Durable: true, AutoDelete: false, Exclusive: false, NoWait: false}
-	readManyPostsReqQueue         = broker.QueueConfig{Name: "posts.read.many", Durable: true, AutoDelete: false, Exclusive: false, NoWait: false}
-	readOnePostHistoryReqQueue    = broker.QueueConfig{Name: "posts.read.one.history", Durable: true, AutoDelete: false, Exclusive: false, NoWait: false}
-	readManyPostHistoriesReqQueue = broker.QueueConfig{Name: "posts.read.many.history", Durable: true, AutoDelete: false, Exclusive: false, NoWait: false}
-	readUserPostsReqQueue         = broker.QueueConfig{Name: "posts.read.userposts", Durable: true, AutoDelete: false, Exclusive: false, NoWait: false}
+	readOnePostReqQueue           = broker.QueueConfig{Name: "posts.read.one", Durable: false, AutoDelete: true, Exclusive: false, NoWait: false}
+	readManyPostsReqQueue         = broker.QueueConfig{Name: "posts.read.many", Durable: false, AutoDelete: true, Exclusive: false, NoWait: false}
+	readOnePostHistoryReqQueue    = broker.QueueConfig{Name: "posts.read.one.history", Durable: false, AutoDelete: true, Exclusive: false, NoWait: false}
+	readManyPostHistoriesReqQueue = broker.QueueConfig{Name: "posts.read.many.history", Durable: false, AutoDelete: true, Exclusive: false, NoWait: false}
+	readUserPostsReqQueue         = broker.QueueConfig{Name: "posts.read.userposts", Durable: false, AutoDelete: true, Exclusive: false, NoWait: false}
 	updateOneReqQueue             = broker.QueueConfig{Name: "posts.update.one", Durable: true, AutoDelete: false, Exclusive: false, NoWait: false}
 	deleteOneReqQueue             = broker.QueueConfig{Name: "posts.delete.one", Durable: true, AutoDelete: false, Exclusive: false, NoWait: false}
 	deleteManyReqQueue            = broker.QueueConfig{Name: "posts.delete.many", Durable: true, AutoDelete: false, Exclusive: false, NoWait: false}
 
 	// Response queues
-	commonReturnQueue     = broker.QueueConfig{Name: "Posts", Durable: true, AutoDelete: false, Exclusive: false, NoWait: false}
-	returnOneQueue        = broker.QueueConfig{Name: "posts.return.one", Durable: true, AutoDelete: false, Exclusive: false, NoWait: false}
-	returnManyQueue       = broker.QueueConfig{Name: "posts.return.many", Durable: true, AutoDelete: false, Exclusive: false, NoWait: false}
-	returnOneHistoryQueue = broker.QueueConfig{Name: "posts.return.one.history", Durable: true, AutoDelete: false, Exclusive: false, NoWait: false}
+	commonReturnQueue     = broker.QueueConfig{Name: "Posts", Durable: false, AutoDelete: true, Exclusive: false, NoWait: false}
+	returnOneQueue        = broker.QueueConfig{Name: "posts.return.one", Durable: false, AutoDelete: true, Exclusive: false, NoWait: false}
+	returnManyQueue       = broker.QueueConfig{Name: "posts.return.many", Durable: false, AutoDelete: true, Exclusive: false, NoWait: false}
+	returnOneHistoryQueue = broker.QueueConfig{Name: "posts.return.one.history", Durable: false, AutoDelete: true, Exclusive: false, NoWait: false}
 
 	// Message consumer
 	consumer = broker.ConsumerConfig{AutoAck: false, Exclusive: false, NoLocal: false, NoWait: false, Args: nil}

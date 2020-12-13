@@ -23,7 +23,6 @@ func (s *mongoStorage) FindMany(postIdHexes []string, paging api.PagingStruct) (
 	if err != nil {
 		return results, err
 	}
-	fmt.Println(postIdHexes, scaffoldIDs)
 
 	// Use Mongo aggregation scheme to query documents
 	aggregation := make([]bson.M, 0)
