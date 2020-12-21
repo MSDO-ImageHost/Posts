@@ -1,6 +1,7 @@
 package database
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/MSDO-ImageHost/Posts/internal/api"
@@ -33,16 +34,16 @@ func (s *mongoStorage) FindMany(postIdHexes []string, paging api.PagingStruct) (
 	//aggregation = append(aggregation, paginationBuilder(paging)...)
 
 	// Find matching documents
-	cur, err := s.ScaffoldStorage.Aggregate(timeOutCtx, aggregation)
+	cur, err := s.ScaffoldStorage.Aggregate(context.TODO(), aggregation)
 	if err != nil {
 		fmt.Println(err)
 		return results, err
 	}
-	defer cur.Close(timeOutCtx)
+	defer cur.Close(context.TODO())
 
 	// Decode findings
 	var scaffolds []mongoScaffoldContents
-	if err := cur.All(timeOutCtx, &scaffolds); err != nil {
+	if err := cur.All(context.TODO(), &scaffolds); err != nil {
 		return results, err
 	}
 
@@ -114,15 +115,15 @@ func (s *mongoStorage) FindMany(postIdHexes []string, paging api.PagingStruct) (
 //	}
 //
 //	// Find matching documents
-//	cur, err := s.ScaffoldStorage.Aggregate(timeOutCtx, aggregationScheme)
+//	cur, err := s.ScaffoldStorage.Aggregate(context.TODO(), aggregationScheme)
 //	if err != nil {
 //		return results, err
 //	}
-//	defer cur.Close(timeOutCtx)
+//	defer cur.Close(context.TODO())
 //
 //	// Decode findings
 //	var scaffolds []mongoScaffoldContents
-//	if err := cur.All(timeOutCtx, &scaffolds); err != nil {
+//	if err := cur.All(context.TODO(), &scaffolds); err != nil {
 //		return results, nil
 //	}
 //

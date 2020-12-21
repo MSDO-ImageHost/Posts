@@ -11,19 +11,18 @@ import (
 // Validates a JWT token string and returns a user object with extracted claims
 func AuthJWT(tokenString string) (auth User, err error) {
 
+	auth.JwtToken = tokenString
 	token, err := jwt.ParseWithClaims(tokenString, claimsModel, FetchJwtSecret)
 	if err != nil {
-		return auth, InvalidAuthToken
+		return auth, err
 	}
 
 	// Token is valid
 	if token.Valid {
 		claims, err := DecodeClaims(token.Claims)
 		if err != nil {
-			return auth, InvalidAuthToken
+			return auth, err
 		}
-
-		auth.JwtToken = tokenString
 		auth.UserID = claims.Subject
 		auth.Rank = claims.Rank
 		return auth, nil

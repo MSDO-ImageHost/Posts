@@ -8,7 +8,7 @@
         "vscode",
         "rabbitmq",
         "mongo",
-        "mongo-express",
+        //"mongo-express",
     ],
     "shutdownAction": "stopCompose",
     "postCreateCommand": "go mod download",

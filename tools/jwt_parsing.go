@@ -2,23 +2,20 @@ package main
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/MSDO-ImageHost/Posts/internal/auth"
-	"github.com/dgrijalva/jwt-go"
+	"github.com/MSDO-ImageHost/Posts/internal/utils"
 )
 
 func main() {
 
-	tokenString := "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI1Iiwicm9sZSI6ImFkbWluIiwiaXNzIjoiSW1hZ2VIb3N0LnNkdS5kayIsImV4cCI6MTYzODU1NDMzNSwiaWF0IjoxNjA3MDE4MzM1fQ.zjBYhUKcGvWtZ-eTwVkOe-7vB9Fz0sb_Iqin290mhzw"
+	tokenString := "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIwIiwicm9sZSI6MCwiaXNzIjoiSW1hZ2VIb3N0LnNkdS5kayIsImlhdCI6MTYwODUxNjYzMiwiZXhwIjoxNjExMzYwMDAwfQ.-yI4mlTI7it8SS0youU_VG8b3Bju7wAz573SUQR9ntA"
+	userAuth, err := auth.AuthJWT(tokenString)
+	fmt.Println(utils.PrettyFormatMap(userAuth), err)
 
-	segments := strings.Split(tokenString, ".")
+	tokenString = "eyJ0eXAiOiJKV1QiLCJhbdciOiJIUzI1NiJ9.eyJzdWIiOiIwIiwicm9sZSI6MCwiaXNzIjoiSW1hZ2VIb3N0LnNkdS5kayIsImlhdCI6MTYwODUxNjYzMiwiZXhwIjoxNjExMzYwMDAwfQ.-yI4mlTI7it8SS0youU_VG8b3Bju7wAz573SUQR9ntA"
+	userAuth, err = auth.AuthJWT(tokenString)
+	fmt.Println(utils.PrettyFormatMap(userAuth), err)
 
-	claims, err := jwt.DecodeSegment(segments[1])
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	fmt.Println(string(claims))
-	fmt.Println(auth.DecodeClaims(claims))
+	fmt.Println([]byte("Hello World!"))
 }

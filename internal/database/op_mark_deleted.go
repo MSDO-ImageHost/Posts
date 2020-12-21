@@ -1,6 +1,8 @@
 package database
 
 import (
+	"context"
+
 	"github.com/MSDO-ImageHost/Posts/internal/auth"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -26,20 +28,20 @@ func (s *mongoStorage) MarkDeleteOne(postIdHex string, auth auth.User) (result s
 
 	// Mark scaffold as deleted
 	var scaffoldRef mongoScaffoldRefs
-	if err := s.ScaffoldStorage.FindOneAndUpdate(timeOutCtx, scaffoldFilter, update).Decode(&scaffoldRef); err != nil {
+	if err := s.ScaffoldStorage.FindOneAndUpdate(context.TODO(), scaffoldFilter, update).Decode(&scaffoldRef); err != nil {
 		return result, err
 	}
 
 	// Mark headers as deleted
 	headerFilter := bson.M{"_id": bson.M{"$in": scaffoldRef.HeaderRefs}}
-	_, err = s.HeaderStorage.UpdateMany(timeOutCtx, headerFilter, update)
+	_, err = s.HeaderStorage.UpdateMany(context.TODO(), headerFilter, update)
 	if err != nil {
 		return result, err
 	}
 
 	// Mark bodies as deleted
 	bodyFilter := bson.M{"_id": bson.M{"$in": scaffoldRef.BodyRefs}}
-	_, err = s.BodyStorage.UpdateMany(timeOutCtx, bodyFilter, update)
+	_, err = s.BodyStorage.UpdateMany(context.TODO(), bodyFilter, update)
 	if err != nil {
 		return result, err
 	}

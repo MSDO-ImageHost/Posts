@@ -1,6 +1,7 @@
 package database
 
 import (
+	"context"
 	"fmt"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -47,15 +48,15 @@ func (s *mongoStorage) FindHistory(postIdHex string) (result PostHistoryData, er
 	}
 
 	// Find matching document
-	cur, err := s.ScaffoldStorage.Aggregate(timeOutCtx, aggregationScheme)
+	cur, err := s.ScaffoldStorage.Aggregate(context.TODO(), aggregationScheme)
 	if err != nil {
 		return result, err
 	}
-	defer cur.Close(timeOutCtx)
+	defer cur.Close(context.TODO())
 
 	// Decode findings
 	var scaffolds []mongoScaffoldContents
-	if err := cur.All(timeOutCtx, &scaffolds); err != nil {
+	if err := cur.All(context.TODO(), &scaffolds); err != nil {
 		return result, nil
 	}
 

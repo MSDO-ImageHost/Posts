@@ -1,6 +1,7 @@
 package database
 
 import (
+	"context"
 	"time"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -42,17 +43,17 @@ func (s *mongoStorage) AddOne(post PostData) (result PostData, err error) {
 	}
 
 	// Insert components into their respective collections
-	_, err = s.HeaderStorage.InsertOne(timeOutCtx, header)
+	_, err = s.HeaderStorage.InsertOne(context.TODO(), header)
 	if err != nil {
 		return result, err
 	}
 
-	_, err = s.BodyStorage.InsertOne(timeOutCtx, body)
+	_, err = s.BodyStorage.InsertOne(context.TODO(), body)
 	if err != nil {
 		return result, err
 	}
 
-	_, err = s.ScaffoldStorage.InsertOne(timeOutCtx, scaffold)
+	_, err = s.ScaffoldStorage.InsertOne(context.TODO(), scaffold)
 	if err != nil {
 		return result, err
 	}

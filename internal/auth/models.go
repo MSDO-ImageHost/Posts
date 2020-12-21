@@ -27,4 +27,4 @@ type User struct {
 	Rank     float64
 }
 
-var claimsModel jwt.MapClaims = jwt.MapClaims{"sub": nil, "role": 0}
+var claimsModel jwt.MapClaims = jwt.MapClaims{"sub": "", "role": 0}

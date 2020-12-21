@@ -17,7 +17,6 @@ import (
 var sig chan os.Signal = make(chan os.Signal)
 
 func main() {
-
 	log.Println(_LOG_TAG, "Starting up posts app with ID", InstanceID)
 
 	var wg sync.WaitGroup

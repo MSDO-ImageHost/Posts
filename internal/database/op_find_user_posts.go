@@ -1,6 +1,7 @@
 package database
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/MSDO-ImageHost/Posts/internal/api"
@@ -25,15 +26,15 @@ func (s *mongoStorage) FindUserPosts(author_id string, paging api.PagingStruct) 
 	aggregation = append(aggregation, bson.M{"$match": bson.M{"creator_id": author_id}})
 
 	// Find matching documents
-	cur, err := s.ScaffoldStorage.Aggregate(timeOutCtx, aggregation)
+	cur, err := s.ScaffoldStorage.Aggregate(context.TODO(), aggregation)
 	if err != nil {
 		return results, err
 	}
-	defer cur.Close(timeOutCtx)
+	defer cur.Close(context.TODO())
 
 	// Decode findings
 	var scaffolds []mongoScaffoldContents
-	if err := cur.All(timeOutCtx, &scaffolds); err != nil {
+	if err := cur.All(context.TODO(), &scaffolds); err != nil {
 		return results, nil
 	}
 

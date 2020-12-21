@@ -1,6 +1,7 @@
 package database
 
 import (
+	"context"
 	"fmt"
 
 	auth "github.com/MSDO-ImageHost/Posts/internal/auth"
@@ -26,7 +27,7 @@ func (s *mongoStorage) DeleteOne(postIdHex string, a auth.User) (result PostData
 
 	// Find the scaffold
 	var scaffoldRef mongoScaffoldRefs
-	if err := s.ScaffoldStorage.FindOne(timeOutCtx, bson.M{"_id": scaffoldID}).Decode(&scaffoldRef); err != nil {
+	if err := s.ScaffoldStorage.FindOne(context.TODO(), bson.M{"_id": scaffoldID}).Decode(&scaffoldRef); err != nil {
 		return result, err
 	}
 
@@ -41,18 +42,18 @@ func (s *mongoStorage) DeleteOne(postIdHex string, a auth.User) (result PostData
 	}
 
 	// Permanently delete scaffold
-	if err := s.ScaffoldStorage.FindOneAndDelete(timeOutCtx, bson.M{"_id": scaffoldRef.ID}).Decode(&scaffoldRef); err != nil {
+	if err := s.ScaffoldStorage.FindOneAndDelete(context.TODO(), bson.M{"_id": scaffoldRef.ID}).Decode(&scaffoldRef); err != nil {
 		return result, err
 	}
 
 	// Permanently delete headers
-	_, err = s.HeaderStorage.DeleteMany(timeOutCtx, bson.M{"_id": bson.M{"$in": scaffoldRef.HeaderRefs}})
+	_, err = s.HeaderStorage.DeleteMany(context.TODO(), bson.M{"_id": bson.M{"$in": scaffoldRef.HeaderRefs}})
 	if err != nil {
 		return result, err
 	}
 
 	// Permanently delete bodies
-	_, err = s.BodyStorage.DeleteMany(timeOutCtx, bson.M{"_id": bson.M{"$in": scaffoldRef.BodyRefs}})
+	_, err = s.BodyStorage.DeleteMany(context.TODO(), bson.M{"_id": bson.M{"$in": scaffoldRef.BodyRefs}})
 	if err != nil {
 		return result, err
 	}

@@ -1,6 +1,7 @@
 package database
 
 import (
+	"context"
 	"fmt"
 	"sync"
 
@@ -33,7 +34,7 @@ func (s *mongoStorage) DeleteMany(postIdHexes []string, a auth.User) (results []
 
 			// Permanently delete scaffolds
 			var scaffoldRef mongoScaffoldRefs
-			if err := s.ScaffoldStorage.FindOne(timeOutCtx, bson.M{"_id": id}).Decode(&scaffoldRef); err != nil {
+			if err := s.ScaffoldStorage.FindOne(context.TODO(), bson.M{"_id": id}).Decode(&scaffoldRef); err != nil {
 				return err
 			}
 
@@ -43,9 +44,9 @@ func (s *mongoStorage) DeleteMany(postIdHexes []string, a auth.User) (results []
 			}
 
 			// Permanently delete headers and bodies
-			s.ScaffoldStorage.DeleteOne(timeOutCtx, bson.M{"_id": id})
-			s.HeaderStorage.DeleteMany(timeOutCtx, bson.M{"_id": bson.M{"$in": scaffoldRef.HeaderRefs}})
-			s.BodyStorage.DeleteMany(timeOutCtx, bson.M{"_id": bson.M{"$in": scaffoldRef.BodyRefs}})
+			s.ScaffoldStorage.DeleteOne(context.TODO(), bson.M{"_id": id})
+			s.HeaderStorage.DeleteMany(context.TODO(), bson.M{"_id": bson.M{"$in": scaffoldRef.HeaderRefs}})
+			s.BodyStorage.DeleteMany(context.TODO(), bson.M{"_id": bson.M{"$in": scaffoldRef.BodyRefs}})
 			results = append(results, scaffoldRef.ID.Hex())
 
 			wg.Done()
