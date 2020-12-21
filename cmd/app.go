@@ -11,6 +11,7 @@ import (
 
 	broker "github.com/MSDO-ImageHost/Posts/internal/broker"
 	storage "github.com/MSDO-ImageHost/Posts/internal/database"
+	"github.com/MSDO-ImageHost/Posts/internal/utils"
 	jwt "github.com/dgrijalva/jwt-go"
 )
 
@@ -18,6 +19,24 @@ var sig chan os.Signal = make(chan os.Signal)
 
 func main() {
 	log.Println(_LOG_TAG, "Starting up posts app with ID", InstanceID)
+
+	// Check if environment variables exists
+	log.Println(_LOG_TAG, "Checking environment variables")
+	err := utils.CheckEnvs([]string{
+		"JWT_HMAC_SECRET",
+		"MONGO_HOST",
+		"MONGO_USER",
+		"MONGO_PASS",
+		"AMQP_HOST",
+		"AMQP_PORT",
+		"AMQP_VHOST",
+		"AMQP_USER",
+		"AMQP_PASS",
+	})
+	if err != nil {
+		log.Panicln(err)
+	}
+	log.Println(_LOG_TAG, "All needed variables are set")
 
 	var wg sync.WaitGroup
 	wg.Add(2)

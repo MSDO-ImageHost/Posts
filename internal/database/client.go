@@ -5,7 +5,6 @@ import (
 	"log"
 	"os"
 
-	"github.com/MSDO-ImageHost/Posts/internal/utils"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -19,16 +18,19 @@ var (
 func Init() (err error) {
 	log.Println(_LOG_TAG, "Setting up")
 
-	// Check if environment variables exists
-	log.Println(_LOG_TAG, "Checking environment variables")
-	if err := utils.CheckEnvs([]string{"MONGO_CONN_URI"}); err != nil {
-		return err
-	}
-	log.Println(_LOG_TAG, "Variables are set")
-
 	// Database handle
 	log.Println(_LOG_TAG, "Opening connection")
+
 	client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(os.Getenv("MONGO_CONN_URI")))
+	//client, err := mongo.Connect(context.TODO(), &options.ClientOptions{
+	//	Hosts:
+	//	Auth: &options.Credential{
+	//		Username:    "rooter",
+	//		Password:    "toorer",
+	//		PasswordSet: true,
+	//	},
+	//})
+
 	if err != nil {
 		return err
 	}

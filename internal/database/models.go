@@ -21,7 +21,8 @@ type mongoStorage struct {
 
 // Scaffold is the main frame for storing references to content in the post
 type mongoScaffoldRefs struct {
-	ID            primitive.ObjectID   `bson:"_id"`
+	ID primitive.ObjectID `bson:"_id"`
+	//UUID          uuid.UUID            `bson:"_uuid"`
 	AuthorID      string               `bson:"creator_id"`
 	CreatedAt     *time.Time           `bson:"created_at"`
 	UpdatedAt     *time.Time           `bson:"updated_at,omitempty"`
@@ -31,13 +32,14 @@ type mongoScaffoldRefs struct {
 }
 
 type mongoScaffoldContents struct {
-	ID             primitive.ObjectID `bson:"_id"`
-	AuthorID       string             `bson:"creator_id"`
-	CreatedAt      *time.Time         `bson:"created_at"`
-	UpdatedAt      *time.Time         `bson:"updated_at,omitempty"`
-	MarkedDeleted  bool               `bson:"marked_deleted,omitempty"`
-	HeaderContents []mongoContent     `bson:"headers"`
-	BodyContents   []mongoContent     `bson:"bodies"`
+	ID primitive.ObjectID `bson:"_id"`
+	//UUID           uuid.UUID          `bson:"_uuid"`
+	AuthorID       string         `bson:"creator_id"`
+	CreatedAt      *time.Time     `bson:"created_at"`
+	UpdatedAt      *time.Time     `bson:"updated_at,omitempty"`
+	MarkedDeleted  bool           `bson:"marked_deleted,omitempty"`
+	HeaderContents []mongoContent `bson:"headers"`
+	BodyContents   []mongoContent `bson:"bodies"`
 }
 
 // Content is used to store both header and body data in their own collections

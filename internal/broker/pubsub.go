@@ -45,7 +45,7 @@ func NewSubPub(hc HandleConfig, handler func(req HandleRequestPayload) (res Hand
 	// Listen for new messages
 	go func() {
 		for reqMsg := range consumer {
-			log.Printf("%s '%s': Received %s request from sender %s\n", _LOG_TAG, reqMsg.CorrelationId, reqMsg.RoutingKey, reqMsg.ConsumerTag)
+			log.Printf("%s CID '%s': Received %s request from sender %s\n", _LOG_TAG, reqMsg.CorrelationId, reqMsg.RoutingKey, reqMsg.ConsumerTag)
 			start := time.Now()
 
 			// Start building response message
@@ -53,7 +53,7 @@ func NewSubPub(hc HandleConfig, handler func(req HandleRequestPayload) (res Hand
 
 			// Verify delivery integrity
 			if err := AssertDelivery(reqMsg); err != nil {
-				log.Printf("%s '%s': Rejected request: %s\t\n", _LOG_TAG, reqMsg.CorrelationId, err)
+				log.Printf("%s CID '%s': Rejected request: %s\t\n", _LOG_TAG, reqMsg.CorrelationId, err)
 				resMsg.Publish(start, hc, reqMsg, http.StatusBadRequest, err)
 				continue
 			}
@@ -66,7 +66,7 @@ func NewSubPub(hc HandleConfig, handler func(req HandleRequestPayload) (res Hand
 
 			// Error or rejections from business logic
 			if err != nil {
-				log.Printf("%s '%s': Failed to fulfill request: %s ", _LOG_TAG, reqMsg.CorrelationId, err)
+				log.Printf("%s CID '%s': Failed to fulfill request: %s ", _LOG_TAG, reqMsg.CorrelationId, err)
 				resMsg.Publish(start, hc, reqMsg, res.Status.Code, err)
 				continue
 			}
@@ -77,7 +77,7 @@ func NewSubPub(hc HandleConfig, handler func(req HandleRequestPayload) (res Hand
 			resMsg.Publish(start, hc, reqMsg, res.Status.Code, nil)
 
 			// Roger and over
-			log.Printf("%s '%s': Fulfilled request", _LOG_TAG, reqMsg.CorrelationId)
+			log.Printf("%s CID '%s': Fulfilled request", _LOG_TAG, reqMsg.CorrelationId)
 		}
 	}()
 	log.Printf("%s Listing for %s events -> (%s)", _LOG_TAG, hc.SubIntent.String(), hc.SubQueueConf.Name)
@@ -94,6 +94,9 @@ func (r Response) Publish(start time.Time, hc HandleConfig, reqMsg amqp.Delivery
 	}
 
 	// Set payload headers
+	if reqMsg.Headers["jwt"] != nil {
+		resMsg.Headers["jwt"] = reqMsg.Headers["jwt"]
+	}
 	resMsg.Headers["processing_time_ns"] = time.Since(start).Nanoseconds()
 	resMsg.Headers["status_code"] = statusCode
 	resMsg.Headers["status_msg"] = fmt.Sprintf("%s. %s", http.StatusText(statusCode), errMsg)
@@ -102,7 +105,7 @@ func (r Response) Publish(start time.Time, hc HandleConfig, reqMsg amqp.Delivery
 	if err := rabbit.PublishChannel.Publish(hc.ExchangeConf.Name, hc.PubIntent.String(), false, false, resMsg); err != nil {
 		log.Fatalf("%s Failed to emit response %s -> %s: %s", _LOG_TAG, hc.PubIntent.String(), hc.ExchangeConf.Name, err)
 	}
-	log.Printf("%s '%s': Emitted response. %s -> %s", _LOG_TAG, reqMsg.CorrelationId, hc.PubIntent.String(), hc.ExchangeConf.Name)
+	log.Printf("%s CID '%s': Emitted response. %s -> %s", _LOG_TAG, reqMsg.CorrelationId, hc.PubIntent.String(), hc.ExchangeConf.Name)
 
 	if err := reqMsg.Ack(true); err != nil {
 		log.Fatalf("%s Failed to acknowledge request: %s", _LOG_TAG, err)
